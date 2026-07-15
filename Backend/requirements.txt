@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pymongo[srv]
+python-dotenv
+pydantic
+dnspython
+python-multipart
+fastapi-mail
+cloudinary
+pyjwt

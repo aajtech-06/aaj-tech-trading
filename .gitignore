@@ -1,0 +1,138 @@
+# ==============================================================================
+# AAJ TECH TRADING - MONOREPO .GITIGNORE
+# ==============================================================================
+# Target: Monorepo containing Next.js (frontend) and FastAPI (Backend)
+# Development OS: Windows (using CRLF/LF, Git uses forward slashes '/' internally)
+# Deployment OS: Ubuntu VPS (Linux)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. ENVIRONMENT VARIABLES, SECRETS & CREDENTIALS (CRITICAL SECURITY)
+# ------------------------------------------------------------------------------
+# Never commit credentials, database URIs, API keys, or private certificates.
+# Using recursive wildcards ensures secrets are blocked at any subdirectory level.
+**/.env*
+**/*.env
+**/.secret*
+**/credentials.json
+**/client_secret*.json
+
+# Private keys, certificates, and secure tokens
+**/*.pem
+**/*.key
+**/*.pub
+**/*.pfx
+**/*.p12
+**/*.cer
+**/*.cert
+**/*.crt
+**/*.der
+
+# ------------------------------------------------------------------------------
+# 2. FRONTEND (NEXT.JS & NODE.JS)
+# ------------------------------------------------------------------------------
+# Package manager dependencies (always install via npm/yarn on target OS)
+**/node_modules/
+
+# Next.js build outputs and production build directories
+**/.next/
+**/out/
+**/build/
+**/dist/
+
+# TypeScript build info cache
+**/*.tsbuildinfo
+
+# Next.js automatically generated type declarations (re-created on dev/build)
+**/next-env.d.ts
+
+# Vercel deployment metadata
+**/.vercel/
+
+# Turborepo build cache (if added later)
+**/.turbo/
+
+# Frontend log files and package manager debug logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+
+# ------------------------------------------------------------------------------
+# 3. BACKEND (FASTAPI & PYTHON)
+# ------------------------------------------------------------------------------
+# Python virtual environments (must be created fresh on Ubuntu VPS; never share)
+**/venv/
+**/.venv/
+**/env/
+**/ENV/
+
+# Python compiled bytecode cache files (created at runtime by the interpreter)
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+
+# Pytest and code coverage reports
+**/.pytest_cache/
+**/.coverage
+**/htmlcov/
+**/.nyc_output/
+
+# Python distribution and package build outputs (excluding generic 'lib'/'bin')
+**/*.egg-info/
+**/*.egg
+**/eggs/
+**/parts/
+**/develop-eggs/
+**/downloads/
+**/sdist/
+**/var/
+**/wheels/
+**/share/python-wheels/
+
+# ------------------------------------------------------------------------------
+# 4. DATABASE & STORAGE
+# ------------------------------------------------------------------------------
+# NOTE: Backend/uploads (images and catalogs) contains permanent company assets
+# and MUST NOT be ignored. These are NOT temporary or runtime user-generated files.
+
+# Local database files (FastAPI local development SQLite or DB dumps)
+**/*.db
+**/*.sqlite3
+**/*.sql
+**/*.dump
+
+# General logs
+**/logs/
+**/*.log
+
+# ------------------------------------------------------------------------------
+# 5. IDEs, EDITORS & SYSTEM CACHES
+# ------------------------------------------------------------------------------
+# VS Code (contains workspace settings that vary per developer)
+.vscode/
+
+# JetBrains IDEs (PyCharm, WebStorm, IntelliJ)
+.idea/
+
+# General text editors & workspace configs (Sublime, Eclipse, Visual Studio)
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.sublime-project
+*.sublime-workspace
+.classpath
+.project
+.settings/
+
+# OS-specific system files (Windows thumbnail caches, macOS Finder metadata)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini

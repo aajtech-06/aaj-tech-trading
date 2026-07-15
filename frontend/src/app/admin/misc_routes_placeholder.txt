@@ -1,0 +1,11 @@
+// app/admin/categories/page.tsx
+import { CategoryManagement } from '@/features/admin/pages/MiscPages';
+export default function CategoriesPage() { return <CategoryManagement />; }
+
+// app/admin/catalog/page.tsx
+import { CatalogManagement } from '@/features/admin/pages/MiscPages';
+export default function CatalogPage() { return <CatalogManagement />; }
+
+// app/admin/clients/page.tsx
+import { ClientManagement } from '@/features/admin/pages/MiscPages';
+export default function ClientsPage() { return <ClientManagement />; }
