@@ -8,3 +8,5 @@ python-multipart
 fastapi-mail
 cloudinary
 pyjwt
+bcrypt
+requests

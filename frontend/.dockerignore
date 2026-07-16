@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+/npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js Build Outputs
+.next/
+out/
+build/
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment & Secrets (avoid baking local configs/secrets into the image)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Git
+.git/
+.gitignore
+
+# Docker configuration files
+Dockerfile
+.dockerignore

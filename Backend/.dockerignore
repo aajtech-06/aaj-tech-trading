@@ -1,0 +1,23 @@
+# Ignore Python virtual environment
+venv/
+.venv/
+env/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore git repository and IDE configurations
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Ignore environment file (secrets should be passed via runtime environment)
+.env
+
+# Ignore Docker files
+Dockerfile
+.dockerignore
