@@ -23,7 +23,8 @@ cloudinary.config(
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
 origins = [
     FRONTEND_URL,
-    "https://aaj-tech.vercel.app",
+    "https://aajtechtrading.in",
+    "https://www.aajtechtrading.in",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
