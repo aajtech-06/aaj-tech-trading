@@ -1,8 +1,32 @@
 import os
 import jwt
+import bcrypt
+from datetime import datetime, timedelta
 from fastapi import Request, HTTPException, status, Depends
 
-JWT_SECRET = os.getenv("JWT_SECRET", "aaj_tech_trading_super_secret_key_2024_premium_industrial")
+from dotenv import load_dotenv
+
+# Load env variables to ensure JWT_SECRET is loaded regardless of route import order
+load_dotenv()
+
+JWT_SECRET = os.getenv("JWT_SECRET")
+if not JWT_SECRET:
+    raise RuntimeError("JWT_SECRET environment variable is not set")
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    try:
+        return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+    except Exception:
+        return False
+
+def create_access_token(data: dict, expires_delta: timedelta) -> str:
+    to_encode = data.copy()
+    expire = datetime.utcnow() + expires_delta
+    to_encode.update({"exp": expire})
+    token = jwt.encode(to_encode, JWT_SECRET, algorithm="HS256")
+    if isinstance(token, bytes):
+        token = token.decode('utf-8')
+    return token
 
 def get_current_user(request: Request) -> dict:
     token = None
