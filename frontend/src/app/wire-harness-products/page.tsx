@@ -26,7 +26,7 @@ const WireHarnessProductsContent = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('https://aaj-tech-backend.onrender.com/api/harness/');
+        const res = await fetch('https://aajtechtrading.in/api/harness/');
         if (res.ok) {
           const data = await res.json();
           setProducts(data);
@@ -149,7 +149,7 @@ const WireHarnessProductsContent = () => {
                   >
                     <div className="relative aspect-square w-full rounded-[2.5rem] overflow-hidden bg-[#f4f4f4] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 group cursor-pointer">
                       <Image
-                        src={product.image?.startsWith('http') ? product.image : (product.image?.startsWith('/uploads/') ? `https://aaj-tech-backend.onrender.com${product.image}` : (product.image || "/Wire to board Assemblies.webp"))}
+                        src={product.image?.startsWith('http') ? product.image : (product.image?.startsWith('/uploads/') ? `https://aajtechtrading.in${product.image}` : (product.image || "/Wire to board Assemblies.webp"))}
                         alt={product.title}
                         fill
                         unoptimized

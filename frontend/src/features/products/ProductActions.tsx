@@ -29,7 +29,7 @@ const ProductActions = ({ price, productName, productImage, productCategory }: P
     setLoading(true);
 
     try {
-      const response = await fetch('https://aaj-tech-backend.onrender.com/api/enquiries/', {
+      const response = await fetch('https://aajtechtrading.in/api/enquiries/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ import ProductSpecifications from '@/features/products/components/ProductSpecifi
 
 import { Product } from '@/types';
 
-const API_BASE = 'https://aaj-tech-backend.onrender.com/api';
+const API_BASE = 'https://aajtechtrading.in/api';
 
 const isValidImageUrl = (url: string) => {
   if (!url) return false;

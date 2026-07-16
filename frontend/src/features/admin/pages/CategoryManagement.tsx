@@ -32,7 +32,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-const API_BASE = 'https://aaj-tech-backend.onrender.com/api';
+const API_BASE = 'https://aajtechtrading.in/api';
 
 interface Category {
   id: string;

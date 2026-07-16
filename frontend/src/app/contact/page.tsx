@@ -65,7 +65,7 @@ const ContactPage = () => {
     };
 
     try {
-      const res = await fetch('https://aaj-tech-backend.onrender.com/api/enquiries/', {
+      const res = await fetch('https://aajtechtrading.in/api/enquiries/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

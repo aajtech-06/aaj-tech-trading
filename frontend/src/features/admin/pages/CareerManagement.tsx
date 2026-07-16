@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { Job, CareerApplication, Department } from '@/types';
 
-const API_BASE = 'https://aaj-tech-backend.onrender.com/api';
+const API_BASE = 'https://aajtechtrading.in/api';
 
 export default function CareerManagement() {
   const [activeTab, setActiveTab] = useState<'jobs' | 'applications' | 'departments'>('jobs');

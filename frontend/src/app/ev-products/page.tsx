@@ -26,7 +26,7 @@ const EVProductsContent = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('https://aaj-tech-backend.onrender.com/api/ev/');
+        const res = await fetch('https://aajtechtrading.in/api/ev/');
         if (res.ok) {
           const data = await res.json();
           setProducts(data);
@@ -149,7 +149,7 @@ const EVProductsContent = () => {
                   >
                     <div className="relative aspect-square w-full rounded-[2.5rem] overflow-hidden bg-[#f4f4f4] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 group cursor-pointer">
                       <Image
-                        src={product.image?.startsWith('http') ? product.image : (product.image?.startsWith('/uploads/') ? `https://aaj-tech-backend.onrender.com${product.image}` : (product.image || "https://images.unsplash.com/photo-1558441719-ff34b0524a24?q=80&w=2070&auto=format&fit=crop"))}
+                        src={product.image?.startsWith('http') ? product.image : (product.image?.startsWith('/uploads/') ? `https://aajtechtrading.in${product.image}` : (product.image || "https://images.unsplash.com/photo-1558441719-ff34b0524a24?q=80&w=2070&auto=format&fit=crop"))}
                         alt={product.title}
                         fill
                         unoptimized

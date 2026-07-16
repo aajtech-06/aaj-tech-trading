@@ -30,7 +30,7 @@ const EVCatalogPage = () => {
   useEffect(() => {
     const fetchCatalogs = async () => {
       try {
-        const response = await fetch('https://aaj-tech-backend.onrender.com/api/ev-catalog/');
+        const response = await fetch('https://aajtechtrading.in/api/ev-catalog/');
         const data = await response.json();
         setCatalogs(data);
         if (data.length > 0) {
@@ -116,13 +116,13 @@ const EVCatalogPage = () => {
 
             <div>
               <div className="bg-gray-50 rounded-[4rem] p-8 md:p-20 border border-gray-100 shadow-inner overflow-hidden">
-                <Flipbook pdfUrl={activeCatalog.url.startsWith('http') ? activeCatalog.url : `https://aaj-tech-backend.onrender.com${activeCatalog.url}`} />
+                <Flipbook pdfUrl={activeCatalog.url.startsWith('http') ? activeCatalog.url : `https://aajtechtrading.in${activeCatalog.url}`} />
               </div>
             </div>
 
             <div className="flex justify-center">
               <a
-                href={activeCatalog.url.startsWith('http') ? activeCatalog.url : `https://aaj-tech-backend.onrender.com${activeCatalog.url}`}
+                href={activeCatalog.url.startsWith('http') ? activeCatalog.url : `https://aajtechtrading.in${activeCatalog.url}`}
                 download
                 className="inline-flex items-center gap-4 bg-brand-dark text-white px-12 py-5 rounded-full font-black text-lg shadow-2xl hover:scale-105 transition-all uppercase tracking-widest"
               >

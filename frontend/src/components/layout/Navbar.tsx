@@ -45,9 +45,9 @@ const Navbar = () => {
 
     try {
       const [prodRes, evRes, harnessRes] = await Promise.all([
-        fetch('https://aaj-tech-backend.onrender.com/api/products/').then(r => r.ok ? r.json() : []),
-        fetch('https://aaj-tech-backend.onrender.com/api/ev/').then(r => r.ok ? r.json() : []),
-        fetch('https://aaj-tech-backend.onrender.com/api/harness/').then(r => r.ok ? r.json() : [])
+        fetch('https://aajtechtrading.in/api/products/').then(r => r.ok ? r.json() : []),
+        fetch('https://aajtechtrading.in/api/ev/').then(r => r.ok ? r.json() : []),
+        fetch('https://aajtechtrading.in/api/harness/').then(r => r.ok ? r.json() : [])
       ]);
 
       const lowerQuery = query.toLowerCase();
@@ -89,7 +89,7 @@ const Navbar = () => {
     let isMounted = true;
     const fetchCategories = async () => {
       try {
-        const res = await fetch('https://aaj-tech-backend.onrender.com/api/categories/');
+        const res = await fetch('https://aajtechtrading.in/api/categories/');
         if (!res.ok) throw new Error('Failed to fetch');
         const categories = await res.json();
 

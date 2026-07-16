@@ -16,8 +16,8 @@ if (typeof window !== 'undefined' && !(window as any).__fetchWrapped) {
       ? input
       : (input instanceof URL ? input.toString() : (input as Request).url);
 
-    const localBackendUrl = 'https://aaj-tech-backend.onrender.com/api';
-    const prodBackendUrl = 'https://aaj-tech-backend.onrender.com/api';
+    const localBackendUrl = 'https://aajtechtrading.in/api';
+    const prodBackendUrl = 'https://aajtechtrading.in/api';
 
     if (url && (url.startsWith(localBackendUrl) || url.startsWith(prodBackendUrl))) {
       // Rewrite the URL to use our relative Next.js proxy route /backend-api

@@ -27,7 +27,7 @@ import {
   Settings
 } from 'lucide-react';
 
-const API_BASE = 'https://aaj-tech-backend.onrender.com/api';
+const API_BASE = 'https://aajtechtrading.in/api';
 
 interface Product {
   id: string;

@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Calendar } from 'lucide-react';
 import Link from 'next/link';
 
-const API_BASE = 'https://aaj-tech-backend.onrender.com/api';
+const API_BASE = 'https://aajtechtrading.in/api';
 
 interface BlogPost {
   id: string;

@@ -26,7 +26,7 @@ export default function SignupPage() {
     setError('');
 
     try {
-      const response = await fetch('https://aaj-tech-backend.onrender.com/api/auth/signup', {
+      const response = await fetch('https://aajtechtrading.in/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

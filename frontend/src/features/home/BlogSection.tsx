@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Reveal } from '@/components/common/Reveal';
 
-const API_BASE = 'https://aaj-tech-backend.onrender.com/api';
+const API_BASE = 'https://aajtechtrading.in/api';
 
 interface BlogPost {
   id: string;

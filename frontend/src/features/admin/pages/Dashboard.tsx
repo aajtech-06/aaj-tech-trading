@@ -45,7 +45,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const res = await fetch('https://aaj-tech-backend.onrender.com/api/dashboard/');
+        const res = await fetch('https://aajtechtrading.in/api/dashboard/');
         if (res.ok) {
           const dashboardData = await res.json();
           setData(dashboardData);

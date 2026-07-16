@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 import { Job, Department } from '@/types';
 
-const API_BASE = 'https://aaj-tech-backend.onrender.com/api';
+const API_BASE = 'https://aajtechtrading.in/api';
 
 const WHY_JOIN_US = [
   {

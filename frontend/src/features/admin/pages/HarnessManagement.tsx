@@ -20,7 +20,7 @@ import {
   LayoutGrid,
 } from 'lucide-react';
 
-const API_BASE = 'https://aaj-tech-backend.onrender.com/api';
+const API_BASE = 'https://aajtechtrading.in/api';
 
 interface HarnessProduct {
   id: string;
@@ -201,7 +201,7 @@ export default function HarnessManagement() {
     if (!imagePath) return '/placeholder.png';
     if (imagePath.startsWith('http')) return imagePath;
     if (imagePath.startsWith('/uploads/')) {
-      return `https://aaj-tech-backend.onrender.com${imagePath}`;
+      return `https://aajtechtrading.in${imagePath}`;
     }
     return imagePath; // Local public folder paths
   };

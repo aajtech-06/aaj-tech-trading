@@ -32,7 +32,7 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
 
   const fetchEnquiries = React.useCallback(async () => {
     try {
-      const res = await fetch('https://aaj-tech-backend.onrender.com/api/enquiries/');
+      const res = await fetch('https://aajtechtrading.in/api/enquiries/');
       if (res.ok) {
         let data = await res.json();
 
@@ -57,7 +57,7 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
 
   const updateStatus = async (id: string, status: string) => {
     try {
-      const res = await fetch(`https://aaj-tech-backend.onrender.com/api/enquiries/${id}/status?status=${status}`, {
+      const res = await fetch(`https://aajtechtrading.in/api/enquiries/${id}/status?status=${status}`, {
         method: 'PUT',
       });
       if (res.ok) {
@@ -72,7 +72,7 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
   const deleteEnquiry = async (id: string) => {
     if (!confirm('Are you sure?')) return;
     try {
-      const res = await fetch(`https://aaj-tech-backend.onrender.com/api/enquiries/${id}`, {
+      const res = await fetch(`https://aajtechtrading.in/api/enquiries/${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
