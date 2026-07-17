@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from routes import categories, products, blogs, enquiries, catalog, dashboard, clients, auth, uploads, harness, ev, ev_catalog, career
+from routes import categories, products, blogs, enquiries, catalog, dashboard, clients, auth, uploads, harness, ev, ev_catalog, career, admin
 import uvicorn
 import os
 import cloudinary
@@ -46,6 +46,7 @@ app.include_router(catalog.router, prefix="/api/catalog", tags=["Catalog"])
 app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"])
 app.include_router(clients.router, prefix="/api/clients", tags=["Clients"])
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(uploads.router, prefix="/api/upload", tags=["Upload"])
 app.include_router(harness.router, prefix="/api/harness", tags=["Harness Products"])
 app.include_router(ev.router, prefix="/api/ev", tags=["EV Products"])
