@@ -177,7 +177,6 @@ const ProductActions = ({ price, productName, productImage, productCategory }: P
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
                       <input
                         type="email"
-                        required
                         placeholder="john@company.com"
                         className="w-full bg-gray-50 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
                         value={formData.email}

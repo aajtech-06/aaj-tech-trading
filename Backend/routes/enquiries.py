@@ -13,7 +13,7 @@ db = get_db()
 
 class EnquiryBase(BaseModel):
     fullName: str
-    email: str
+    email: Optional[str] = None
     phone: str
     inquiryType: str
     message: str

@@ -182,7 +182,6 @@ const ContactPage = () => {
                         type="email"
                         placeholder="name@company.com"
                         className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
-                        required
                       />
                     </div>
                   </div>

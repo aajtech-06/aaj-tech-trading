@@ -36,13 +36,13 @@ interface Category {
   name: string;
 }
 
-const ProductCard = ({ 
-  product, 
-  category, 
-  onBuyNow 
-}: { 
-  product: Product; 
-  category: Category | undefined; 
+const ProductCard = ({
+  product,
+  category,
+  onBuyNow
+}: {
+  product: Product;
+  category: Category | undefined;
   onBuyNow: (product: Product) => void;
 }) => {
   const [liked, setLiked] = useState(false);
@@ -61,7 +61,7 @@ const ProductCard = ({
         ) : (
           <span className="text-gray-400 font-bold uppercase tracking-widest text-xs">No Image</span>
         )}
-        
+
         {/* Heart/Wishlist Button */}
         <button
           onClick={(e) => {
@@ -294,7 +294,6 @@ const QuickInquiryModal = ({ product, onClose }: QuickInquiryModalProps) => {
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
                     <input
                       type="email"
-                      required
                       placeholder="john@company.com"
                       className="w-full bg-gray-50 border-none rounded-xl py-3 pl-12 pr-4 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none text-sm transition-all"
                       value={formData.email}
@@ -327,7 +326,7 @@ const QuickInquiryModal = ({ product, onClose }: QuickInquiryModalProps) => {
                 <div className="flex items-center bg-white rounded-lg p-0.5 shadow-sm border border-gray-100">
                   <button
                     type="button"
-                    onClick={() => setQuantity(Math.max(moqNumber, quantity - 1))}
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     className="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-50 hover:text-brand-red transition-all text-gray-400"
                   >
                     <Minus size={14} />
