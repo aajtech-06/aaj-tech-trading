@@ -41,6 +41,7 @@ interface Product {
   status: string;
   features: string[];
   specifications: Record<string, string>;
+  moq?: string;
 }
 
 interface Category {
@@ -74,6 +75,7 @@ export default function ProductManagement() {
     stock: '',
     status: 'active',
     features: '',
+    moq: '200 PCS',
     // Technical Specs
     spec_pins: '',
     spec_pitch: '',
@@ -177,6 +179,7 @@ export default function ProductManagement() {
           category_id: newProduct.category_id,
           description: newProduct.description,
           image: newProduct.image,
+          moq: newProduct.moq || '200 PCS',
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
           specifications: {
             Pins: newProduct.spec_pins,
@@ -221,6 +224,7 @@ export default function ProductManagement() {
           stock: '',
           status: 'active',
           features: '',
+          moq: '200 PCS',
           spec_pins: '',
           spec_pitch: '',
           spec_current: '',
@@ -273,6 +277,7 @@ export default function ProductManagement() {
           category_id: newProduct.category_id,
           description: newProduct.description,
           image: newProduct.image,
+          moq: newProduct.moq || '200 PCS',
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
           specifications: {
             Pins: newProduct.spec_pins,
@@ -318,6 +323,7 @@ export default function ProductManagement() {
           stock: '',
           status: 'active',
           features: '',
+          moq: '200 PCS',
           spec_pins: '',
           spec_pitch: '',
           spec_current: '',
@@ -364,6 +370,7 @@ export default function ProductManagement() {
       stock: product.stock?.toString() || '',
       status: product.status || 'active',
       features: product.features?.join('\n') || '',
+      moq: product.moq || '200 PCS',
       spec_pins: product.specifications?.Pins || '',
       spec_pitch: product.specifications?.Pitch || '',
       spec_current: product.specifications?.Current || '',
@@ -473,6 +480,7 @@ export default function ProductManagement() {
               stock: '',
               status: 'active',
               features: '',
+              moq: '200 PCS',
               spec_pins: '',
               spec_pitch: '',
               spec_current: '',
@@ -889,6 +897,17 @@ export default function ProductManagement() {
                         onChange={(e) => setNewProduct(prev => ({ ...prev, stock: e.target.value }))}
                         className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
                         placeholder="100"
+                      />
+                    </div>
+                    {/* MOQ */}
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Minimum Order Quantity (MOQ)</label>
+                      <input
+                        type="text"
+                        value={newProduct.moq}
+                        onChange={(e) => setNewProduct(prev => ({ ...prev, moq: e.target.value }))}
+                        className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
+                        placeholder="200 PCS"
                       />
                     </div>
                   </div>

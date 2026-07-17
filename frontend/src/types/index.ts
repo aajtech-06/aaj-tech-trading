@@ -36,6 +36,7 @@ export interface Product {
   status?: string;
   features: string[];
   specifications: Record<string, string>;
+  moq?: string;
 }
 
 export interface Industry {

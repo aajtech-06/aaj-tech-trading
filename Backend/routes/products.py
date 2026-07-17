@@ -21,6 +21,7 @@ def product_helper(prod) -> dict:
         "features": prod.get("features", []),
         "specifications": prod.get("specifications", {}),
         "image": prod.get("image", None),
+        "moq": prod.get("moq", "200 PCS"),
     }
 
 @router.get("/", response_model=List[ProductResponse])

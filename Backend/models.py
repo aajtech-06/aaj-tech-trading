@@ -37,6 +37,7 @@ class ProductBase(BaseModel):
     
     # Technical Specifications (stored in a dictionary for flexibility)
     specifications: Optional[Dict[str, Any]] = {}
+    moq: Optional[str] = "200 PCS"
 
 class ProductCreate(ProductBase):
     pass

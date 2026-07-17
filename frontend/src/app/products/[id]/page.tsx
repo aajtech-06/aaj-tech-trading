@@ -118,7 +118,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
               {product.name}
             </h1>
 
-            <div className="flex items-center gap-4 mb-10 bg-white self-start px-6 py-3 rounded-2xl border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-4 mb-10 bg-white self-start px-6 py-3 rounded-2xl border border-gray-100 shadow-sm flex-wrap">
               <div className="flex flex-col">
                 <span className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-0.5">Starting From</span>
                 <span className="text-3xl font-black text-brand-red">₹{product.price || 450}</span>
@@ -127,6 +127,11 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
               <div className="flex flex-col">
                 <span className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-0.5">Availability</span>
                 <span className="text-sm font-extrabold text-emerald-600 uppercase tracking-wider">In Stock</span>
+              </div>
+              <div className="w-px h-10 bg-gray-100 mx-2" />
+              <div className="flex flex-col">
+                <span className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-0.5">MOQ</span>
+                <span className="text-sm font-extrabold text-brand-dark uppercase tracking-wider">{product.moq || '200 PCS'}</span>
               </div>
             </div>
 
