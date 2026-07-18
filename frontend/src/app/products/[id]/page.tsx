@@ -55,6 +55,10 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
     notFound();
   }
 
+  const basePrice = product.price || 450;
+  const gstAmount = basePrice * 0.18;
+  const finalPrice = basePrice + gstAmount;
+
   return (
     <div className="pt-32 pb-24 bg-[#FAFAFA]">
       <div className="container mx-auto px-4">
@@ -118,20 +122,37 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
               {product.name}
             </h1>
 
-            <div className="flex items-center gap-4 mb-10 bg-white self-start px-6 py-3 rounded-2xl border border-gray-100 shadow-sm flex-wrap">
-              <div className="flex flex-col">
-                <span className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-0.5">Starting From</span>
-                <span className="text-3xl font-black text-brand-red">₹{product.price || 450}</span>
+            {/* Availability & MOQ Badges */}
+            <div className="flex flex-wrap gap-3 mb-6">
+              <div className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                In Stock
               </div>
-              <div className="w-px h-10 bg-gray-100 mx-2" />
-              <div className="flex flex-col">
-                <span className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-0.5">Availability</span>
-                <span className="text-sm font-extrabold text-emerald-600 uppercase tracking-wider">In Stock</span>
+              <div className="bg-gray-100 text-gray-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-gray-200/50">
+                MOQ: {product.moq || '10 PCS'}
               </div>
-              <div className="w-px h-10 bg-gray-100 mx-2" />
-              <div className="flex flex-col">
-                <span className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-0.5">MOQ</span>
-                <span className="text-sm font-extrabold text-brand-dark uppercase tracking-wider">{product.moq || '200 PCS'}</span>
+            </div>
+
+            {/* Price Box */}
+            <div className="w-full max-w-md bg-[#F4FBF7] border border-[#E6F4EA] rounded-3xl p-6 mb-10 shadow-sm">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-gray-900 font-extrabold text-base">Base Price:</span>
+                <span className="text-3xl font-black text-[#007A53]">
+                  ₹{basePrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              </div>
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-gray-500 font-bold text-sm">GST 18%:</span>
+                <span className="text-base font-bold text-gray-700">
+                  ₹{gstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              </div>
+              <div className="border-t border-[#D0F0DB] my-4" />
+              <div className="flex justify-between items-center flex-wrap gap-2">
+                <span className="text-gray-700 font-bold text-sm">Final Price (Inclusive of all taxes):</span>
+                <span className="text-xl font-black text-gray-900">
+                  ₹{finalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / PCS
+                </span>
               </div>
             </div>
 
@@ -164,7 +185,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
             {/* Actions */}
             <div className="mt-auto">
               <ProductActions
-                price={product.price || 450}
+                price={basePrice}
                 productName={product.name}
                 productImage={product.image}
                 productCategory={categoryName}
