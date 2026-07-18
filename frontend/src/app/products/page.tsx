@@ -182,10 +182,10 @@ const QuickInquiryModal = ({ product, onClose }: QuickInquiryModalProps) => {
           email: formData.email,
           phone: formData.phone,
           inquiryType: "Product Order Inquiry",
-          message: `Quick Buy Inquiry for ${product.name} (Quantity: ${quantity})`,
+          message: `Quick Buy Inquiry for ${product.name} (Quantity: ${quantity}) - Base Price: ₹${total.toLocaleString('en-IN')}, GST 18%: ₹${(total * 0.18).toLocaleString('en-IN')}, Total (Incl. GST): ₹${(total * 1.18).toLocaleString('en-IN')}`,
           productName: product.name,
           quantity: quantity,
-          totalPrice: total,
+          totalPrice: total * 1.18,
         }),
       });
 
@@ -342,9 +342,19 @@ const QuickInquiryModal = ({ product, onClose }: QuickInquiryModalProps) => {
                 </div>
               </div>
 
-              <div className="text-center sm:text-right">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5">Total Estimate</p>
-                <p className="text-2xl font-black text-brand-red">₹{total.toLocaleString('en-IN')}.00</p>
+              <div className="text-center sm:text-right flex flex-col items-center sm:items-end gap-1">
+                <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                  Base Price: <span className="font-extrabold text-gray-700">₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+                <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                  GST (18%): <span className="font-extrabold text-gray-700">₹{(total * 0.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+                <div className="w-20 border-t border-gray-200 my-0.5" />
+                <div>
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5">Total Estimate</p>
+                  <p className="text-2xl font-black text-brand-red">₹{(total * 1.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  <p className="text-[9px] font-extrabold text-emerald-600 uppercase mt-0.5 tracking-wider">Inclusive of GST</p>
+                </div>
               </div>
             </div>
 
