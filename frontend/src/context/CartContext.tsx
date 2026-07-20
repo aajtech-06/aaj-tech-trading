@@ -53,20 +53,30 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('aaj_tech_cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product: Omit<CartItem, 'quantity'>, quantity: number = 1) => {
+  const addToCart = (product: Omit<CartItem, 'quantity'>, quantity?: number) => {
+    let initialQty = quantity;
+    if (initialQty === undefined || initialQty === null) {
+      if (product.moq) {
+        const parsed = parseInt(product.moq.replace(/\D/g, ''));
+        initialQty = !isNaN(parsed) && parsed > 0 ? parsed : 1;
+      } else {
+        initialQty = 1;
+      }
+    }
+
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
       if (existingItem) {
         return prevItems.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: item.quantity + initialQty }
             : item
         );
       }
-      return [...prevItems, { ...product, quantity }];
+      return [...prevItems, { ...product, quantity: initialQty }];
     });
     setCheckoutStep('cart');
-    setIsOpen(true); // Open the drawer when an item is added
+    setIsOpen(true);
   };
 
   const removeFromCart = (id: string) => {

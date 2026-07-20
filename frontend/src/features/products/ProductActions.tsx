@@ -31,11 +31,7 @@ const ProductActions = ({ id, price, productName, productImage, productCategory,
   const grandTotal = total + gst;
 
   const handleQuantityChange = (change: number) => {
-    let newQty = quantity + change;
-    const moqNumber = getInitialQuantity();
-    if (newQty < moqNumber) {
-      newQty = moqNumber;
-    }
+    const newQty = Math.max(1, quantity + change);
     setQuantity(newQty);
   };
 
@@ -68,23 +64,36 @@ const ProductActions = ({ id, price, productName, productImage, productCategory,
   return (
     <div className="mt-8 space-y-6">
       {/* Price Summary & Quantity Adjuster Grid */}
-      <div className="bg-white rounded-[30px] p-6 border border-gray-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div className="bg-white dark:bg-neutral-900 rounded-[30px] p-6 border border-gray-100 dark:border-neutral-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
         {/* Quantity Controller */}
         <div className="flex flex-col items-center sm:items-start w-full sm:w-auto">
           <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Adjust Quantity</p>
-          <div className="flex items-center bg-gray-50 rounded-xl p-1 shadow-sm border border-gray-100">
+          <div className="flex items-center bg-gray-50 dark:bg-neutral-800 rounded-xl p-1 shadow-sm border border-gray-100 dark:border-neutral-700">
             <button
               type="button"
               onClick={() => handleQuantityChange(-1)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white hover:text-brand-red transition-all text-gray-400 cursor-pointer"
+              className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white dark:hover:bg-neutral-700 hover:text-brand-red transition-all text-gray-400 cursor-pointer"
             >
               <Minus size={18} />
             </button>
-            <span className="w-16 text-center font-black text-brand-dark text-lg">{quantity}</span>
+            <input
+              type="number"
+              min={1}
+              value={quantity === 0 ? '' : quantity}
+              onChange={(e) => {
+                const val = parseInt(e.target.value);
+                if (isNaN(val) || val < 1) {
+                  setQuantity(1);
+                } else {
+                  setQuantity(val);
+                }
+              }}
+              className="w-16 text-center font-black text-brand-dark dark:text-white text-lg bg-transparent outline-none border-b border-transparent focus:border-brand-red [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
             <button
               type="button"
               onClick={() => handleQuantityChange(1)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white hover:text-brand-red transition-all text-gray-400 cursor-pointer"
+              className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white dark:hover:bg-neutral-700 hover:text-brand-red transition-all text-gray-400 cursor-pointer"
             >
               <Plus size={18} />
             </button>
