@@ -132,16 +132,16 @@ export default function CartDrawer() {
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="relative w-full max-w-md md:max-w-lg bg-white h-full shadow-2xl flex flex-col z-10 border-l border-gray-100"
+          className="relative w-full max-w-md md:max-w-lg bg-white dark:bg-neutral-900 h-full shadow-2xl flex flex-col z-10 border-l border-gray-100 dark:border-neutral-800 transition-colors duration-300"
         >
           {/* Header */}
-          <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
+          <div className="px-6 py-5 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between bg-white dark:bg-neutral-900 shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-brand-red/5 rounded-xl flex items-center justify-center text-brand-red">
                 <ShoppingBag size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-black text-brand-dark">Your Shopping Cart</h3>
+                <h3 className="text-lg font-black text-brand-dark dark:text-white">Your Shopping Cart</h3>
                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">
                   {cartItems.length} {cartItems.length === 1 ? 'Item' : 'Items'} selected
                 </p>
@@ -149,14 +149,14 @@ export default function CartDrawer() {
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-2 hover:bg-gray-50 rounded-xl text-gray-400 hover:text-brand-red transition-all cursor-pointer"
+              className="p-2 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded-xl text-gray-400 hover:text-brand-red transition-all cursor-pointer"
             >
               <X size={24} />
             </button>
           </div>
 
           {/* Body Content */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 min-h-0 bg-gray-50/50">
+          <div className="flex-1 overflow-y-auto px-6 py-6 min-h-0 bg-gray-50/50 dark:bg-neutral-950/40">
             {checkoutStep === 'success' ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -270,11 +270,11 @@ export default function CartDrawer() {
               </motion.div>
             ) : cartItems.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-6">
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-neutral-800 flex items-center justify-center text-gray-400">
                   <ShoppingBag size={28} />
                 </div>
                 <div>
-                  <h4 className="font-black text-brand-dark text-lg">Your cart is empty</h4>
+                  <h4 className="font-black text-brand-dark dark:text-white text-lg">Your cart is empty</h4>
                   <p className="text-gray-400 text-sm font-medium mt-1">Browse our connector catalog to add items.</p>
                 </div>
                 <button
@@ -291,10 +291,10 @@ export default function CartDrawer() {
                     key={item.id}
                     layout
                     exit={{ opacity: 0, y: -25 }}
-                    className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-4 relative group"
+                    className="bg-white dark:bg-neutral-900 rounded-2xl p-4 border border-gray-100 dark:border-neutral-800 shadow-sm flex items-center gap-4 relative group"
                   >
                     {/* Item Image */}
-                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center shrink-0 border border-gray-100 p-1">
+                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 dark:bg-neutral-800 flex items-center justify-center shrink-0 border border-gray-100 dark:border-neutral-700 p-1">
                       {isValidImageUrl(item.image) ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img

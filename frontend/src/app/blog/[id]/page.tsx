@@ -79,7 +79,7 @@ const BlogDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-brand-dark transition-colors duration-300">
         <Loader2 className="animate-spin text-brand-red w-12 h-12" />
       </div>
     );
@@ -87,9 +87,9 @@ const BlogDetail = () => {
 
   if (!post) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-brand-dark transition-colors duration-300">
         <div className="text-center">
-          <h1 className="text-4xl font-black text-brand-dark mb-4">Post Not Found</h1>
+          <h1 className="text-4xl font-black text-brand-dark dark:text-white mb-4">Post Not Found</h1>
           <Link href="/blog" className="text-brand-red font-bold hover:underline flex items-center justify-center gap-2">
             <ArrowLeft size={18} /> Back to Blog
           </Link>
@@ -99,7 +99,7 @@ const BlogDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-brand-dark transition-colors duration-300">
       {/* Hero Section */}
       <section className="relative min-h-[60vh] md:min-h-[70vh] flex items-end justify-start overflow-hidden pt-32 md:pt-40">
         <div className="absolute inset-0 z-0">

@@ -88,7 +88,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white dark:bg-brand-dark min-h-screen transition-colors duration-300">
       {/* Hero Section */}
       <div className="relative pt-48 pb-24 overflow-hidden bg-brand-dark">
         <div className="absolute inset-0 opacity-10">

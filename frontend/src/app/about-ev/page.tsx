@@ -78,7 +78,7 @@ const AboutEVPage = () => {
   ];
 
   return (
-    <div className="bg-brand-light min-h-screen selection:bg-brand-red/20 overflow-x-hidden pt-0">
+    <div className="bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-gray-100 min-h-screen selection:bg-brand-red/20 overflow-x-hidden pt-0 transition-colors duration-300">
       
       {/* 1. Hero Section (Full-Screen Background Slideshow) */}
       <section className="relative h-screen flex items-center bg-brand-dark text-white overflow-hidden">
@@ -184,7 +184,7 @@ const AboutEVPage = () => {
       </section>
 
       {/* 2. Commitment Section */}
-      <section id="commitment" className="py-32 bg-white">
+      <section id="commitment" className="py-32 bg-white dark:bg-brand-dark transition-colors duration-300">
         <div className="container mx-auto px-4 lg:px-8 xl:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
             
@@ -200,12 +200,12 @@ const AboutEVPage = () => {
                 <span className="text-brand-red text-xs font-black tracking-[0.25em] uppercase block">
                   Our Commitment
                 </span>
-                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-brand-dark leading-none">
+                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-brand-dark dark:text-white leading-none">
                   We Provide Best Solutions For Your Electric Vehicle
                 </h2>
               </div>
               
-              <p className="text-gray-500 text-lg font-medium leading-relaxed">
+              <p className="text-gray-500 dark:text-gray-300 text-lg font-medium leading-relaxed">
                 At Aaj Tech Trading Corporation, we are driving the transition to sustainable e-mobility with certified, high-performance automotive wiring harnesses and power distribution connection blocks.
               </p>
 
@@ -237,10 +237,10 @@ const AboutEVPage = () => {
                       <item.icon size={22} />
                     </div>
                     <div>
-                      <h4 className="text-lg font-black text-brand-dark tracking-wide uppercase transition-colors group-hover:text-brand-red duration-300">
+                      <h4 className="text-lg font-black text-brand-dark dark:text-white tracking-wide uppercase transition-colors group-hover:text-brand-red duration-300">
                         {item.title}
                       </h4>
-                      <p className="text-gray-500 font-semibold text-sm mt-1 leading-relaxed">
+                      <p className="text-gray-500 dark:text-gray-400 font-semibold text-sm mt-1 leading-relaxed">
                         {item.desc}
                       </p>
                     </div>
@@ -468,7 +468,7 @@ const AboutEVPage = () => {
       </section>
 
       {/* 4. FAQ Accordion Section */}
-      <section className="py-32 bg-white relative">
+      <section className="py-32 bg-white dark:bg-brand-dark transition-colors duration-300 relative">
         <div className="container mx-auto px-4 lg:px-8 xl:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
             
@@ -477,10 +477,10 @@ const AboutEVPage = () => {
               <span className="text-brand-red text-xs font-black tracking-[0.25em] uppercase block">
                 FAQ
               </span>
-              <h2 className="text-3xl md:text-5xl font-black text-brand-dark tracking-tight leading-none">
+              <h2 className="text-3xl md:text-5xl font-black text-brand-dark dark:text-white tracking-tight leading-none">
                 Your Questions, Answered
               </h2>
-              <p className="text-gray-500 font-medium text-base leading-relaxed">
+              <p className="text-gray-500 dark:text-gray-300 font-medium text-base leading-relaxed">
                 Have specific engineering questions about electrical capabilities, compliance standards, or harness assemblies? Get answers to our frequently asked questions.
               </p>
               
@@ -502,16 +502,16 @@ const AboutEVPage = () => {
                 return (
                   <div
                     key={index}
-                    className="border border-gray-100 rounded-3xl overflow-hidden bg-brand-light/40 hover:bg-brand-light/75 transition-colors duration-300"
+                    className="border border-gray-100 dark:border-neutral-800 rounded-3xl overflow-hidden bg-brand-light/40 dark:bg-neutral-900/60 hover:bg-brand-light/75 dark:hover:bg-neutral-800/80 transition-colors duration-300"
                   >
                     <button
                       onClick={() => setOpenFaqIndex(isOpen ? null : index)}
                       className="w-full text-left px-8 py-6.5 flex justify-between items-center gap-6 focus:outline-none"
                     >
-                      <span className="font-black text-brand-dark text-base md:text-lg tracking-tight">
+                      <span className="font-black text-brand-dark dark:text-white text-base md:text-lg tracking-tight">
                         {faq.question}
                       </span>
-                      <div className={`w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-gray-500 transition-transform duration-300 ${
+                      <div className={`w-8 h-8 rounded-full bg-white dark:bg-neutral-800 flex items-center justify-center shadow-sm text-gray-500 dark:text-gray-300 transition-transform duration-300 ${
                         isOpen ? 'rotate-180 text-brand-red' : ''
                       }`}>
                         <ChevronDown size={18} />
@@ -526,7 +526,7 @@ const AboutEVPage = () => {
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.35, ease: "easeInOut" }}
                         >
-                          <div className="px-8 pb-8 pt-2 text-gray-500 font-semibold text-sm leading-relaxed border-t border-gray-50 bg-white/50">
+                          <div className="px-8 pb-8 pt-2 text-gray-500 dark:text-gray-300 font-semibold text-sm leading-relaxed border-t border-gray-50 dark:border-neutral-800 bg-white/50 dark:bg-neutral-900/50">
                             {faq.answer}
                           </div>
                         </motion.div>
@@ -541,7 +541,7 @@ const AboutEVPage = () => {
       </section>
 
       {/* 5. CTA Section - Styled as a floating card with a clean gap before the footer */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-brand-dark transition-colors duration-300">
         <div className="container mx-auto px-4 lg:px-8 xl:px-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

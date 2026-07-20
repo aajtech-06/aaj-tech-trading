@@ -4,10 +4,11 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { Menu, X, ChevronDown, Search, ShoppingCart } from 'lucide-react';
+import { Menu, X, ChevronDown, Search, ShoppingCart, Sun, Moon } from 'lucide-react';
 import { cn } from '@/utils/utils';
 import { navItems as initialNavItems } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
+import { useTheme } from '@/context/ThemeContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +20,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { cartCount, setIsOpen: setIsOpenCart } = useCart();
+  const { theme, toggleTheme } = useTheme();
   const { scrollY } = useScroll();
 
   // Lock body scroll when mobile menu is open
@@ -141,10 +143,10 @@ const Navbar = () => {
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.35, ease: "easeInOut" }}
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b border-transparent',
         isScrolled
-          ? 'bg-white/90 backdrop-blur-xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] py-2'
-          : 'bg-white py-4 shadow-sm'
+          ? 'bg-white/90 dark:bg-brand-dark/95 backdrop-blur-xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] py-2'
+          : 'bg-white dark:bg-brand-dark py-4 shadow-sm dark:border-gray-800'
       )}
     >
       <div className="px-4 md:px-12 lg:px-24 xl:px-32 flex justify-between items-center w-full">
@@ -159,7 +161,7 @@ const Navbar = () => {
             <img
               src="/logo.png"
               alt="AAJ Tech Trading Logo"
-              className="h-14 sm:h-16 md:h-28 w-auto object-contain group-hover:scale-105 transition-transform duration-500"
+              className="h-14 sm:h-16 md:h-28 w-auto object-contain group-hover:scale-105 transition-transform duration-500 dark:brightness-110"
             />
           </Link>
         </motion.div>
@@ -178,7 +180,7 @@ const Navbar = () => {
                 href={item.href}
                 className={cn(
                   "text-sm font-black transition-all hover:text-brand-red py-2 flex items-center gap-1.5 tracking-wider uppercase",
-                  pathname === item.href ? "text-brand-red" : "text-gray-600"
+                  pathname === item.href ? "text-brand-red" : "text-gray-600 dark:text-gray-300"
                 )}
               >
                 {item.title}
@@ -196,13 +198,13 @@ const Navbar = () => {
               {item.items && (
                 item.title === 'Connectors' ? (
                   <div className="absolute top-full left-0 pt-4 w-[720px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 -translate-y-4 group-hover:translate-y-0 z-50 pointer-events-none group-hover:pointer-events-auto">
-                    <div className="bg-white border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-3xl p-6 backdrop-blur-xl">
+                    <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-3xl p-6 backdrop-blur-xl">
                       <div className="grid grid-cols-3 gap-x-6 gap-y-3">
                         {item.items.map((subItem) => (
                           <Link
                             key={subItem.title}
                             href={subItem.href}
-                            className="block px-4 py-2.5 text-[11px] text-gray-600 hover:text-brand-red hover:bg-red-50/30 rounded-xl transition-all duration-200 font-bold uppercase tracking-wide leading-relaxed"
+                            className="block px-4 py-2.5 text-[11px] text-gray-600 dark:text-gray-400 hover:text-brand-red hover:bg-red-50/30 dark:hover:bg-red-950/20 rounded-xl transition-all duration-200 font-bold uppercase tracking-wide leading-relaxed"
                           >
                             {subItem.title}
                           </Link>
@@ -212,12 +214,12 @@ const Navbar = () => {
                   </div>
                 ) : (
                   <div className="absolute top-full left-0 pt-4 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 -translate-y-4 group-hover:translate-y-0 z-50 pointer-events-none group-hover:pointer-events-auto">
-                    <div className="bg-white border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-3xl overflow-hidden backdrop-blur-xl p-3">
+                    <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-3xl overflow-hidden backdrop-blur-xl p-3">
                       {item.items.map((subItem) => (
                         <Link
                           key={subItem.title}
                           href={subItem.href}
-                          className="block px-6 py-4 text-xs text-gray-700 hover:bg-brand-red hover:text-white rounded-2xl transition-all duration-300 font-black uppercase tracking-widest"
+                          className="block px-6 py-4 text-xs text-gray-700 dark:text-gray-300 hover:bg-brand-red hover:text-white dark:hover:bg-brand-red rounded-2xl transition-all duration-300 font-black uppercase tracking-widest"
                         >
                           {subItem.title}
                         </Link>
@@ -244,17 +246,26 @@ const Navbar = () => {
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red/50 transition-all w-48 lg:w-64"
+              className="pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red/50 text-brand-dark dark:text-white rounded-full transition-all w-48 lg:w-64"
             />
             <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-red transition-colors">
               <Search size={18} />
             </button>
           </form>
 
+          {/* Theme Switcher Button */}
+          <button
+            onClick={toggleTheme}
+            className="p-2.5 text-gray-600 dark:text-gray-300 hover:text-brand-red transition-colors cursor-pointer"
+            aria-label="Toggle Theme"
+          >
+            {theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}
+          </button>
+
           {/* Cart Icon Button */}
           <button
             onClick={() => setIsOpenCart(true)}
-            className="relative p-2.5 text-gray-600 hover:text-brand-red transition-colors cursor-pointer"
+            className="relative p-2.5 text-gray-600 dark:text-gray-300 hover:text-brand-red transition-colors cursor-pointer"
             aria-label="Open Cart"
           >
             <ShoppingCart size={22} />
@@ -276,10 +287,19 @@ const Navbar = () => {
 
         {/* Mobile Actions */}
         <div className="flex items-center gap-2 lg:hidden">
+          {/* Mobile Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="p-3 text-brand-dark dark:text-white bg-brand-light dark:bg-gray-800 rounded-2xl active:scale-90 transition-transform cursor-pointer"
+            aria-label="Toggle Theme"
+          >
+            {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
+          </button>
+
           {/* Mobile Cart Button */}
           <button
             onClick={() => setIsOpenCart(true)}
-            className="relative p-3 text-brand-dark bg-brand-light rounded-2xl active:scale-90 transition-transform cursor-pointer"
+            className="relative p-3 text-brand-dark dark:text-white bg-brand-light dark:bg-gray-800 rounded-2xl active:scale-90 transition-transform cursor-pointer"
             aria-label="Open Cart"
           >
             <ShoppingCart size={24} />
@@ -290,7 +310,7 @@ const Navbar = () => {
             )}
           </button>
           <button
-            className="p-3 text-brand-dark bg-brand-light rounded-2xl active:scale-90 transition-transform cursor-pointer"
+            className="p-3 text-brand-dark dark:text-white bg-brand-light dark:bg-gray-800 rounded-2xl active:scale-90 transition-transform cursor-pointer"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -306,20 +326,20 @@ const Navbar = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-white z-[100] flex flex-col h-screen overflow-hidden lg:hidden"
+            className="fixed inset-0 bg-white dark:bg-brand-dark z-[100] flex flex-col h-screen overflow-hidden lg:hidden"
           >
             {/* Drawer Header */}
-            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-white shrink-0">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-brand-dark shrink-0">
               <Link href="/" onClick={() => setIsOpen(false)} className="block">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/logo.png"
                   alt="AAJ Tech Trading Logo"
-                  className="h-14 w-auto object-contain"
+                  className="h-14 w-auto object-contain dark:brightness-110"
                 />
               </Link>
               <button
-                className="p-3 text-brand-dark bg-brand-light rounded-2xl active:scale-90 transition-transform"
+                className="p-3 text-brand-dark dark:text-white bg-brand-light dark:bg-gray-800 rounded-2xl active:scale-90 transition-transform"
                 onClick={() => setIsOpen(false)}
               >
                 <X size={28} />
@@ -336,7 +356,7 @@ const Navbar = () => {
                     placeholder="Search products..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-base focus:outline-none focus:ring-2 focus:ring-brand-red/50 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 text-base focus:outline-none focus:ring-2 focus:ring-brand-red/50 transition-all dark:text-white rounded-2xl"
                   />
                   <button type="submit" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-red transition-colors">
                     <Search size={20} />
@@ -354,7 +374,7 @@ const Navbar = () => {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="border-b border-gray-50 py-1"
+                      className="border-b border-gray-50 dark:border-gray-800 py-1"
                     >
                       {hasItems ? (
                         <div>
@@ -362,7 +382,7 @@ const Navbar = () => {
                             onClick={() => toggleExpand(item.title)}
                             className={cn(
                               "text-lg font-bold flex justify-between items-center w-full py-2 uppercase tracking-wide text-left cursor-pointer",
-                              pathname.startsWith(item.href) && item.href !== '/' ? "text-brand-red" : "text-brand-dark"
+                              pathname.startsWith(item.href) && item.href !== '/' ? "text-brand-red" : "text-brand-dark dark:text-white"
                             )}
                           >
                             <span>{item.title}</span>
@@ -382,12 +402,12 @@ const Navbar = () => {
                                 animate={{ height: 'auto', opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
                                 transition={{ duration: 0.25, ease: "easeInOut" }}
-                                className="overflow-hidden pl-4 flex flex-col gap-1.5 border-l-2 border-brand-red/20 my-1 bg-brand-light/50 rounded-r-xl py-1"
+                                className="overflow-hidden pl-4 flex flex-col gap-1.5 border-l-2 border-brand-red/20 my-1 bg-brand-light/50 dark:bg-gray-800/40 rounded-r-xl py-1"
                               >
                                 {item.href && (
                                   <Link
                                     href={item.href}
-                                    className="text-sm font-bold text-gray-500 hover:text-brand-red transition-colors uppercase tracking-wider py-1"
+                                    className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-brand-red transition-colors uppercase tracking-wider py-1"
                                     onClick={() => setIsOpen(false)}
                                   >
                                     All {item.title}
@@ -397,7 +417,7 @@ const Navbar = () => {
                                   <Link
                                     key={subItem.title}
                                     href={subItem.href}
-                                    className="text-sm font-bold text-gray-500 hover:text-brand-red transition-colors uppercase tracking-wider py-1"
+                                    className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-brand-red transition-colors uppercase tracking-wider py-1"
                                     onClick={() => setIsOpen(false)}
                                   >
                                     {subItem.title}
@@ -412,7 +432,7 @@ const Navbar = () => {
                           href={item.href}
                           className={cn(
                             "text-lg font-bold block py-2 uppercase tracking-wide",
-                            pathname === item.href ? "text-brand-red" : "text-brand-dark"
+                            pathname === item.href ? "text-brand-red" : "text-brand-dark dark:text-white"
                           )}
                           onClick={() => setIsOpen(false)}
                         >

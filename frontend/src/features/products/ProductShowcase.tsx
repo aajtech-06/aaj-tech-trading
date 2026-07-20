@@ -95,9 +95,9 @@ const ProductShowcase = () => {
   }, []);
 
   return (
-    <section className="py-20 md:py-24 bg-brand-light relative overflow-hidden">
+    <section className="py-20 md:py-24 bg-brand-light dark:bg-brand-dark/95 relative overflow-hidden transition-colors duration-300">
       {/* Decorative Text */}
-      <div className="absolute top-0 right-0 text-[20vw] font-black text-brand-dark/[0.02] select-none pointer-events-none -translate-y-1/2">
+      <div className="absolute top-0 right-0 text-[20vw] font-black text-brand-dark/[0.02] dark:text-white/[0.02] select-none pointer-events-none -translate-y-1/2">
         CATEGORIES
       </div>
 
@@ -105,7 +105,7 @@ const ProductShowcase = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 px-4">
           <Reveal direction="up">
-            <h2 className="text-5xl md:text-6xl font-black text-brand-dark mb-6">
+            <h2 className="text-5xl md:text-6xl font-black text-brand-dark dark:text-white mb-6">
               Product <span className="text-brand-red">Categories</span>
             </h2>
           </Reveal>
@@ -139,7 +139,7 @@ const ProductShowcase = () => {
                       key={category.id}
                       href={`/products?category=${category.id}`}
                       style={{ width: cardWidth, height: cardHeight }}
-                      className="shrink-0 bg-[#F5F5F7] rounded-[48px] overflow-hidden shadow-md border border-gray-200/50 relative group cursor-pointer block transition-all duration-500 hover:shadow-2xl hover:-translate-y-1.5"
+                      className="shrink-0 bg-[#F5F5F7] dark:bg-neutral-900 rounded-[48px] overflow-hidden shadow-md border border-gray-200/50 dark:border-neutral-800 relative group cursor-pointer block transition-all duration-500 hover:shadow-2xl hover:-translate-y-1.5"
                     >
                       {/* Category Name in top-left */}
                       <div className="absolute top-10 left-10 z-10">
@@ -189,13 +189,13 @@ const ProductShowcase = () => {
               <>
                 <button
                   onClick={prevSlide}
-                  className="absolute left-4 md:left-12 lg:left-24 top-1/2 -translate-y-1/2 z-20 w-16 h-16 bg-white/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 flex items-center justify-center text-brand-dark hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95"
+                  className="absolute left-4 md:left-12 lg:left-24 top-1/2 -translate-y-1/2 z-20 w-16 h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   <ChevronLeft size={32} />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className="absolute right-4 md:right-12 lg:right-24 top-1/2 -translate-y-1/2 z-20 w-16 h-16 bg-white/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 flex items-center justify-center text-brand-dark hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95"
+                  className="absolute right-4 md:right-12 lg:right-24 top-1/2 -translate-y-1/2 z-20 w-16 h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   <ChevronRight size={32} />
                 </button>
@@ -204,14 +204,14 @@ const ProductShowcase = () => {
 
             {/* Pagination Indicators / Pill Dots */}
             <div className="flex items-center justify-center gap-3 mt-12 z-20 relative">
-              <div className="bg-white/80 border border-gray-200/80 px-6 py-3 rounded-full shadow-lg flex items-center gap-3.5 backdrop-blur-sm">
+              <div className="bg-white/80 dark:bg-neutral-900/80 border border-gray-200/80 dark:border-neutral-800 px-6 py-3 rounded-full shadow-lg flex items-center gap-3.5 backdrop-blur-sm">
                 {categories.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentIndex(i)}
                     className={`w-3.5 h-3.5 rounded-full border-2 transition-all duration-300 ${currentIndex === i
                       ? "bg-brand-red border-brand-red scale-125"
-                      : "bg-transparent border-gray-400/60 hover:bg-gray-200"
+                      : "bg-transparent border-gray-400/60 hover:bg-gray-200 dark:hover:bg-neutral-700"
                       }`}
                     aria-label={`Go to slide ${i + 1}`}
                   />

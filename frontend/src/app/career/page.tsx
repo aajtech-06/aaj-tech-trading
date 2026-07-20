@@ -315,7 +315,7 @@ export default function CareerPage() {
   };
 
   return (
-    <div className="bg-white min-h-screen text-brand-dark overflow-x-hidden font-sans">
+    <div className="bg-white dark:bg-brand-dark min-h-screen text-brand-dark dark:text-gray-100 overflow-x-hidden font-sans transition-colors duration-300">
 
       {/* 1. Hero Section */}
       <section className="relative pt-44 pb-28 md:pt-52 md:pb-40 bg-brand-dark flex items-center overflow-hidden">
@@ -380,14 +380,14 @@ export default function CareerPage() {
       </section>
 
       {/* 2. Why Join Us */}
-      <section className="py-24 md:py-32 bg-[#fafafa]">
+      <section className="py-24 md:py-32 bg-[#fafafa] dark:bg-brand-dark transition-colors duration-300">
         <div className="container mx-auto px-6 md:px-12 lg:px-24 xl:px-32">
 
           <div className="max-w-3xl mb-20">
-            <h2 className="text-4xl md:text-5xl font-black text-brand-dark mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white mb-6 tracking-tight">
               Why AAJ Tech Trading?
             </h2>
-            <p className="text-gray-500 text-lg font-medium leading-relaxed">
+            <p className="text-gray-500 dark:text-gray-300 text-lg font-medium leading-relaxed">
               We empower team members to take direct ownership, drive product innovation, and advance their professional trajectories in a global ecosystem.
             </p>
           </div>
@@ -404,15 +404,15 @@ export default function CareerPage() {
                 key={item.title}
                 variants={itemVariants}
                 whileHover={{ y: -8, boxShadow: '0 30px 60px rgba(0,0,0,0.06)' }}
-                className="bg-white p-8 md:p-10 rounded-[32px] border border-gray-100/80 shadow-[0_10px_30px_rgba(0,0,0,0.01)] transition-all duration-500 group cursor-pointer"
+                className="bg-white dark:bg-neutral-900 p-8 md:p-10 rounded-[32px] border border-gray-100/80 dark:border-neutral-800 shadow-[0_10px_30px_rgba(0,0,0,0.01)] transition-all duration-500 group cursor-pointer"
               >
                 <div className="w-16 h-16 bg-brand-red/5 rounded-2xl flex items-center justify-center text-brand-red mb-8 group-hover:bg-brand-red group-hover:text-white group-hover:shadow-[0_12px_24px_rgba(237,28,36,0.3)] transition-all duration-500">
                   <item.icon size={28} className="transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12" />
                 </div>
-                <h3 className="text-xl font-black text-brand-dark mb-4 group-hover:text-brand-red transition-colors duration-300">
+                <h3 className="text-xl font-black text-brand-dark dark:text-white mb-4 group-hover:text-brand-red transition-colors duration-300">
                   {item.title}
                 </h3>
-                <p className="text-gray-500 text-sm font-medium leading-relaxed">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed">
                   {item.desc}
                 </p>
               </motion.div>
@@ -423,15 +423,15 @@ export default function CareerPage() {
       </section>
 
       {/* 3. Current Openings */}
-      <section ref={openingsRef} id="open-positions" className="py-24 md:py-32 bg-white">
+      <section ref={openingsRef} id="open-positions" className="py-24 md:py-32 bg-white dark:bg-brand-dark transition-colors duration-300">
         <div className="container mx-auto px-6 md:px-12 lg:px-24 xl:px-32">
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20">
             <div>
-              <h2 className="text-4xl md:text-5xl font-black text-brand-dark mb-4 tracking-tight">
+              <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white mb-4 tracking-tight">
                 Current Openings
               </h2>
-              <p className="text-gray-500 font-medium text-lg">
+              <p className="text-gray-500 dark:text-gray-300 font-medium text-lg">
                 Explore our active job roles and apply today.
               </p>
             </div>
@@ -446,15 +446,15 @@ export default function CareerPage() {
               <p className="text-gray-400 font-bold uppercase tracking-wider text-sm">Fetching openings...</p>
             </div>
           ) : jobs.length === 0 ? (
-            <div className="bg-[#fafafa] rounded-[40px] p-16 text-center border border-gray-100 max-w-4xl mx-auto">
-              <Briefcase size={48} className="mx-auto text-gray-300 mb-6" />
-              <h3 className="text-2xl font-black text-brand-dark mb-2">No Active Openings Right Now</h3>
-              <p className="text-gray-500 font-medium max-w-sm mx-auto mb-8">
+            <div className="bg-[#fafafa] dark:bg-neutral-900 rounded-[40px] p-16 text-center border border-gray-100 dark:border-neutral-800 max-w-4xl mx-auto">
+              <Briefcase size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-6" />
+              <h3 className="text-2xl font-black text-brand-dark dark:text-white mb-2">No Active Openings Right Now</h3>
+              <p className="text-gray-500 dark:text-gray-400 font-medium max-w-sm mx-auto mb-8">
                 We are constantly expanding. Send your CV directly to our HR box, and we will contact you when a slot matches.
               </p>
               <a
                 href="mailto:info@aajtechtrading.com"
-                className="inline-flex items-center gap-3 bg-brand-dark hover:bg-brand-red text-white font-black px-8 py-4 rounded-full text-xs uppercase tracking-widest transition-colors"
+                className="inline-flex items-center gap-3 bg-brand-dark dark:bg-neutral-800 hover:bg-brand-red text-white font-black px-8 py-4 rounded-full text-xs uppercase tracking-widest transition-colors"
               >
                 Send Resume to HR
                 <Mail size={16} />
@@ -469,7 +469,7 @@ export default function CareerPage() {
                     onClick={() => setSelectedDeptFilter('All')}
                     className={`px-8 py-3 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 border ${selectedDeptFilter === 'All'
                       ? 'bg-brand-red text-white border-brand-red shadow-[0_10px_25px_rgba(237,28,36,0.22)] scale-[1.03]'
-                      : 'bg-white text-gray-500 hover:text-brand-dark border-gray-200 shadow-[0_5px_15px_rgba(0,0,0,0.01)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.04)] hover:scale-[1.03] cursor-pointer'
+                      : 'bg-white dark:bg-neutral-900 text-gray-500 dark:text-gray-300 hover:text-brand-dark dark:hover:text-white border-gray-200 dark:border-neutral-800 shadow-[0_5px_15px_rgba(0,0,0,0.01)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.04)] hover:scale-[1.03] cursor-pointer'
                       }`}
                   >
                     All Departments
@@ -483,7 +483,7 @@ export default function CareerPage() {
                         onClick={() => setSelectedDeptFilter(dept.name)}
                         className={`px-8 py-3 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 border ${selectedDeptFilter === dept.name
                           ? 'bg-brand-red text-white border-brand-red shadow-[0_10px_25px_rgba(237,28,36,0.22)] scale-[1.03]'
-                          : 'bg-white text-gray-500 hover:text-brand-dark border-gray-200 shadow-[0_5px_15px_rgba(0,0,0,0.01)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.04)] hover:scale-[1.03] cursor-pointer'
+                          : 'bg-white dark:bg-neutral-900 text-gray-500 dark:text-gray-300 hover:text-brand-dark dark:hover:text-white border-gray-200 dark:border-neutral-800 shadow-[0_5px_15px_rgba(0,0,0,0.01)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.04)] hover:scale-[1.03] cursor-pointer'
                           }`}
                       >
                         {dept.name}
@@ -494,9 +494,9 @@ export default function CareerPage() {
               )}
 
               {filteredJobs.length === 0 ? (
-                <div className="text-center py-20 bg-white rounded-[40px] border border-gray-100 shadow-sm max-w-xl mx-auto">
-                  <Briefcase size={40} className="mx-auto text-gray-300 mb-4" />
-                  <h3 className="text-lg font-black text-brand-dark mb-1">No positions in {selectedDeptFilter}</h3>
+                <div className="text-center py-20 bg-white dark:bg-neutral-900 rounded-[40px] border border-gray-100 dark:border-neutral-800 shadow-sm max-w-xl mx-auto">
+                  <Briefcase size={40} className="mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+                  <h3 className="text-lg font-black text-brand-dark dark:text-white mb-1">No positions in {selectedDeptFilter}</h3>
                   <p className="text-gray-400 text-sm font-medium">Please explore other departments above or check back soon.</p>
                 </div>
               ) : (
@@ -510,33 +510,33 @@ export default function CareerPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.3 }}
-                        className="bg-white p-8 md:p-12 rounded-[40px] border border-gray-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.02)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)] hover:border-brand-red/10 hover:-translate-y-1 transition-all duration-500 flex flex-col md:flex-row justify-between gap-8 group"
+                        className="bg-white dark:bg-neutral-900 p-8 md:p-12 rounded-[40px] border border-gray-100 dark:border-neutral-800 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.02)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)] hover:border-brand-red/10 hover:-translate-y-1 transition-all duration-500 flex flex-col md:flex-row justify-between gap-8 group"
                       >
                         <div className="space-y-4 flex-1">
                           <div className="flex flex-wrap items-center gap-3">
-                            <span className="px-3.5 py-1.5 rounded-full bg-red-50 text-brand-red text-[10px] font-black uppercase tracking-wider border border-brand-red/10">
+                            <span className="px-3.5 py-1.5 rounded-full bg-red-50 dark:bg-red-950/30 text-brand-red text-[10px] font-black uppercase tracking-wider border border-brand-red/10">
                               {job.department}
                             </span>
-                            <span className="px-3.5 py-1.5 rounded-full bg-gray-50 text-gray-500 text-[10px] font-black uppercase tracking-wider border border-gray-200/50 flex items-center gap-1">
+                            <span className="px-3.5 py-1.5 rounded-full bg-gray-50 dark:bg-neutral-800 text-gray-500 dark:text-gray-300 text-[10px] font-black uppercase tracking-wider border border-gray-200/50 dark:border-neutral-700 flex items-center gap-1">
                               <MapPin size={10} /> {job.location}
                             </span>
-                            <span className="px-3.5 py-1.5 rounded-full bg-gray-50 text-gray-500 text-[10px] font-black uppercase tracking-wider border border-gray-200/50 flex items-center gap-1">
+                            <span className="px-3.5 py-1.5 rounded-full bg-gray-50 dark:bg-neutral-800 text-gray-500 dark:text-gray-300 text-[10px] font-black uppercase tracking-wider border border-gray-200/50 dark:border-neutral-700 flex items-center gap-1">
                               <Clock size={10} /> {job.employmentType}
                             </span>
                           </div>
 
-                          <h3 className="text-2xl md:text-3xl font-black text-brand-dark leading-tight group-hover:text-brand-red transition-colors duration-300">
+                          <h3 className="text-2xl md:text-3xl font-black text-brand-dark dark:text-white leading-tight group-hover:text-brand-red transition-colors duration-300">
                             {job.title}
                           </h3>
 
                           <div className="flex flex-wrap gap-x-8 gap-y-2 text-xs font-bold text-gray-400">
-                            <p>Experience: <span className="text-gray-600 font-extrabold">{job.experience}</span></p>
-                            {job.salary && <p>Salary: <span className="text-gray-600 font-extrabold">{job.salary}</span></p>}
+                            <p>Experience: <span className="text-gray-600 dark:text-gray-300 font-extrabold">{job.experience}</span></p>
+                            {job.salary && <p>Salary: <span className="text-gray-600 dark:text-gray-300 font-extrabold">{job.salary}</span></p>}
                           </div>
 
                            <div className="pt-2">
                             <p 
-                              className={`text-gray-500 text-sm font-medium leading-relaxed whitespace-pre-wrap ${
+                              className={`text-gray-500 dark:text-gray-300 text-sm font-medium leading-relaxed whitespace-pre-wrap ${
                                 expandedJobIds[job.id] ? '' : 'line-clamp-2 md:line-clamp-3'
                               }`}
                             >
@@ -556,7 +556,7 @@ export default function CareerPage() {
                         <div className="flex items-center shrink-0">
                           <button
                             onClick={() => handleApplyClick(job.title)}
-                            className="w-full md:w-auto bg-brand-dark hover:bg-brand-red text-white font-black px-10 py-5 rounded-2xl text-xs uppercase tracking-widest transition-all hover:shadow-[0_10px_25px_rgba(237,28,36,0.22)] active:scale-95 shrink-0 cursor-pointer"
+                            className="w-full md:w-auto bg-brand-dark dark:bg-brand-red hover:bg-brand-red dark:hover:bg-brand-red-hover text-white font-black px-10 py-5 rounded-2xl text-xs uppercase tracking-widest transition-all hover:shadow-[0_10px_25px_rgba(237,28,36,0.22)] active:scale-95 shrink-0 cursor-pointer"
                           >
                             Apply Now
                           </button>
@@ -573,14 +573,14 @@ export default function CareerPage() {
       </section>
 
       {/* 4. Employee Benefits */}
-      <section className="py-24 md:py-32 bg-[#fafafa]">
+      <section className="py-24 md:py-32 bg-[#fafafa] dark:bg-brand-dark transition-colors duration-300">
         <div className="container mx-auto px-6 md:px-12 lg:px-24 xl:px-32">
 
           <div className="max-w-3xl mb-20">
-            <h2 className="text-4xl md:text-5xl font-black text-brand-dark mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white mb-6 tracking-tight">
               Employee Benefits
             </h2>
-            <p className="text-gray-500 text-lg font-medium">
+            <p className="text-gray-500 dark:text-gray-300 text-lg font-medium">
               We look after our crew so they can focus on delivering professional excellence.
             </p>
           </div>
@@ -597,15 +597,15 @@ export default function CareerPage() {
                 key={b.title}
                 variants={itemVariants}
                 whileHover={{ y: -6, boxShadow: '0 25px 50px rgba(0,0,0,0.05)' }}
-                className="bg-white p-8 md:p-10 rounded-[32px] border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                className="bg-white dark:bg-neutral-900 p-8 md:p-10 rounded-[32px] border border-gray-100 dark:border-neutral-800 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
               >
                 <div className="w-12 h-12 bg-brand-red/5 text-brand-red rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-red group-hover:text-white transition-all duration-500">
                   <b.icon size={22} className="transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6" />
                 </div>
-                <h4 className="text-lg font-black text-brand-dark mb-3 group-hover:text-brand-red transition-colors duration-300">
+                <h4 className="text-lg font-black text-brand-dark dark:text-white mb-3 group-hover:text-brand-red transition-colors duration-300">
                   {b.title}
                 </h4>
-                <p className="text-gray-500 text-xs font-medium leading-relaxed">
+                <p className="text-gray-500 dark:text-gray-400 text-xs font-medium leading-relaxed">
                   {b.desc}
                 </p>
               </motion.div>
@@ -616,16 +616,16 @@ export default function CareerPage() {
       </section>
 
       {/* 5. Application Form */}
-      <section ref={formSectionRef} className="py-24 md:py-32 bg-white">
+      <section ref={formSectionRef} className="py-24 md:py-32 bg-white dark:bg-brand-dark transition-colors duration-300">
         <div className="container mx-auto px-6 md:px-12 lg:px-24 xl:px-32 max-w-4xl">
 
-          <div className="bg-white p-8 md:p-16 rounded-[48px] shadow-[0_50px_100px_rgba(0,0,0,0.06)] border border-gray-100">
+          <div className="bg-white dark:bg-neutral-900 p-8 md:p-16 rounded-[48px] shadow-[0_50px_100px_rgba(0,0,0,0.06)] border border-gray-100 dark:border-neutral-800">
             <div className="flex items-center gap-4 mb-12">
               <div className="w-14 h-14 bg-brand-red rounded-2xl flex items-center justify-center text-white shadow-lg shadow-brand-red/20 shrink-0">
                 <Briefcase size={28} />
               </div>
               <div>
-                <h2 className="text-3xl font-black text-brand-dark">Apply Online</h2>
+                <h2 className="text-3xl font-black text-brand-dark dark:text-white">Apply Online</h2>
                 <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Ready to innovate? Complete the form below.</p>
               </div>
             </div>
@@ -661,7 +661,7 @@ export default function CareerPage() {
                         name="name"
                         type="text"
                         placeholder="Enter your name"
-                        className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
+                        className="w-full bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red outline-none transition-all"
                         required
                       />
                     </div>
@@ -671,7 +671,7 @@ export default function CareerPage() {
                         name="email"
                         type="email"
                         placeholder="name@gmail.com"
-                        className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
+                        className="w-full bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red outline-none transition-all"
                         required
                       />
                     </div>
@@ -684,7 +684,7 @@ export default function CareerPage() {
                         name="phone"
                         type="tel"
                         placeholder="+91 XXXXX XXXXX"
-                        className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
+                        className="w-full bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red outline-none transition-all"
                         required
                       />
                     </div>
@@ -697,7 +697,7 @@ export default function CareerPage() {
                             type="text"
                             value={selectedFormDept}
                             disabled
-                            className="w-full bg-gray-100 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark select-none"
+                            className="w-full bg-gray-100 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white select-none"
                           />
                           <button
                             type="button"
@@ -718,7 +718,7 @@ export default function CareerPage() {
                             setSelectedFormDept(e.target.value);
                             setSelectedPosition('');
                           }}
-                          className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all appearance-none cursor-pointer"
+                          className="w-full bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red outline-none transition-all appearance-none cursor-pointer"
                           required
                         >
                           <option value="">Select Department</option>
@@ -741,7 +741,7 @@ export default function CareerPage() {
                             type="text"
                             value={selectedPosition}
                             disabled
-                            className="w-full bg-gray-100 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark select-none"
+                            className="w-full bg-gray-100 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white select-none"
                           />
                           <button
                             type="button"
@@ -754,7 +754,7 @@ export default function CareerPage() {
                       ) : (
                         <select
                           name="position"
-                          className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all appearance-none cursor-pointer"
+                          className="w-full bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red outline-none transition-all appearance-none cursor-pointer"
                           required
                         >
                           <option value="">Select Position</option>
@@ -774,7 +774,7 @@ export default function CareerPage() {
                         name="experience"
                         type="text"
                         placeholder="e.g. 2.5 Years / Fresher"
-                        className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
+                        className="w-full bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red outline-none transition-all"
                         required
                       />
                     </div>
@@ -787,7 +787,7 @@ export default function CareerPage() {
                         name="currentCTC"
                         type="text"
                         placeholder="e.g. ₹4,00,000 / Nil"
-                        className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
+                        className="w-full bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red outline-none transition-all"
                         required
                       />
                     </div>
@@ -797,7 +797,7 @@ export default function CareerPage() {
                         name="expectedCTC"
                         type="text"
                         placeholder="e.g. ₹6,00,000"
-                        className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
+                        className="w-full bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red outline-none transition-all"
                         required
                       />
                     </div>

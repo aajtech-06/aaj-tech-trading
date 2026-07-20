@@ -57,15 +57,15 @@ const ProductSpecifications: React.FC<ProductSpecificationsProps> = ({ specifica
   };
 
   return (
-    <div className="bg-white rounded-[40px] shadow-sm border border-gray-100 overflow-hidden">
-      <div className="bg-brand-light p-8 md:px-12 md:py-10 border-b border-gray-100 flex items-center justify-between">
+    <div className="bg-white dark:bg-neutral-900 rounded-[40px] shadow-sm border border-gray-100 dark:border-neutral-800 overflow-hidden">
+      <div className="bg-brand-light dark:bg-neutral-800/80 p-8 md:px-12 md:py-10 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-brand-red rounded-2xl flex items-center justify-center text-white shadow-lg shadow-brand-red/20">
             <Settings size={24} />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-brand-dark">Technical Specifications</h2>
-            <p className="text-gray-500 text-sm font-medium">Detailed parameters and performance data</p>
+            <h2 className="text-2xl font-bold text-brand-dark dark:text-white">Technical Specifications</h2>
+            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Detailed parameters and performance data</p>
           </div>
         </div>
         <span className="hidden md:inline-block bg-brand-red/10 text-brand-red text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full">
@@ -83,15 +83,15 @@ const ProductSpecifications: React.FC<ProductSpecificationsProps> = ({ specifica
             return (
               <div 
                 key={key} 
-                className="group flex justify-between items-center py-4 border-b border-gray-50 hover:bg-gray-50/50 px-2 rounded-xl transition-colors"
+                className="group flex justify-between items-center py-4 border-b border-gray-50 dark:border-neutral-800 hover:bg-gray-50/50 dark:hover:bg-neutral-800/50 px-2 rounded-xl transition-colors"
               >
                 <div className="flex items-center gap-3">
                   {icon && <span className="shrink-0">{icon}</span>}
-                  <span className="text-gray-500 font-semibold text-xs uppercase tracking-wider group-hover:text-brand-dark transition-colors">
+                  <span className="text-gray-500 dark:text-gray-400 font-semibold text-xs uppercase tracking-wider group-hover:text-brand-dark dark:group-hover:text-white transition-colors">
                     {label}
                   </span>
                 </div>
-                <span className={`text-right font-bold ${isImportant ? 'text-brand-red' : 'text-brand-dark'}`}>
+                <span className={`text-right font-bold ${isImportant ? 'text-brand-red' : 'text-brand-dark dark:text-white'}`}>
                   {String(value)}
                 </span>
               </div>

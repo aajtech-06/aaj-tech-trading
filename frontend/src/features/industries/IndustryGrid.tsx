@@ -8,13 +8,13 @@ import { Reveal } from '@/components/common/Reveal';
 
 const IndustryGrid = () => {
   return (
-    <section id="industries" className="py-32 bg-brand-light relative overflow-hidden">
+    <section id="industries" className="py-32 bg-brand-light dark:bg-brand-dark/95 relative overflow-hidden transition-colors duration-300">
       {/* Background Decorative Lines */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
         {[...Array(10)].map((_, i) => (
           <div 
             key={i} 
-            className="absolute bg-brand-dark" 
+            className="absolute bg-brand-dark dark:bg-white" 
             style={{ 
               left: `${i * 10}%`, 
               width: '1px', 
@@ -31,7 +31,7 @@ const IndustryGrid = () => {
             <span className="text-brand-red font-black tracking-[0.3em] uppercase text-xs mb-6 block">Our Impact</span>
           </Reveal>
           <Reveal direction="up" delay={0.2}>
-            <h2 className="text-5xl md:text-6xl font-black text-brand-dark mb-8">
+            <h2 className="text-5xl md:text-6xl font-black text-brand-dark dark:text-white mb-8">
               Industries We <span className="text-brand-red">Serve</span>
             </h2>
           </Reveal>

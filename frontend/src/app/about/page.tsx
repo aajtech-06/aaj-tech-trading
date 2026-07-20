@@ -52,7 +52,7 @@ const AboutPage = () => {
 
 
   return (
-    <div ref={containerRef} className="bg-white selection:bg-brand-red/20 overflow-x-hidden">
+    <div ref={containerRef} className="bg-white dark:bg-brand-dark text-brand-dark dark:text-gray-100 selection:bg-brand-red/20 overflow-x-hidden transition-colors duration-300">
       {/* Immersive Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <motion.div style={{ scale }} className="absolute inset-0 z-0">
@@ -63,7 +63,7 @@ const AboutPage = () => {
             className="object-cover brightness-[0.4]"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/40 via-transparent to-white" />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/40 via-transparent to-white dark:to-brand-dark" />
         </motion.div>
 
         {/* Floating Hexagons */}
@@ -123,7 +123,7 @@ const AboutPage = () => {
 
       {/* Welcome Section - Glassmorphism */}
       <section className="relative py-32 container mx-auto px-4 -mt-20 z-20">
-        <div className="bg-white/80 backdrop-blur-3xl rounded-[4rem] border border-gray-100 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] p-12 md:p-24 overflow-hidden relative">
+        <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-3xl rounded-[4rem] border border-gray-100 dark:border-neutral-800 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] p-12 md:p-24 overflow-hidden relative transition-colors duration-300">
           <div className="absolute top-0 right-0 w-64 h-64 bg-brand-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
@@ -134,23 +134,23 @@ const AboutPage = () => {
                   The AJT Advantage
                 </span>
               </div>
-              <h2 className="text-5xl md:text-7xl font-black text-brand-dark mb-10 leading-[0.9] tracking-tighter">
+              <h2 className="text-5xl md:text-7xl font-black text-brand-dark dark:text-white mb-10 leading-[0.9] tracking-tighter">
                 Bridging the Gap in <span className="text-brand-red">Technology</span>
               </h2>
-              <div className="space-y-8 text-gray-500 text-lg leading-relaxed font-medium">
+              <div className="space-y-8 text-gray-500 dark:text-gray-300 text-lg leading-relaxed font-medium">
                 <p>
-                  A quality-focused business, <span className="text-brand-dark font-black">Aaj Tech Trading Corporation</span> has built a remarkable reputation for providing electronic components & Cables in competitive marketplaces since 2006.
+                  A quality-focused business, <span className="text-brand-dark dark:text-white font-black">Aaj Tech Trading Corporation</span> has built a remarkable reputation for providing electronic components & Cables in competitive marketplaces since 2006.
                 </p>
-                <p className="bg-brand-light/50 p-8 rounded-3xl border-l-8 border-brand-red italic text-brand-dark/80 shadow-inner">
+                <p className="bg-brand-light/50 dark:bg-neutral-800/50 p-8 rounded-3xl border-l-8 border-brand-red italic text-brand-dark/80 dark:text-gray-200 shadow-inner">
                   &quot;Our selection is of the highest calibre and complies with all relevant national and international quality norms like UL CE RoHS.&quot;
                 </p>
                 <div className="grid grid-cols-2 gap-8 pt-8">
                   <div className="group">
-                    <div className="text-5xl font-black text-brand-dark mb-2 group-hover:text-brand-red transition-colors">18+</div>
+                    <div className="text-5xl font-black text-brand-dark dark:text-white mb-2 group-hover:text-brand-red transition-colors">18+</div>
                     <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Years Industry Expertise</div>
                   </div>
                   <div className="group">
-                    <div className="text-5xl font-black text-brand-dark mb-2 group-hover:text-brand-red transition-colors">5000+</div>
+                    <div className="text-5xl font-black text-brand-dark dark:text-white mb-2 group-hover:text-brand-red transition-colors">5000+</div>
                     <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Successful Shipments</div>
                   </div>
                 </div>
@@ -200,11 +200,11 @@ const AboutPage = () => {
       </section>
 
       {/* Expertise - Modern Cards */}
-      <section className="py-32 bg-gray-50 relative overflow-hidden">
+      <section className="py-32 bg-gray-50 dark:bg-brand-dark relative overflow-hidden transition-colors duration-300">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(#d2232a 0.5px, transparent 0.5px)", backgroundSize: "30px 30px" }} />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-6xl font-black text-brand-dark tracking-tighter uppercase mb-6">Expertise <span className="text-brand-red">&</span> Domains</h2>
+            <h2 className="text-4xl md:text-6xl font-black text-brand-dark dark:text-white tracking-tighter uppercase mb-6">Expertise <span className="text-brand-red">&</span> Domains</h2>
             <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Innovation in every connection</p>
           </div>
 
@@ -302,11 +302,11 @@ const AboutPage = () => {
       </section>
 
       {/* Consumer Benefits - Minimalist Premium */}
-      <section className="py-32 bg-white">
+      <section className="py-32 bg-white dark:bg-brand-dark transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-24 items-center">
             <motion.div {...fadeInUp} className="flex-1">
-              <h2 className="text-6xl font-black text-brand-dark mb-16 tracking-tighter leading-none">
+              <h2 className="text-6xl font-black text-brand-dark dark:text-white mb-16 tracking-tighter leading-none">
                 TO BENEFIT OUR <br />
                 <span className="text-brand-red">CONSUMERS BY</span> PROVIDING
               </h2>
@@ -329,8 +329,8 @@ const AboutPage = () => {
                     className="flex items-center gap-6 group cursor-default"
                   >
                     <div className="text-brand-red font-black text-xl group-hover:translate-x-2 transition-transform">0{idx + 1}</div>
-                    <div className="h-[1px] w-8 bg-gray-200 group-hover:w-16 group-hover:bg-brand-red transition-all" />
-                    <span className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] group-hover:text-brand-red transition-colors">{benefit}</span>
+                    <div className="h-[1px] w-8 bg-gray-200 dark:bg-neutral-800 group-hover:w-16 group-hover:bg-brand-red transition-all" />
+                    <span className="text-sm font-black text-brand-dark dark:text-gray-200 uppercase tracking-[0.2em] group-hover:text-brand-red transition-colors">{benefit}</span>
                   </motion.div>
                 ))}
               </div>

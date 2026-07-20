@@ -46,7 +46,7 @@ const EVCatalogPage = () => {
   }, []);
 
   return (
-    <div className="bg-white min-h-screen selection:bg-brand-red/20 overflow-x-hidden pt-20">
+    <div className="bg-white dark:bg-brand-dark text-brand-dark dark:text-gray-100 min-h-screen selection:bg-brand-red/20 overflow-x-hidden pt-20 transition-colors duration-300">
       {/* Header Section */}
       <section className="relative py-24 bg-brand-dark overflow-hidden">
         <div className="absolute inset-0 opacity-20">

@@ -24,7 +24,7 @@ const HeroSlider = () => {
   }, []);
 
   return (
-    <section className="relative w-full h-[400px] sm:h-[450px] md:h-[500px] lg:h-[600px] xl:h-[650px] overflow-hidden bg-white mt-[80px]">
+    <section className="relative w-full h-[400px] sm:h-[450px] md:h-[500px] lg:h-[600px] xl:h-[650px] overflow-hidden bg-white dark:bg-brand-dark mt-[80px] transition-colors duration-300">
       <motion.div 
         style={{ scale, opacity, y }}
         className="absolute inset-0 z-0"

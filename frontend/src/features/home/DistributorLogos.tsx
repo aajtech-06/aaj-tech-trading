@@ -14,7 +14,7 @@ const logos = [
 
 const DistributorLogos = () => {
   return (
-    <section className="py-20 bg-white overflow-hidden">
+    <section className="py-20 bg-white dark:bg-brand-dark overflow-hidden transition-colors duration-300">
       <div className="container mx-auto px-4 mb-12 text-center">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -45,7 +45,7 @@ const DistributorLogos = () => {
           {[...logos, ...logos, ...logos].map((logo, index) => (
             <div
               key={index}
-              className="flex flex-col items-center justify-center min-w-[250px] h-32 px-8 border border-gray-100 rounded-2xl hover:shadow-2xl transition-all hover:border-[#D2232A] bg-white group/logo"
+              className="flex flex-col items-center justify-center min-w-[250px] h-32 px-8 border border-gray-100 dark:border-neutral-800 rounded-2xl hover:shadow-2xl transition-all hover:border-[#D2232A] bg-white dark:bg-neutral-900 group/logo"
             >
               <div className="flex flex-col items-center">
                 <span
@@ -63,8 +63,8 @@ const DistributorLogos = () => {
         </motion.div>
 
         {/* Gradients to fade edges */}
-        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
-        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white dark:from-brand-dark to-transparent z-10"></div>
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white dark:from-brand-dark to-transparent z-10"></div>
       </div>
     </section>
   );

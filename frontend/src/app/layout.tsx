@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} scroll-smooth`}>
-      <body className="font-sans antialiased bg-white text-brand-dark min-h-screen flex flex-col">
+      <body className="font-sans antialiased bg-white dark:bg-brand-dark text-brand-dark dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300">
         <LayoutClient>
           {children}
         </LayoutClient>

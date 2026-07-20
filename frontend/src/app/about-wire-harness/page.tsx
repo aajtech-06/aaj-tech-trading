@@ -39,7 +39,7 @@ const AboutWireHarnessPage = () => {
   };
 
   return (
-    <div ref={containerRef} className="bg-white selection:bg-brand-red/20 overflow-x-hidden">
+    <div ref={containerRef} className="bg-white dark:bg-brand-dark text-brand-dark dark:text-gray-100 selection:bg-brand-red/20 overflow-x-hidden transition-colors duration-300">
       {/* Immersive Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <motion.div style={{ scale }} className="absolute inset-0 z-0">
@@ -50,7 +50,7 @@ const AboutWireHarnessPage = () => {
             className="object-cover brightness-[0.4]"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/40 via-transparent to-white" />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/40 via-transparent to-white dark:to-brand-dark" />
         </motion.div>
 
         {/* Floating Hexagons */}
@@ -109,7 +109,7 @@ const AboutWireHarnessPage = () => {
       </section>
 
       {/* Who We Are Section */}
-      <section className="relative py-24 bg-gray-50 z-20 border-b border-gray-100">
+      <section className="relative py-24 bg-gray-50 dark:bg-brand-dark transition-colors duration-300 z-20 border-b border-gray-100 dark:border-neutral-800">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
             {/* Video Side */}
@@ -120,7 +120,7 @@ const AboutWireHarnessPage = () => {
               transition={{ duration: 0.8 }}
               className="w-full lg:w-7/12 flex justify-center"
             >
-              <div className="relative w-full aspect-video rounded-[2rem] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.2)] bg-black border-4 border-white mx-auto">
+              <div className="relative w-full aspect-video rounded-[2rem] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.2)] bg-black border-4 border-white dark:border-neutral-800 mx-auto">
                 <iframe
                   className="absolute top-0 left-0 w-full h-full"
                   src="https://www.youtube.com/embed/IfsR6q2vL_s?autoplay=0&mute=1&loop=1&playlist=IfsR6q2vL_s"
@@ -140,11 +140,11 @@ const AboutWireHarnessPage = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="w-full lg:w-5/12 lg:pl-12"
             >
-              <h2 className="text-4xl md:text-5xl font-black text-brand-dark mb-8 tracking-tight">
+              <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white mb-8 tracking-tight">
                 Who We Are
               </h2>
 
-              <div className="space-y-6 text-gray-600 text-lg leading-relaxed font-medium">
+              <div className="space-y-6 text-gray-600 dark:text-gray-300 text-lg leading-relaxed font-medium">
                 <p>
                   At <span className="text-brand-red font-black">Aaj Tech Trading Corporation</span>, we specialize in the design and manufacturing of custom wire harnesses and assemblies, helping OEMs, retailers, and traders across India bring their products to market faster.
                 </p>
@@ -161,26 +161,26 @@ const AboutWireHarnessPage = () => {
       </section>
 
       {/* Content Section */}
-      <section className="relative py-24 bg-white z-20">
+      <section className="relative py-24 bg-white dark:bg-brand-dark transition-colors duration-300 z-20">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex items-center justify-center gap-6 mb-16">
-            <div className="h-[2px] w-12 md:w-24 bg-brand-dark" />
+            <div className="h-[2px] w-12 md:w-24 bg-brand-dark dark:bg-white" />
             <h2 className="text-4xl md:text-5xl font-black text-brand-red tracking-wide">Cable Harness</h2>
-            <div className="h-[2px] w-12 md:w-24 bg-brand-dark" />
+            <div className="h-[2px] w-12 md:w-24 bg-brand-dark dark:bg-white" />
           </div>
 
           <div className="flex flex-col lg:flex-row gap-16 items-center">
-            <motion.div {...fadeInUp} className="w-full lg:w-1/2 space-y-6 text-gray-700 text-lg leading-relaxed font-medium">
+            <motion.div {...fadeInUp} className="w-full lg:w-1/2 space-y-6 text-gray-700 dark:text-gray-300 text-lg leading-relaxed font-medium">
               <p>
-                <strong className="text-brand-dark font-black">Wire Harness-</strong> Aaj Tech Trading Corporation has extensive expertise producing cable and wire assemblies based on the unique needs of the customers. We manufacture custom cable harnesses as well as cable harnesses for the commercial, military, and aerospace applications, ranging from straightforward point-to-point to intricate multiple branch harnesses.
+                <strong className="text-brand-dark dark:text-white font-black">Wire Harness-</strong> Aaj Tech Trading Corporation has extensive expertise producing cable and wire assemblies based on the unique needs of the customers. We manufacture custom cable harnesses as well as cable harnesses for the commercial, military, and aerospace applications, ranging from straightforward point-to-point to intricate multiple branch harnesses.
               </p>
 
               <p>
                 By creating specialised and/or repeated harnesses for systems, we can assist in shortening the schedule of your project. Our engineering staff can help you create the most effective harness to fit your needs since they are skilled in harness design and fabrication.
               </p>
 
-              <div className="pl-6 py-2 border-l-4 border-brand-red/20 my-6 bg-brand-light/30 rounded-r-xl">
-                <ul className="space-y-3 font-bold text-brand-dark">
+              <div className="pl-6 py-2 border-l-4 border-brand-red/20 my-6 bg-brand-light/30 dark:bg-neutral-900/60 rounded-r-xl">
+                <ul className="space-y-3 font-bold text-brand-dark dark:text-white">
                   <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-brand-red"></div> Wire to Board & Wire to Wire Connectors Cable Assembly</li>
                   <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-brand-red"></div> Flat Cable Assemblies</li>
                   <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-brand-red"></div> RF Cable Assemblies</li>
@@ -217,9 +217,9 @@ const AboutWireHarnessPage = () => {
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-brand-dark/10 group-hover:bg-transparent transition-colors duration-500" />
-                <div className="absolute bottom-8 left-8 right-8 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                  <h3 className="text-xl font-black text-brand-dark mb-2">Precision Engineered</h3>
-                  <p className="text-sm font-medium text-gray-600">High-quality custom cable and wire assemblies for diverse industrial applications.</p>
+                <div className="absolute bottom-8 left-8 right-8 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md p-6 rounded-2xl shadow-xl transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                  <h3 className="text-xl font-black text-brand-dark dark:text-white mb-2">Precision Engineered</h3>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">High-quality custom cable and wire assemblies for diverse industrial applications.</p>
                 </div>
               </div>
             </motion.div>
@@ -228,14 +228,14 @@ const AboutWireHarnessPage = () => {
       </section>
 
       {/* Aaj Tech Advantage Section */}
-      <section className="relative py-24 bg-white z-20 border-y border-gray-100">
+      <section className="relative py-24 bg-white dark:bg-brand-dark transition-colors duration-300 z-20 border-y border-gray-100 dark:border-neutral-800">
         <div className="container mx-auto px-4">
           <motion.div {...fadeInUp}>
-            <h2 className="text-4xl md:text-5xl font-black text-brand-dark text-center mb-16 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white text-center mb-16 tracking-tight">
               Aaj Tech Advantage
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-100 border-y border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-100 dark:bg-neutral-800 border-y border-gray-100 dark:border-neutral-800">
               {[
                 {
                   title: "Customization at Every Step",
@@ -268,12 +268,12 @@ const AboutWireHarnessPage = () => {
                   icon: CheckCircle2
                 }
               ].map((item, idx) => (
-                <div key={idx} className="flex flex-col items-center text-center p-8 bg-white hover:bg-brand-light/30 transition-colors">
-                  <div className="w-16 h-16 rounded-full bg-brand-light flex items-center justify-center text-brand-red mb-6">
+                <div key={idx} className="flex flex-col items-center text-center p-8 bg-white dark:bg-neutral-900 hover:bg-brand-light/30 dark:hover:bg-neutral-800/50 transition-colors">
+                  <div className="w-16 h-16 rounded-full bg-brand-light dark:bg-neutral-800 flex items-center justify-center text-brand-red mb-6">
                     <item.icon size={32} strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-lg font-black text-brand-dark mb-4 tracking-wide">{item.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed font-medium">
+                  <h3 className="text-lg font-black text-brand-dark dark:text-white mb-4 tracking-wide">{item.title}</h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed font-medium">
                     {item.desc}
                   </p>
                 </div>
@@ -284,10 +284,10 @@ const AboutWireHarnessPage = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="relative py-20 bg-white z-20 mb-10">
+      <section className="relative py-20 bg-white dark:bg-brand-dark transition-colors duration-300 z-20 mb-10">
         <div className="container mx-auto px-4 max-w-5xl">
           <motion.div {...fadeInUp}>
-            <h2 className="text-3xl md:text-4xl font-black text-brand-dark text-center mb-12 tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-brand-dark dark:text-white text-center mb-12 tracking-tight">
               How It Works
             </h2>
 

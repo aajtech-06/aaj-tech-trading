@@ -75,14 +75,14 @@ const BlogSection = () => {
   if (blogs.length === 0) return null;
 
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section className="py-24 bg-white dark:bg-brand-dark overflow-hidden transition-colors duration-300">
       <div className="px-4 md:px-12 lg:px-24 xl:px-32">
         <div className="relative mb-20">
           <div className="text-center">
             <Reveal direction="up">
               <div>
                 <span className="text-brand-red font-black uppercase tracking-[0.3em] text-sm mb-4 block">Latest Insights</span>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-dark leading-tight tracking-tighter mx-auto max-w-4xl">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-dark dark:text-white leading-tight tracking-tighter mx-auto max-w-4xl">
                   Technical <span className="text-brand-red">Knowledge</span> & <br className="hidden md:block" />
                   Industry Updates
                 </h2>
@@ -94,7 +94,7 @@ const BlogSection = () => {
             <Reveal direction="right" delay={0.4}>
               <Link
                 href="/blog"
-                className="group flex items-center gap-2 text-brand-dark hover:text-brand-red transition-all duration-300 font-black uppercase text-xs tracking-widest border-b-2 border-transparent hover:border-brand-red pb-1"
+                className="group flex items-center gap-2 text-brand-dark dark:text-gray-300 hover:text-brand-red dark:hover:text-brand-red transition-all duration-300 font-black uppercase text-xs tracking-widest border-b-2 border-transparent hover:border-brand-red pb-1"
               >
                 View All Articles
                 <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
@@ -109,13 +109,13 @@ const BlogSection = () => {
             <>
               <button
                 onClick={prevSlide}
-                className="absolute -left-4 md:-left-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white rounded-full shadow-2xl flex items-center justify-center text-brand-dark hover:bg-brand-red hover:text-white transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 border border-gray-100"
+                className="absolute -left-4 md:-left-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
               >
                 <ChevronLeft size={24} />
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute -right-4 md:-right-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white rounded-full shadow-2xl flex items-center justify-center text-brand-dark hover:bg-brand-red hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 border border-gray-100"
+                className="absolute -right-4 md:-right-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
               >
                 <ChevronRight size={24} />
               </button>
@@ -138,7 +138,7 @@ const BlogSection = () => {
                   <Link href={`/blog/${post.id}`}>
                     <motion.div
                       whileHover={{ y: -15 }}
-                      className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden group/card shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] transition-all duration-700 h-full flex flex-col"
+                      className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 overflow-hidden group/card shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] transition-all duration-700 h-full flex flex-col"
                     >
                       <div className="relative h-64 overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -148,7 +148,7 @@ const BlogSection = () => {
                           className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-1000"
                         />
                         <div className="absolute top-6 left-6">
-                          <span className="bg-white/90 backdrop-blur-md text-brand-red px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
+                          <span className="bg-white/90 dark:bg-neutral-800/90 backdrop-blur-md text-brand-red px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
                             {post.category || 'Industry'}
                           </span>
                         </div>
@@ -156,26 +156,26 @@ const BlogSection = () => {
 
                       <div className="p-8 flex flex-col flex-grow">
                         <div className="flex items-center gap-4 mb-4">
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                          <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                             <Calendar size={12} className="text-brand-red" />
                             {post.date || 'April 2024'}
                           </div>
-                          <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                          <div className="w-1 h-1 bg-gray-200 dark:bg-neutral-700 rounded-full"></div>
                           <div className="text-[10px] font-bold text-brand-red uppercase tracking-widest">
                             {post.read_time || '5 Min Read'}
                           </div>
                         </div>
 
-                        <h3 className="text-2xl font-black text-brand-dark mb-4 group-hover/card:text-brand-red transition-colors duration-300 leading-tight">
+                        <h3 className="text-2xl font-black text-brand-dark dark:text-white mb-4 group-hover/card:text-brand-red transition-colors duration-300 leading-tight">
                           {post.title}
                         </h3>
 
-                        <p className="text-gray-500 text-sm leading-relaxed mb-8 line-clamp-3">
+                        <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-8 line-clamp-3">
                           {post.excerpt}
                         </p>
 
-                        <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-brand-dark group-hover/card:text-brand-red transition-colors flex items-center gap-2">
+                        <div className="mt-auto pt-6 border-t border-gray-50 dark:border-neutral-800 flex items-center justify-between">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-brand-dark dark:text-white group-hover/card:text-brand-red transition-colors flex items-center gap-2">
                             Read More <ArrowRight size={14} />
                           </span>
                         </div>

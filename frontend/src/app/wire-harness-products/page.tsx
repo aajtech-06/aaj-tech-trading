@@ -58,7 +58,7 @@ const WireHarnessProductsContent = () => {
   } as const;
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white dark:bg-brand-dark min-h-screen transition-colors duration-300">
       {/* Banner Section */}
       <section className="relative bg-brand-red pt-40 pb-24 overflow-hidden mt-16 lg:mt-0">
         <div className="absolute right-0 top-0 bottom-0 w-full md:w-1/2 opacity-30 pointer-events-none">
@@ -89,20 +89,20 @@ const WireHarnessProductsContent = () => {
       </section>
 
       {/* Solutions Section */}
-      <section className="relative py-24 bg-white z-20">
+      <section className="relative py-24 bg-white dark:bg-brand-dark z-20 transition-colors duration-300">
         <div className="container mx-auto px-4 max-w-7xl">
           <motion.div {...fadeInUp} className="mb-12 md:mb-20">
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-brand-dark mb-6 md:mb-8 tracking-tight">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-brand-dark dark:text-white mb-6 md:mb-8 tracking-tight">
               Wire Harness Solutions You Can Trust
             </h2>
-            <div className="space-y-6 text-gray-600 text-base sm:text-xl leading-relaxed font-medium max-w-5xl">
+            <div className="space-y-6 text-gray-600 dark:text-gray-300 text-base sm:text-xl leading-relaxed font-medium max-w-5xl">
               <p>
                 At <span className="text-brand-red font-black">Aaj Tech Trading Corporation</span>, we understand that every client has unique wire requirements. Therefore, every wire harness solution we offer is tailored to meet your exact technical specifications, connector configurations, and environmental conditions.
               </p>
               <p>
                 Whether you need high-performance signal transmission, power delivery, or specialized shielding, our flexible approach and in-house engineering support ensure your assemblies are built for durability, precision, and compliance — every time.
               </p>
-              <p className="text-brand-dark font-bold pt-4">
+              <p className="text-brand-dark dark:text-white font-bold pt-4">
                 We offer a range of specialized categories of wire harnesses to support diverse industries and functions:
               </p>
             </div>
@@ -110,16 +110,16 @@ const WireHarnessProductsContent = () => {
 
           {/* Search Result Banner */}
           {searchQuery && (
-            <div className="mb-12 flex items-center justify-between bg-brand-light p-6 rounded-3xl border border-brand-red/10 shadow-sm animate-fade-in">
+            <div className="mb-12 flex items-center justify-between bg-brand-light dark:bg-neutral-900 p-6 rounded-3xl border border-brand-red/10 shadow-sm animate-fade-in">
               <div className="flex items-center gap-3">
                 <Search size={20} className="text-brand-red" />
-                <p className="text-gray-700 font-medium text-lg">
+                <p className="text-gray-700 dark:text-gray-300 font-medium text-lg">
                   Showing results for &quot;<span className="font-black text-brand-red">{searchQuery}</span>&quot; ({filteredProducts.length} items found)
                 </p>
               </div>
               <button
                 onClick={() => router.push('/wire-harness-products')}
-                className="flex items-center gap-2 bg-white hover:bg-brand-red hover:text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all border border-gray-100 shadow-sm text-gray-600 uppercase tracking-wider cursor-pointer"
+                className="flex items-center gap-2 bg-white dark:bg-neutral-800 hover:bg-brand-red hover:text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all border border-gray-100 dark:border-neutral-700 shadow-sm text-gray-600 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
               >
                 Clear Search
                 <X size={16} />
@@ -132,8 +132,8 @@ const WireHarnessProductsContent = () => {
               <div className="w-12 h-12 border-4 border-brand-red border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-20 bg-gray-50 rounded-[40px]">
-              <h3 className="text-2xl font-black text-brand-dark mb-4">No products found</h3>
+            <div className="text-center py-20 bg-gray-50 dark:bg-neutral-900 rounded-[40px]">
+              <h3 className="text-2xl font-black text-brand-dark dark:text-white mb-4">No products found</h3>
               <p className="text-gray-400">Please check back later or try adjusting your search.</p>
             </div>
           ) : (
@@ -147,13 +147,13 @@ const WireHarnessProductsContent = () => {
                     transition={{ duration: 0.8 }}
                     className="w-full lg:w-1/2"
                   >
-                    <div className="relative aspect-square w-full rounded-[2.5rem] overflow-hidden bg-[#f4f4f4] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 group cursor-pointer">
+                    <div className="relative aspect-square w-full rounded-[2.5rem] overflow-hidden bg-[#f4f4f4] dark:bg-neutral-900 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 dark:border-neutral-800 group cursor-pointer">
                       <Image
                         src={product.image?.startsWith('http') ? product.image : (product.image?.startsWith('/uploads/') ? `https://aajtechtrading.in${product.image}` : (product.image || "/Wire to board Assemblies.webp"))}
                         alt={product.title}
                         fill
                         unoptimized
-                        className="object-contain p-8 mix-blend-multiply group-hover:scale-105 transition-transform duration-700"
+                        className="object-contain p-8 mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-700"
                         sizes="(max-width: 768px) 100vw, 50vw"
                       />
 
@@ -174,29 +174,29 @@ const WireHarnessProductsContent = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="w-full lg:w-1/2 space-y-4 md:space-y-8 text-gray-700 text-base md:text-lg"
+                    className="w-full lg:w-1/2 space-y-4 md:space-y-8 text-gray-700 dark:text-gray-300 text-base md:text-lg"
                   >
-                    <h3 className="text-2xl md:text-4xl font-black text-brand-dark mb-4 md:mb-8">{product.title}</h3>
+                    <h3 className="text-2xl md:text-4xl font-black text-brand-dark dark:text-white mb-4 md:mb-8">{product.title}</h3>
 
                     <div className="space-y-4 md:space-y-6">
                       {product.applications && (
                         <div>
-                          <strong className="text-brand-dark font-black text-lg md:text-xl">Applications:</strong>
-                          <span className="font-medium ml-2 text-gray-600">{product.applications}</span>
+                          <strong className="text-brand-dark dark:text-white font-black text-lg md:text-xl">Applications:</strong>
+                          <span className="font-medium ml-2 text-gray-600 dark:text-gray-300">{product.applications}</span>
                         </div>
                       )}
 
                       {product.details && (
                         <div>
-                          <strong className="text-brand-dark font-black text-lg md:text-xl">Details:</strong>
-                          <span className="font-medium ml-2 text-gray-600">{product.details}</span>
+                          <strong className="text-brand-dark dark:text-white font-black text-lg md:text-xl">Details:</strong>
+                          <span className="font-medium ml-2 text-gray-600 dark:text-gray-300">{product.details}</span>
                         </div>
                       )}
 
                       {product.variants && product.variants.length > 0 && (
-                        <div className="bg-gray-50 p-4 sm:p-8 rounded-3xl shadow-sm border border-gray-100 mt-6 md:mt-8">
-                          <strong className="text-brand-dark font-black text-lg md:text-xl mb-4 md:mb-6 block">Variants:</strong>
-                          <ul className="space-y-3 md:space-y-4 font-medium text-gray-600">
+                        <div className="bg-gray-50 dark:bg-neutral-900 p-4 sm:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-neutral-800 mt-6 md:mt-8">
+                          <strong className="text-brand-dark dark:text-white font-black text-lg md:text-xl mb-4 md:mb-6 block">Variants:</strong>
+                          <ul className="space-y-3 md:space-y-4 font-medium text-gray-600 dark:text-gray-300">
                             {product.variants.map((variant: string, i: number) => (
                               <li key={i} className="flex items-start gap-4">
                                 <div className="w-2.5 h-2.5 rounded-full bg-brand-red mt-2 flex-shrink-0"></div>

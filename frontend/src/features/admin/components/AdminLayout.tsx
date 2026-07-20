@@ -17,11 +17,14 @@ import {
   Bell,
   Search,
   ChevronRight,
-  Briefcase
+  Briefcase,
+  Sun,
+  Moon
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAdminAuth } from '../hooks/useAdminAuth';
+import { useTheme } from '@/context/ThemeContext';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
@@ -132,6 +135,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
   const { logout, user } = useAdminAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -225,7 +229,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex font-sans">
+    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 flex font-sans transition-colors duration-300">
       {/* Desktop Sidebar */}
       <aside
         className={`hidden lg:flex flex-col bg-brand-dark text-white transition-all duration-300 ease-in-out border-r border-white/5 ${isSidebarOpen ? 'w-72' : 'w-20'
@@ -265,17 +269,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* Top Navbar */}
-        <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-6 sticky top-0 z-30">
+        <header className="h-20 bg-white dark:bg-brand-dark border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-6 sticky top-0 z-30">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="hidden lg:flex p-2 hover:bg-gray-50 rounded-xl text-gray-400"
+              className="hidden lg:flex p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-gray-400 dark:text-gray-300"
             >
               <Menu size={20} />
             </button>
             <button
               onClick={() => setIsMobileOpen(true)}
-              className="lg:hidden p-2 hover:bg-gray-50 rounded-xl text-gray-400"
+              className="lg:hidden p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-gray-400 dark:text-gray-300"
             >
               <Menu size={20} />
             </button>
@@ -284,7 +288,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="hidden md:flex items-center gap-2 text-sm">
               <span className="text-gray-400 font-bold">Admin</span>
               <ChevronRight size={14} className="text-gray-300" />
-              <span className="text-brand-dark font-black capitalize">
+              <span className="text-brand-dark dark:text-white font-black capitalize">
                 {pathname.split('/').pop() || 'Dashboard'}
               </span>
             </div>
@@ -296,9 +300,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <input
                 type="text"
                 placeholder="Search..."
-                className="bg-gray-50 border-none rounded-xl py-2 pl-10 pr-4 text-sm font-bold text-brand-dark focus:ring-2 focus:ring-brand-red w-64 transition-all outline-none"
+                className="bg-gray-50 dark:bg-neutral-900 border-none rounded-xl py-2 pl-10 pr-4 text-sm font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red w-64 transition-all outline-none"
               />
             </div>
+
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl text-gray-400 dark:text-gray-300 hover:text-brand-red dark:hover:text-brand-red transition-all cursor-pointer"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}
+            </button>
 
             {/* Notifications Bell Dropdown */}
             <div className="relative">

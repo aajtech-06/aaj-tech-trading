@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-brand-red: #D2232A;
   --color-brand-red-hover: #B01E24;
@@ -7,6 +9,11 @@
   --color-brand-orange-hover: #D65A10;
   --color-brand-dark: #0A0A0A;
   --color-brand-light: #F5F5F7;
+
+  --color-theme-bg: var(--background);
+  --color-theme-fg: var(--foreground);
+  --color-theme-card: var(--card);
+  --color-theme-border: var(--card-border);
 
   --font-sans: "Inter", system-ui, sans-serif;
 
@@ -43,6 +50,15 @@
 :root {
   --background: #ffffff;
   --foreground: #0A0A0A;
+  --card: #ffffff;
+  --card-border: #f3f4f6;
+}
+
+.dark {
+  --background: #0A0A0A;
+  --foreground: #f3f4f6;
+  --card: #121212;
+  --card-border: #1e1e1e;
 }
 
 body {
@@ -51,6 +67,7 @@ body {
   font-family: var(--font-sans);
   overflow-x: hidden;
   scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 @layer base {
@@ -71,13 +88,15 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--background);
+  transition: background-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #D2232A;
   border-radius: 10px;
-  border: 3px solid #f1f1f1;
+  border: 3px solid var(--background);
+  transition: border-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -90,6 +109,11 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass {
+  background: rgba(10, 10, 10, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .dark-glass {

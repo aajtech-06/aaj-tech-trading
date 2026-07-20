@@ -60,12 +60,12 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
   const finalPrice = basePrice + gstAmount;
 
   return (
-    <div className="pt-32 pb-24 bg-[#FAFAFA]">
+    <div className="pt-32 pb-24 bg-[#FAFAFA] dark:bg-brand-dark transition-colors duration-300">
       <div className="container mx-auto px-4">
         {/* Back Button */}
         <Link
           href="/products"
-          className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-brand-red mb-12 transition-colors group"
+          className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-brand-red dark:hover:text-brand-red mb-12 transition-colors group"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           Back to Products
@@ -74,7 +74,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-24 mb-24">
           {/* Product Image Section */}
           <div className="space-y-6">
-            <div className="relative h-[400px] md:h-[600px] rounded-[48px] overflow-hidden shadow-2xl shadow-gray-200/50 border border-white flex items-center justify-center bg-white p-8">
+            <div className="relative h-[400px] md:h-[600px] rounded-[48px] overflow-hidden shadow-2xl shadow-gray-200/50 border border-white dark:border-neutral-800 flex items-center justify-center bg-white dark:bg-neutral-900 p-8">
               {isValidImageUrl(product.image) ? (
                 <>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -86,7 +86,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                 </>
               ) : (
                 <div className="flex flex-col items-center gap-4">
-                  <Package size={64} className="text-gray-200" />
+                  <Package size={64} className="text-gray-200 dark:text-gray-700" />
                   <span className="text-gray-400 font-bold uppercase tracking-widest text-xs">No Image Available</span>
                 </div>
               )}
@@ -94,9 +94,9 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
 
             {/* Quick Badges */}
             <div className="flex flex-wrap gap-4">
-              <div className="bg-white px-6 py-4 rounded-3xl border border-gray-100 flex items-center gap-3 shadow-sm">
+              <div className="bg-white dark:bg-neutral-900 px-6 py-4 rounded-3xl border border-gray-100 dark:border-neutral-800 flex items-center gap-3 shadow-sm">
                 <ShieldCheck className="text-emerald-500" size={20} />
-                <span className="text-sm font-bold text-gray-700">Certified Quality</span>
+                <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Certified Quality</span>
               </div>
               <div className="bg-white px-6 py-4 rounded-3xl border border-gray-100 flex items-center gap-3 shadow-sm">
                 <Truck className="text-blue-500" size={20} />
@@ -118,51 +118,51 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
               )}
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-dark mb-6 leading-[1.1]">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-dark dark:text-white mb-6 leading-[1.1]">
               {product.name}
             </h1>
 
             {/* Availability & MOQ Badges */}
             <div className="flex flex-wrap gap-3 mb-6">
-              <div className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-2">
+              <div className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-100 dark:border-emerald-900/40 flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 In Stock
               </div>
-              <div className="bg-gray-100 text-gray-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-gray-200/50">
+              <div className="bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-gray-200/50 dark:border-neutral-700">
                 MOQ: {product.moq || '10 PCS'}
               </div>
             </div>
 
             {/* Price Box */}
-            <div className="w-full max-w-md bg-[#F4FBF7] border border-[#E6F4EA] rounded-3xl p-6 mb-10 shadow-sm">
+            <div className="w-full max-w-md bg-[#F4FBF7] dark:bg-emerald-950/20 border border-[#E6F4EA] dark:border-emerald-900/40 rounded-3xl p-6 mb-10 shadow-sm">
               <div className="flex justify-between items-center mb-3">
-                <span className="text-gray-900 font-extrabold text-base">Base Price:</span>
-                <span className="text-3xl font-black text-[#007A53]">
+                <span className="text-gray-900 dark:text-gray-100 font-extrabold text-base">Base Price:</span>
+                <span className="text-3xl font-black text-[#007A53] dark:text-emerald-400">
                   ₹{basePrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
               <div className="flex justify-between items-center mb-4">
-                <span className="text-gray-500 font-bold text-sm">GST 18%:</span>
-                <span className="text-base font-bold text-gray-700">
+                <span className="text-gray-500 dark:text-gray-400 font-bold text-sm">GST 18%:</span>
+                <span className="text-base font-bold text-gray-700 dark:text-gray-300">
                   ₹{gstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
-              <div className="border-t border-[#D0F0DB] my-4" />
+              <div className="border-t border-[#D0F0DB] dark:border-emerald-900/40 my-4" />
               <div className="flex justify-between items-center flex-wrap gap-2">
-                <span className="text-gray-700 font-bold text-sm">Final Price (Inclusive of all taxes):</span>
-                <span className="text-xl font-black text-gray-900">
+                <span className="text-gray-700 dark:text-gray-300 font-bold text-sm">Final Price (Inclusive of all taxes):</span>
+                <span className="text-xl font-black text-gray-900 dark:text-white">
                   ₹{finalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / PCS
                 </span>
               </div>
             </div>
 
-            <p className="text-gray-600 text-lg mb-12 leading-relaxed font-medium">
+            <p className="text-gray-600 dark:text-gray-300 text-lg mb-12 leading-relaxed font-medium">
               {product.description}
             </p>
 
             {/* Features List */}
             <div className="mb-12">
-              <h3 className="font-black text-brand-dark text-sm uppercase tracking-widest mb-6 flex items-center gap-2">
+              <h3 className="font-black text-brand-dark dark:text-white text-sm uppercase tracking-widest mb-6 flex items-center gap-2">
                 <span className="w-8 h-[2px] bg-brand-red" />
                 Key Features
               </h3>

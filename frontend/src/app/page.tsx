@@ -67,7 +67,7 @@ export default function Home() {
       </Reveal>
 
       {/* 6. Final Call to Action */}
-      <section className="py-20 md:py-32 bg-brand-light relative overflow-hidden">
+      <section className="py-20 md:py-32 bg-brand-light dark:bg-brand-dark relative overflow-hidden transition-colors duration-300">
         <div className="px-4 md:px-12 lg:px-24 xl:px-32 relative z-10 w-full">
           <Reveal direction="up" width="100%">
             <div className="bg-brand-dark rounded-[32px] md:rounded-[60px] p-6 sm:p-12 md:p-24 text-center relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.2)]">

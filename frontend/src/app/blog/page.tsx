@@ -48,7 +48,7 @@ export default function BlogPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#fafafa]">
+      <div className="min-h-screen flex items-center justify-center bg-[#fafafa] dark:bg-brand-dark transition-colors duration-300">
         <div className="w-12 h-12 border-4 border-brand-red border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -57,7 +57,7 @@ export default function BlogPage() {
   const blogsToRender = Array.isArray(blogs) ? blogs : [];
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[#fafafa] dark:bg-brand-dark transition-colors duration-300">
       {/* Header Banner */}
       <div className="relative w-full bg-brand-red pt-36 pb-24 overflow-hidden">
         <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[20%] opacity-20 pointer-events-none flex items-center justify-center">
@@ -94,10 +94,10 @@ export default function BlogPage() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="bg-white rounded-[2.5rem] shadow-[0_8px_40px_rgb(0,0,0,0.04)] overflow-hidden group cursor-pointer border border-gray-100 flex flex-col hover:shadow-[0_20px_60px_rgb(0,0,0,0.1)] transition-all duration-700"
+                    className="bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-[0_8px_40px_rgb(0,0,0,0.04)] overflow-hidden group cursor-pointer border border-gray-100 dark:border-neutral-800 flex flex-col hover:shadow-[0_20px_60px_rgb(0,0,0,0.1)] transition-all duration-700"
                   >
                     {/* Post Image Container */}
-                    <div className="relative w-full h-[350px] md:h-[500px] overflow-hidden bg-white p-4 md:p-8 flex items-center justify-center">
+                    <div className="relative w-full h-[350px] md:h-[500px] overflow-hidden bg-white dark:bg-neutral-900 p-4 md:p-8 flex items-center justify-center">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={post.image || 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?q=80&w=2070&auto=format&fit=crop'}
