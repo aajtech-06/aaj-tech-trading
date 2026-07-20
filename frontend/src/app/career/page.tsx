@@ -132,6 +132,16 @@ export default function CareerPage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  
+  // Track expanded job descriptions
+  const [expandedJobIds, setExpandedJobIds] = useState<Record<string, boolean>>({});
+
+  const toggleJobExpanded = (jobId: string) => {
+    setExpandedJobIds((prev) => ({
+      ...prev,
+      [jobId]: !prev[jobId],
+    }));
+  };
 
   // Department filter states
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -524,9 +534,23 @@ export default function CareerPage() {
                             {job.salary && <p>Salary: <span className="text-gray-600 font-extrabold">{job.salary}</span></p>}
                           </div>
 
-                          <p className="text-gray-500 text-sm font-medium leading-relaxed pt-2">
-                            {job.description}
-                          </p>
+                           <div className="pt-2">
+                            <p 
+                              className={`text-gray-500 text-sm font-medium leading-relaxed whitespace-pre-wrap ${
+                                expandedJobIds[job.id] ? '' : 'line-clamp-2 md:line-clamp-3'
+                              }`}
+                            >
+                              {job.description}
+                            </p>
+                            {job.description && job.description.length > 150 && (
+                              <button
+                                onClick={() => toggleJobExpanded(job.id)}
+                                className="inline-flex items-center gap-1 text-xs font-black text-brand-red hover:underline mt-2 cursor-pointer focus:outline-none"
+                              >
+                                {expandedJobIds[job.id] ? 'Hide Details' : 'View Details'}
+                              </button>
+                            )}
+                          </div>
                         </div>
 
                         <div className="flex items-center shrink-0">
