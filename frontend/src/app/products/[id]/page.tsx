@@ -185,10 +185,12 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
             {/* Actions */}
             <div className="mt-auto">
               <ProductActions
+                id={product.id}
                 price={basePrice}
                 productName={product.name}
                 productImage={product.image}
                 productCategory={categoryName}
+                moq={product.moq}
               />
             </div>
           </div>

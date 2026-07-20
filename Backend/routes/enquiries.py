@@ -20,6 +20,7 @@ class EnquiryBase(BaseModel):
     productName: Optional[str] = None
     quantity: Optional[int] = None
     totalPrice: Optional[float] = None
+    items: Optional[List[dict]] = None
     status: str = "New"
     createdAt: datetime = Field(default_factory=datetime.now)
 

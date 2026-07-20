@@ -1,263 +1,139 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingCart, User, Mail, Phone, Minus, Plus, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingCart, ShoppingBag, Minus, Plus, ArrowRight } from 'lucide-react';
+
+import { useCart } from '@/context/CartContext';
 
 interface ProductActionsProps {
+  id: string;
   price: number;
   productName: string;
   productImage?: string;
   productCategory?: string;
+  moq?: string;
 }
 
-const ProductActions = ({ price, productName, productImage, productCategory }: ProductActionsProps) => {
-  const [isBuying, setIsBuying] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  });
-
-  const total = price * quantity;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await fetch('https://aajtechtrading.in/api/enquiries/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fullName: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          inquiryType: "Product Order Inquiry",
-          message: `Inquiry for ${productName} (Quantity: ${quantity}) - Base Price: ₹${total.toLocaleString('en-IN')}, GST 18%: ₹${(total * 0.18).toLocaleString('en-IN')}, Total (Incl. GST): ₹${(total * 1.18).toLocaleString('en-IN')}`,
-          productName: productName,
-          quantity: quantity,
-          totalPrice: total * 1.18,
-        }),
-      });
-
-      if (response.ok) {
-        setSubmitted(true);
-        setTimeout(() => {
-          setIsBuying(false);
-          setSubmitted(false);
-          setQuantity(1);
-          setFormData({ name: '', email: '', phone: '' });
-        }, 3000);
-      }
-    } catch (error) {
-      console.error("Failed to submit inquiry", error);
-    } finally {
-      setLoading(false);
-    }
+const ProductActions = ({ id, price, productName, productImage, productCategory, moq }: ProductActionsProps) => {
+  const { addToCart, setIsOpen, setCheckoutStep } = useCart();
+  
+  // Parse minimum quantity from MOQ string e.g. "200 PCS" -> 200
+  const getInitialQuantity = () => {
+    if (!moq) return 1;
+    const parsed = parseInt(moq.replace(/\D/g, ''));
+    return isNaN(parsed) ? 1 : parsed;
   };
 
-  const isValidImageUrl = (url?: string) => {
-    if (!url) return false;
-    if (url.startsWith('/')) return true;
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
+  const [quantity, setQuantity] = useState(getInitialQuantity());
+
+  const total = price * quantity;
+  const gst = total * 0.18;
+  const grandTotal = total + gst;
+
+  const handleQuantityChange = (change: number) => {
+    let newQty = quantity + change;
+    const moqNumber = getInitialQuantity();
+    if (newQty < moqNumber) {
+      newQty = moqNumber;
     }
+    setQuantity(newQty);
+  };
+
+  const handleAddToCart = () => {
+    addToCart({
+      id,
+      name: productName,
+      price,
+      image: productImage || '',
+      category: productCategory || 'Connector',
+      moq: moq || '200 PCS'
+    }, quantity);
+    setCheckoutStep('cart');
+    setIsOpen(true);
+  };
+
+  const handleBuyNow = () => {
+    addToCart({
+      id,
+      name: productName,
+      price,
+      image: productImage || '',
+      category: productCategory || 'Connector',
+      moq: moq || '200 PCS'
+    }, quantity);
+    setCheckoutStep('form');
+    setIsOpen(true);
   };
 
   return (
-    <div className="mt-8">
-      <AnimatePresence mode="wait">
-        {!isBuying ? (
-          <motion.div
-            key="buy-button"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-          >
+    <div className="mt-8 space-y-6">
+      {/* Price Summary & Quantity Adjuster Grid */}
+      <div className="bg-white rounded-[30px] p-6 border border-gray-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+        {/* Quantity Controller */}
+        <div className="flex flex-col items-center sm:items-start w-full sm:w-auto">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Adjust Quantity</p>
+          <div className="flex items-center bg-gray-50 rounded-xl p-1 shadow-sm border border-gray-100">
             <button
-              onClick={() => setIsBuying(true)}
-              className="w-full bg-brand-red hover:bg-brand-red/90 text-white px-10 py-6 rounded-[30px] font-black text-xl transition-all shadow-2xl shadow-brand-red/30 active:scale-95 flex items-center justify-center gap-4 group"
+              type="button"
+              onClick={() => handleQuantityChange(-1)}
+              className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white hover:text-brand-red transition-all text-gray-400 cursor-pointer"
             >
-              <ShoppingCart size={24} className="group-hover:rotate-12 transition-transform" />
-              Buy Now / Request Quote
+              <Minus size={18} />
             </button>
-            <p className="text-center text-gray-400 font-bold mt-4 text-sm uppercase tracking-widest">
-              Instant Pricing Available
+            <span className="w-16 text-center font-black text-brand-dark text-lg">{quantity}</span>
+            <button
+              type="button"
+              onClick={() => handleQuantityChange(1)}
+              className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white hover:text-brand-red transition-all text-gray-400 cursor-pointer"
+            >
+              <Plus size={18} />
+            </button>
+          </div>
+          {moq && (
+            <p className="text-[10px] text-gray-400 mt-2 font-bold italic">
+              Minimum Order Quantity (MOQ): {moq}
             </p>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="buy-form"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white border-2 border-brand-red rounded-[40px] p-8 md:p-10 shadow-2xl relative overflow-hidden"
-          >
-            {submitted ? (
-              <div className="py-12 text-center space-y-6">
-                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto text-white">
-                  <CheckCircle2 size={40} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-black text-brand-dark">Request Sent!</h3>
-                  <p className="text-gray-500 font-bold">Our team will contact you shortly.</p>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-2xl font-black text-brand-dark">Order Inquiry</h3>
-                  <button
-                    type="button"
-                    onClick={() => setIsBuying(false)}
-                    className="text-gray-400 hover:text-brand-red font-black text-sm uppercase tracking-widest"
-                  >
-                    Cancel
-                  </button>
-                </div>
+          )}
+        </div>
 
-                <div className="bg-brand-light rounded-[24px] p-4 flex items-center gap-4 border border-brand-red/10">
-                  <div className="w-20 h-20 relative rounded-xl overflow-hidden bg-white shrink-0 border border-gray-100">
-                    {isValidImageUrl(productImage) ? (
-                      <>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={productImage}
-                          alt={productName}
-                          className="w-full h-full object-cover"
-                        />
-                      </>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                        <ShoppingCart size={20} className="text-gray-300" />
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-black text-brand-red uppercase tracking-widest block mb-1">
-                      {productCategory || 'Product Selection'}
-                    </span>
-                    <h4 className="font-extrabold text-brand-dark leading-tight line-clamp-2">
-                      {productName}
-                    </h4>
-                    <p className="text-xs font-bold text-gray-400 mt-1">
-                      Unit Price: ₹{price.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
+        {/* Live Calculation Display */}
+        <div className="text-center sm:text-right flex flex-col items-center sm:items-end gap-1 w-full sm:w-auto">
+          <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+            Base Price: <span className="font-extrabold text-gray-700">₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </div>
+          <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+            GST (18%): <span className="font-extrabold text-gray-700">₹{gst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </div>
+          <div className="w-24 border-t border-gray-200 my-1" />
+          <div>
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5 font-bold">Estimated Subtotal</p>
+            <p className="text-3xl font-black text-brand-red">₹{grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            <p className="text-[9px] font-extrabold text-emerald-600 uppercase mt-0.5 tracking-wider">Inclusive of GST</p>
+          </div>
+        </div>
+      </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
-                    <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
-                      <input
-                        type="text"
-                        required
-                        placeholder="John Doe"
-                        className="w-full bg-gray-50 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      />
-                    </div>
-                  </div>
+      {/* Buttons */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Add to Cart */}
+        <button
+          onClick={handleAddToCart}
+          className="w-full bg-brand-light hover:bg-brand-red/10 text-brand-red border border-brand-red/30 py-5 rounded-[24px] font-black text-lg transition-all active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer group"
+        >
+          <ShoppingBag size={20} className="group-hover:rotate-6 transition-transform" />
+          Add to Cart
+        </button>
 
-                  <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Work Email</label>
-                    <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
-                      <input
-                        type="email"
-                        placeholder="john@company.com"
-                        className="w-full bg-gray-50 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Phone Number</label>
-                  <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+91 00000 00000"
-                      className="w-full bg-gray-50 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 rounded-[30px] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 border border-gray-100">
-                  <div className="flex flex-col items-center sm:items-start">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Adjust Quantity</p>
-                    <div className="flex items-center bg-white rounded-xl p-1 shadow-sm border border-gray-100">
-                      <button
-                        type="button"
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-50 hover:text-brand-red transition-all text-gray-400"
-                      >
-                        <Minus size={18} />
-                      </button>
-                      <span className="w-12 text-center font-black text-brand-dark text-lg">{quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-50 hover:text-brand-red transition-all text-gray-400"
-                      >
-                        <Plus size={18} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="text-center sm:text-right flex flex-col items-center sm:items-end gap-1">
-                    <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
-                      Base Price: <span className="font-extrabold text-gray-700">₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                    </div>
-                    <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
-                      GST (18%): <span className="font-extrabold text-gray-700">₹{(total * 0.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                    </div>
-                    <div className="w-24 border-t border-gray-200 my-1" />
-                    <div>
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5">Total Estimated Price</p>
-                      <p className="text-4xl font-black text-brand-red">₹{(total * 1.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                      <p className="text-[10px] font-extrabold text-emerald-600 uppercase mt-1 tracking-widest">Inclusive of GST</p>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-brand-dark hover:bg-brand-red text-white py-6 rounded-3xl font-black text-xl transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <Loader2 className="animate-spin" size={24} />
-                  ) : (
-                    <>
-                      Confirm Inquiry
-                      <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Buy Now / Proceed */}
+        <button
+          onClick={handleBuyNow}
+          className="w-full bg-brand-red hover:bg-brand-dark text-white py-5 rounded-[24px] font-black text-lg transition-all shadow-xl shadow-brand-red/25 active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer group"
+        >
+          <ShoppingCart size={20} className="group-hover:translate-x-0.5 transition-transform" />
+          Buy Now / Request Quote
+          <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
     </div>
   );
 };

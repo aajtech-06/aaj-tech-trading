@@ -21,6 +21,7 @@ interface Enquiry {
   productName?: string;
   quantity?: number;
   totalPrice?: number;
+  items?: any[];
   message: string;
   status: string;
   createdAt: string;
@@ -38,9 +39,9 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
 
         // Apply filter if filterType is provided
         if (filterType === 'order') {
-          data = data.filter((enq: Enquiry) => enq.inquiryType === 'Product Order Inquiry');
+          data = data.filter((enq: Enquiry) => enq.inquiryType === 'Product Order Inquiry' || enq.inquiryType === 'Cart Inquiry');
         } else if (filterType === 'general') {
-          data = data.filter((enq: Enquiry) => enq.inquiryType !== 'Product Order Inquiry');
+          data = data.filter((enq: Enquiry) => enq.inquiryType !== 'Product Order Inquiry' && enq.inquiryType !== 'Cart Inquiry');
         }
 
         setEnquiries(data);
@@ -207,7 +208,39 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
               </div>
 
               <div className="space-y-10">
-                {selectedEnquiry.productName && (
+                {selectedEnquiry.items && selectedEnquiry.items.length > 0 ? (
+                  <div className="bg-brand-red/5 rounded-3xl p-6 border border-brand-red/10">
+                    <h3 className="text-xs font-black text-brand-red uppercase tracking-widest mb-6 border-l-2 border-brand-red pl-4">Requested Cart Items</h3>
+                    <div className="space-y-4 overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-brand-red/10 text-gray-400 font-bold uppercase tracking-wider">
+                            <th className="pb-3 text-left">Product</th>
+                            <th className="pb-3 text-center">Quantity</th>
+                            <th className="pb-3 text-right">Price</th>
+                            <th className="pb-3 text-right">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100/50">
+                          {selectedEnquiry.items.map((item: any, idx: number) => (
+                            <tr key={idx} className="text-brand-dark font-semibold">
+                              <td className="py-3 pr-2 font-bold max-w-[150px] truncate">{item.name}</td>
+                              <td className="py-3 text-center">{item.quantity}</td>
+                              <td className="py-3 text-right">₹{item.price?.toLocaleString()}</td>
+                              <td className="py-3 text-right font-black text-brand-red">
+                                ₹{(item.price * item.quantity)?.toLocaleString()}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      <div className="border-t border-brand-red/10 pt-4 flex justify-between items-center">
+                        <span className="text-sm font-bold text-gray-400">Estimated Total (incl. GST)</span>
+                        <span className="text-lg font-black text-brand-red">₹{selectedEnquiry.totalPrice?.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : selectedEnquiry.productName ? (
                   <div className="bg-brand-red/5 rounded-3xl p-6 border border-brand-red/10">
                     <h3 className="text-xs font-black text-brand-red uppercase tracking-widest mb-6 border-l-2 border-brand-red pl-4">Requested Product</h3>
                     <div className="space-y-4">
@@ -225,7 +258,7 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
                       </div>
                     </div>
                   </div>
-                )}
+                ) : null}
 
                 <div className="bg-gray-50 rounded-3xl p-6">
                   <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6 border-l-2 border-brand-red pl-4">Client Information</h3>

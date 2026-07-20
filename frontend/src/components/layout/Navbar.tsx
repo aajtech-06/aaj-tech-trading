@@ -4,9 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { Menu, X, ChevronDown, Search } from 'lucide-react';
+import { Menu, X, ChevronDown, Search, ShoppingCart } from 'lucide-react';
 import { cn } from '@/utils/utils';
 import { navItems as initialNavItems } from '@/data/mockData';
+import { useCart } from '@/context/CartContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +18,7 @@ const Navbar = () => {
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const pathname = usePathname();
   const router = useRouter();
+  const { cartCount, setIsOpen: setIsOpenCart } = useCart();
   const { scrollY } = useScroll();
 
   // Lock body scroll when mobile menu is open
@@ -249,6 +251,20 @@ const Navbar = () => {
             </button>
           </form>
 
+          {/* Cart Icon Button */}
+          <button
+            onClick={() => setIsOpenCart(true)}
+            className="relative p-2.5 text-gray-600 hover:text-brand-red transition-colors cursor-pointer"
+            aria-label="Open Cart"
+          >
+            <ShoppingCart size={22} />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-pulse shadow-sm">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
           <Link
             href="/login"
             className="group relative bg-brand-red hover:bg-brand-red-hover text-white px-10 py-4 rounded-full text-sm font-black transition-all shadow-[0_15px_30px_-5px_rgba(210,35,42,0.4)] active:scale-95 uppercase tracking-widest overflow-hidden"
@@ -258,13 +274,28 @@ const Navbar = () => {
           </Link>
         </motion.div>
 
-        {/* Mobile Toggle */}
-        <button
-          className="lg:hidden p-3 text-brand-dark bg-brand-light rounded-2xl active:scale-90 transition-transform"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        {/* Mobile Actions */}
+        <div className="flex items-center gap-2 lg:hidden">
+          {/* Mobile Cart Button */}
+          <button
+            onClick={() => setIsOpenCart(true)}
+            className="relative p-3 text-brand-dark bg-brand-light rounded-2xl active:scale-90 transition-transform cursor-pointer"
+            aria-label="Open Cart"
+          >
+            <ShoppingCart size={24} />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-pulse shadow-sm">
+                {cartCount}
+              </span>
+            )}
+          </button>
+          <button
+            className="p-3 text-brand-dark bg-brand-light rounded-2xl active:scale-90 transition-transform cursor-pointer"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}

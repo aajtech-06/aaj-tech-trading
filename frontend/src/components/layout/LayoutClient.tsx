@@ -6,6 +6,8 @@ import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/common/WhatsAppButton";
 import InquiryModal from "@/components/common/InquiryModal";
 import { usePathname } from "next/navigation";
+import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/layout/CartDrawer";
 
 // Intercept window.fetch to route all backend calls through our Next.js rewrite proxy
 if (typeof window !== 'undefined' && !(window as any).__fetchWrapped) {
@@ -53,7 +55,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
   const isAuthPage = isAdmin || isLogin;
 
   return (
-    <>
+    <CartProvider>
       {!isAuthPage && <Navbar />}
       <main className="flex-grow">
         {children}
@@ -61,6 +63,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
       {!isAuthPage && <Footer />}
       {!isAdmin && <WhatsAppButton />}
       {!isAuthPage && <InquiryModal />}
-    </>
+      {!isAuthPage && <CartDrawer />}
+    </CartProvider>
   );
 }

@@ -3,9 +3,10 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ArrowRight, Loader2, ChevronLeft, ChevronRight, Heart, ShoppingCart, User, Mail, Phone, Minus, Plus, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Search, ArrowRight, Loader2, ChevronLeft, ChevronRight, Heart, ShoppingCart } from 'lucide-react';
 import { cn } from '@/utils/utils';
+import { useCart } from '@/context/CartContext';
 
 const API_BASE = 'https://aajtechtrading.in/api';
 
@@ -38,14 +39,33 @@ interface Category {
 
 const ProductCard = ({
   product,
-  category,
-  onBuyNow
+  category
 }: {
   product: Product;
   category: Category | undefined;
-  onBuyNow: (product: Product) => void;
 }) => {
   const [liked, setLiked] = useState(false);
+  const { addToCart, setIsOpen, setCheckoutStep } = useCart();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const moqText = product.moq || product.specifications?.moq || product.specifications?.MOQ || '200 PCS';
+    const moqNumber = parseInt(moqText.replace(/\D/g, '')) || 1;
+
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price || 450,
+      image: product.image,
+      category: category?.name || 'Connector',
+      moq: moqText
+    }, moqNumber);
+
+    setCheckoutStep('cart');
+    setIsOpen(true);
+  };
 
   return (
     <div className="bg-white rounded-[24px] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col h-full relative">
@@ -127,255 +147,15 @@ const ProductCard = ({
           </Link>
         </div>
 
-        {/* Buy Now Button */}
+        {/* Add to Cart Button */}
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onBuyNow(product);
-          }}
+          onClick={handleAddToCart}
           className="mt-3 w-full bg-brand-red hover:bg-brand-dark text-white py-3 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 group/btn"
         >
           <ShoppingCart size={16} className="group-hover/btn:translate-x-0.5 transition-transform" />
-          Buy Now
+          Add to Cart
         </button>
       </div>
-    </div>
-  );
-};
-
-interface QuickInquiryModalProps {
-  product: Product | null;
-  onClose: () => void;
-}
-
-const QuickInquiryModal = ({ product, onClose }: QuickInquiryModalProps) => {
-  const moqText = product?.moq || product?.specifications?.moq || product?.specifications?.MOQ || '200 PCS';
-  const moqNumber = parseInt(moqText.replace(/\D/g, '')) || 1;
-
-  const [quantity, setQuantity] = useState(moqNumber);
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  });
-
-  if (!product) return null;
-
-  const price = product.price || 450;
-  const total = price * quantity;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await fetch('https://aajtechtrading.in/api/enquiries/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fullName: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          inquiryType: "Product Order Inquiry",
-          message: `Quick Buy Inquiry for ${product.name} (Quantity: ${quantity}) - Base Price: ₹${total.toLocaleString('en-IN')}, GST 18%: ₹${(total * 0.18).toLocaleString('en-IN')}, Total (Incl. GST): ₹${(total * 1.18).toLocaleString('en-IN')}`,
-          productName: product.name,
-          quantity: quantity,
-          totalPrice: total * 1.18,
-        }),
-      });
-
-      if (response.ok) {
-        setSubmitted(true);
-        setTimeout(() => {
-          setSubmitted(false);
-          onClose();
-        }, 3000);
-      }
-    } catch (error) {
-      console.error("Failed to submit inquiry", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-        className="absolute inset-0 bg-brand-dark/60 backdrop-blur-md"
-      />
-
-      {/* Modal Content */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-xl bg-white border border-gray-100 rounded-[32px] p-6 md:p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto"
-      >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-brand-red font-black text-sm uppercase cursor-pointer"
-        >
-          Cancel
-        </button>
-
-        {submitted ? (
-          <div className="py-12 text-center space-y-6">
-            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto text-white">
-              <CheckCircle2 size={40} />
-            </div>
-            <div>
-              <h3 className="text-2xl font-black text-brand-dark">Request Sent!</h3>
-              <p className="text-gray-500 font-bold">Our team will contact you shortly.</p>
-            </div>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <h3 className="text-2xl font-black text-brand-dark">Quick Order Inquiry</h3>
-              <p className="text-gray-500 text-xs mt-1 font-medium">Fill out the form below to receive a custom quote.</p>
-            </div>
-
-            {/* Product Summary */}
-            <div className="bg-brand-light rounded-2xl p-4 flex items-center gap-4 border border-brand-red/10">
-              <div className="w-16 h-16 relative rounded-xl overflow-hidden bg-white shrink-0 border border-gray-100 flex items-center justify-center">
-                {isValidImageUrl(product.image) ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-contain p-1"
-                  />
-                ) : (
-                  <ShoppingCart size={20} className="text-gray-300" />
-                )}
-              </div>
-              <div className="min-w-0">
-                <h4 className="font-extrabold text-brand-dark leading-tight line-clamp-1">
-                  {product.name}
-                </h4>
-                <p className="text-xs font-bold text-gray-400 mt-1">
-                  Unit Price: ₹{price.toLocaleString('en-IN')}.00
-                </p>
-              </div>
-            </div>
-
-            {/* Contact Details */}
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                  <input
-                    type="text"
-                    required
-                    placeholder="John Doe"
-                    className="w-full bg-gray-50 border-none rounded-xl py-3 pl-12 pr-4 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none text-sm transition-all"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                    <input
-                      type="email"
-                      placeholder="john@company.com"
-                      className="w-full bg-gray-50 border-none rounded-xl py-3 pl-12 pr-4 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none text-sm transition-all"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone</label>
-                  <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+91 00000 00000"
-                      className="w-full bg-gray-50 border-none rounded-xl py-3 pl-12 pr-4 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none text-sm transition-all"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Quantity and Price Adjuster */}
-            <div className="bg-gray-50 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border border-gray-100">
-              <div className="flex flex-col items-center sm:items-start">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Adjust Quantity</p>
-                <div className="flex items-center bg-white rounded-lg p-0.5 shadow-sm border border-gray-100">
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-50 hover:text-brand-red transition-all text-gray-400"
-                  >
-                    <Minus size={14} />
-                  </button>
-                  <span className="w-10 text-center font-black text-brand-dark text-sm">{quantity}</span>
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-50 hover:text-brand-red transition-all text-gray-400"
-                  >
-                    <Plus size={14} />
-                  </button>
-                </div>
-              </div>
-
-              <div className="text-center sm:text-right flex flex-col items-center sm:items-end gap-1">
-                <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                  Base Price: <span className="font-extrabold text-gray-700">₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                </div>
-                <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                  GST (18%): <span className="font-extrabold text-gray-700">₹{(total * 0.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                </div>
-                <div className="w-20 border-t border-gray-200 my-0.5" />
-                <div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5">Total Estimate</p>
-                  <p className="text-2xl font-black text-brand-red">₹{(total * 1.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  <p className="text-[9px] font-extrabold text-emerald-600 uppercase mt-0.5 tracking-wider">Inclusive of GST</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-brand-dark hover:bg-brand-red text-white py-4 rounded-2xl font-black text-base transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              {loading ? (
-                <Loader2 className="animate-spin" size={20} />
-              ) : (
-                <>
-                  Confirm Inquiry
-                  <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
-                </>
-              )}
-            </button>
-          </form>
-        )}
-      </motion.div>
     </div>
   );
 };
@@ -389,7 +169,6 @@ const ProductsContent = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFiltering, setIsFiltering] = useState(false);
-  const [quickBuyProduct, setQuickBuyProduct] = useState<Product | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 9;
 
@@ -531,7 +310,7 @@ const ProductsContent = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
                       >
-                        <ProductCard product={product} category={category} onBuyNow={setQuickBuyProduct} />
+                        <ProductCard product={product} category={category} />
                       </motion.div>
                     );
                   })}
@@ -591,11 +370,6 @@ const ProductsContent = () => {
           </div>
         </div>
       </div>
-      <AnimatePresence>
-        {quickBuyProduct && (
-          <QuickInquiryModal product={quickBuyProduct} onClose={() => setQuickBuyProduct(null)} />
-        )}
-      </AnimatePresence>
     </div>
   );
 };
