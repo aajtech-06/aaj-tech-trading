@@ -112,3 +112,25 @@ async def get_ev_catalog(filename: str):
             )
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"PDF Error: {str(e)}")
+
+@router.delete("/{filename}")
+async def delete_ev_catalog(filename: str, admin: dict = Depends(require_admin)):
+    try:
+        public_id = f"aaj_tech/ev_catalogs/{filename}"
+        result = cloudinary.uploader.destroy(public_id, resource_type="raw")
+        return {"status": "success", "message": f"EV Catalog {filename} deleted successfully", "details": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete EV catalog: {str(e)}")
+
+@router.put("/{filename}/rename")
+async def rename_ev_catalog(filename: str, new_name: str, admin: dict = Depends(require_admin)):
+    if not new_name.lower().endswith(".pdf"):
+        new_name += ".pdf"
+    new_name = os.path.basename(new_name)
+    try:
+        from_public_id = f"aaj_tech/ev_catalogs/{filename}"
+        to_public_id = f"aaj_tech/ev_catalogs/{new_name}"
+        cloudinary.uploader.rename(from_public_id, to_public_id, overwrite=True, resource_type="raw")
+        return {"status": "success", "message": f"EV Catalog renamed to {new_name}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to rename EV catalog: {str(e)}")
