@@ -100,15 +100,31 @@ class SignupRequest(BaseModel):
 
 class HarnessProductBase(BaseModel):
     title: str
-    applications: Optional[str] = None
     details: Optional[str] = None
-    variants: Optional[List[str]] = []
     image: Optional[str] = None
+    voltageType: Optional[str] = None
+    subcategory: Optional[str] = None
+    spacing: Optional[str] = None
+    bottomPlateType: Optional[str] = None
+    pinQuantity: Optional[str] = None
+    productStatus: Optional[str] = None
+    galleryImages: Optional[List[str]] = []
 
 class HarnessProductCreate(HarnessProductBase):
     pass
 
 class HarnessProductResponse(HarnessProductBase):
+    id: str
+    model_config = {"from_attributes": True}
+
+class HarnessCategoryBase(BaseModel):
+    name: str
+    voltageType: str
+
+class HarnessCategoryCreate(HarnessCategoryBase):
+    pass
+
+class HarnessCategoryResponse(HarnessCategoryBase):
     id: str
     model_config = {"from_attributes": True}
 

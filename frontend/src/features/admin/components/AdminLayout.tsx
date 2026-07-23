@@ -30,6 +30,7 @@ const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
   { icon: Package, label: 'Products', href: '/admin/products' },
   { icon: Layers, label: 'Harness Products', href: '/admin/harness' },
+  { icon: Layers, label: 'Harness Categories', href: '/admin/harness-categories' },
   { icon: Layers, label: 'EV Products', href: '/admin/ev' },
   { icon: Layers, label: 'Categories', href: '/admin/categories' },
   { icon: ShoppingCart, label: 'Order Inquiries', href: '/admin/orders' },
