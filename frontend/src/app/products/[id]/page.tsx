@@ -151,7 +151,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
               <div className="flex justify-between items-center flex-wrap gap-2">
                 <span className="text-gray-700 dark:text-gray-300 font-bold text-sm">Final Price (Inclusive of all taxes):</span>
                 <span className="text-xl font-black text-gray-900 dark:text-white">
-                  ₹{finalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / PCS
+                  ₹{finalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {(product.unit || 'pcs').toUpperCase()}
                 </span>
               </div>
             </div>
@@ -191,6 +191,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                 productImage={product.image}
                 productCategory={categoryName}
                 moq={product.moq}
+                productUnit={product.unit}
               />
             </div>
           </div>

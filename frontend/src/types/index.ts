@@ -37,6 +37,7 @@ export interface Product {
   features: string[];
   specifications: Record<string, string>;
   moq?: string;
+  unit?: string;
 }
 
 export interface Industry {

@@ -42,6 +42,7 @@ interface Product {
   features: string[];
   specifications: Record<string, string>;
   moq?: string;
+  unit?: string;
 }
 
 interface Category {
@@ -76,6 +77,7 @@ export default function ProductManagement() {
     status: 'active',
     features: '',
     moq: '200 PCS',
+    unit: 'pcs',
     // Technical Specs
     spec_pins: '',
     spec_pitch: '',
@@ -180,6 +182,7 @@ export default function ProductManagement() {
           description: newProduct.description,
           image: newProduct.image,
           moq: newProduct.moq || '200 PCS',
+          unit: newProduct.unit || 'pcs',
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
           specifications: {
             Pins: newProduct.spec_pins,
@@ -225,6 +228,7 @@ export default function ProductManagement() {
           status: 'active',
           features: '',
           moq: '200 PCS',
+          unit: 'pcs',
           spec_pins: '',
           spec_pitch: '',
           spec_current: '',
@@ -278,6 +282,7 @@ export default function ProductManagement() {
           description: newProduct.description,
           image: newProduct.image,
           moq: newProduct.moq || '200 PCS',
+          unit: newProduct.unit || 'pcs',
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
           specifications: {
             Pins: newProduct.spec_pins,
@@ -324,6 +329,7 @@ export default function ProductManagement() {
           status: 'active',
           features: '',
           moq: '200 PCS',
+          unit: 'pcs',
           spec_pins: '',
           spec_pitch: '',
           spec_current: '',
@@ -371,6 +377,7 @@ export default function ProductManagement() {
       status: product.status || 'active',
       features: product.features?.join('\n') || '',
       moq: product.moq || '200 PCS',
+      unit: product.unit || 'pcs',
       spec_pins: product.specifications?.Pins || '',
       spec_pitch: product.specifications?.Pitch || '',
       spec_current: product.specifications?.Current || '',
@@ -481,6 +488,7 @@ export default function ProductManagement() {
               status: 'active',
               features: '',
               moq: '200 PCS',
+              unit: 'pcs',
               spec_pins: '',
               spec_pitch: '',
               spec_current: '',
@@ -909,6 +917,28 @@ export default function ProductManagement() {
                         className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
                         placeholder="200 PCS"
                       />
+                    </div>
+                    {/* Product Unit */}
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                        <Settings size={12} className="text-brand-red" /> Product Unit
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={newProduct.unit}
+                          onChange={(e) => setNewProduct(prev => ({ ...prev, unit: e.target.value }))}
+                          className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red transition-all outline-none appearance-none cursor-pointer"
+                          required
+                        >
+                          <option value="pcs">PCS (Pieces)</option>
+                          <option value="meter">Meter</option>
+                          <option value="feet">Feet</option>
+                          <option value="roll">Roll</option>
+                          <option value="box">Box</option>
+                          <option value="packet">Packet</option>
+                        </select>
+                        <Settings className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" size={18} />
+                      </div>
                     </div>
                   </div>
 

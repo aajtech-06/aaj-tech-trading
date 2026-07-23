@@ -306,7 +306,7 @@ export default function CartDrawer() {
                         {item.name}
                       </h4>
                       <p className="text-[10px] font-black text-gray-400 mt-0.5">
-                        ₹{item.price.toLocaleString('en-IN')}.00 / pcs
+                        ₹{item.price.toLocaleString('en-IN')}.00 / {item.unit || 'pcs'}
                       </p>
                       
                       {/* MOQ reminder */}

@@ -30,6 +30,7 @@ interface Product {
   price?: number;
   specifications?: Record<string, any>;
   moq?: string;
+  unit?: string;
 }
 
 interface Category {
@@ -60,7 +61,8 @@ const ProductCard = ({
       price: product.price || 450,
       image: product.image,
       category: category?.name || 'Connector',
-      moq: moqText
+      moq: moqText,
+      unit: product.unit || 'pcs'
     }, moqNumber);
 
     setCheckoutStep('cart');
@@ -134,7 +136,7 @@ const ProductCard = ({
           <div className="flex flex-col">
             <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Starting From</span>
             <span className="text-lg font-black text-brand-dark dark:text-white">
-              ₹{(product.price || 450).toLocaleString('en-IN')}.00 <span className="text-gray-400 text-[10px] font-normal">/ pcs</span>
+              ₹{(product.price || 450).toLocaleString('en-IN')}.00 <span className="text-gray-400 text-[10px] font-normal">/ {product.unit || 'pcs'}</span>
             </span>
           </div>
 

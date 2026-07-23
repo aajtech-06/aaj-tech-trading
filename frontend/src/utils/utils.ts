@@ -12,10 +12,10 @@ export function cn(...inputs: ClassValue[]) {
 export function formatLabel(key: string): string {
   // Add space before capital letters in camelCase
   const withSpaces = key.replace(/([A-Z])/g, ' $1');
-  
+
   // Replace underscores and hyphens with spaces
   const normalized = withSpaces.replace(/[_-]/g, ' ');
-  
+
   // Capitalize first letter of each word and trim
   return normalized
     .trim()

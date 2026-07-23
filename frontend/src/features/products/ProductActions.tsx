@@ -12,9 +12,10 @@ interface ProductActionsProps {
   productImage?: string;
   productCategory?: string;
   moq?: string;
+  productUnit?: string;
 }
 
-const ProductActions = ({ id, price, productName, productImage, productCategory, moq }: ProductActionsProps) => {
+const ProductActions = ({ id, price, productName, productImage, productCategory, moq, productUnit = 'pcs' }: ProductActionsProps) => {
   const { addToCart, setIsOpen, setCheckoutStep } = useCart();
   
   // Parse minimum quantity from MOQ string e.g. "200 PCS" -> 200
@@ -42,7 +43,8 @@ const ProductActions = ({ id, price, productName, productImage, productCategory,
       price,
       image: productImage || '',
       category: productCategory || 'Connector',
-      moq: moq || '200 PCS'
+      moq: moq || '200 PCS',
+      unit: productUnit
     }, quantity);
     setCheckoutStep('cart');
     setIsOpen(true);
@@ -55,7 +57,8 @@ const ProductActions = ({ id, price, productName, productImage, productCategory,
       price,
       image: productImage || '',
       category: productCategory || 'Connector',
-      moq: moq || '200 PCS'
+      moq: moq || '200 PCS',
+      unit: productUnit
     }, quantity);
     setCheckoutStep('form');
     setIsOpen(true);

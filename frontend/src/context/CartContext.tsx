@@ -10,6 +10,7 @@ export interface CartItem {
   quantity: number;
   category?: string;
   moq?: string;
+  unit?: string;
 }
 
 interface CartContextType {
