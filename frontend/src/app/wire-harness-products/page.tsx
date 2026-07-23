@@ -7,7 +7,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronRight, Search } from 'lucide-react';
+import { ChevronRight, Search, ArrowRight, ShoppingCart } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 
 interface HarnessProduct {
   id: string;
@@ -28,9 +29,29 @@ const WireHarnessProductsContent = () => {
   const [categories, setCategories] = useState<{ id: string; name: string; voltageType: string }[]>([]);
   const [loading, setLoading] = useState(true);
   
+  const { addToCart, setCheckoutStep, setIsOpen } = useCart();
+  
   // Navigation & Category Tab state
   const [selectedVoltageType, setSelectedVoltageType] = useState('Low Voltage Harness');
   const [selectedCategory, setSelectedCategory] = useState('Electronic & Communication Harness');
+
+  const handleAddToCart = (e: React.MouseEvent, product: HarnessProduct) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    addToCart({
+      id: product.id,
+      name: product.title,
+      price: 0,
+      image: product.image,
+      category: product.subcategory || 'Wire Harness',
+      moq: '100 PCS',
+      unit: 'pcs'
+    }, 100);
+
+    setCheckoutStep('cart');
+    setIsOpen(true);
+  };
   
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -179,7 +200,7 @@ const WireHarnessProductsContent = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-brand-red via-brand-red/80 to-transparent" />
         </div>
-        <div className="container mx-auto px-4 max-w-7xl relative z-10">
+        <div className="w-full px-6 md:px-16 lg:px-24 relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -199,7 +220,7 @@ const WireHarnessProductsContent = () => {
 
       {/* Solutions Section */}
       <section className="relative py-16 bg-white dark:bg-brand-dark z-20 transition-colors duration-300">
-        <div className="container mx-auto px-4 max-w-7xl space-y-12">
+        <div className="w-full px-6 md:px-16 lg:px-24 space-y-12">
           
           {/* STEP 1: Voltage Type Tabs */}
           <div className="flex border-b border-gray-200 dark:border-neutral-800">
@@ -294,19 +315,32 @@ const WireHarnessProductsContent = () => {
                         </div>
                       )}
 
-                      {product.productStatus && (
-                        <span className="inline-block text-[9px] font-black uppercase tracking-widest text-brand-red w-max bg-brand-red/5 px-2 py-0.5 rounded">
-                          {product.productStatus}
-                        </span>
-                      )}
+                      <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50 dark:border-neutral-800">
+                        {product.productStatus ? (
+                          <span className="inline-block text-[9px] font-black uppercase tracking-widest text-brand-red w-max bg-brand-red/5 px-2 py-0.5 rounded">
+                            {product.productStatus}
+                          </span>
+                        ) : (
+                          <div />
+                        )}
 
-                      {/* View details button */}
-                      <Link
-                        href={`/wire-harness-products/${product.id}`}
-                        className="w-full mt-auto bg-brand-red hover:bg-brand-dark text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg active:scale-95 transition-all text-center block"
+                        <Link
+                          href={`/wire-harness-products/${product.id}`}
+                          className="flex items-center gap-1 text-xs font-bold text-brand-red hover:text-brand-dark dark:hover:text-white transition-colors group/link"
+                        >
+                          View Details
+                          <ArrowRight size={14} className="transform group-hover/link:translate-x-0.5 transition-transform" />
+                        </Link>
+                      </div>
+
+                      {/* Add to Cart Button */}
+                      <button
+                        onClick={(e) => handleAddToCart(e, product)}
+                        className="w-full bg-brand-red hover:bg-brand-dark text-white py-3 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 group/btn"
                       >
-                        View Details
-                      </Link>
+                        <ShoppingCart size={16} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                        Add to Cart
+                      </button>
                     </div>
                   </motion.div>
                 ))}
