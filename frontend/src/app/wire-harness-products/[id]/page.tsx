@@ -5,7 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronRight, ArrowLeft } from 'lucide-react';
+import { ChevronRight, ArrowLeft, ClipboardList } from 'lucide-react';
+import HarnessInquiryModal from '@/components/common/HarnessInquiryModal';
 
 interface HarnessProduct {
   id: string;
@@ -27,6 +28,7 @@ export default function WireHarnessProductDetailPage() {
   const [product, setProduct] = useState<HarnessProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState('');
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -220,16 +222,23 @@ export default function WireHarnessProductDetailPage() {
 
             {/* Dynamic CTA row */}
             <div className="pt-4">
-              <Link
-                href={`/contact?product=${encodeURIComponent(product.title)}`}
-                className="w-full text-center bg-brand-red hover:bg-brand-dark text-white py-4 rounded-2xl font-black uppercase tracking-wider text-xs shadow-xl shadow-brand-red/10 hover:shadow-brand-red/20 active:scale-95 transition-all text-center flex items-center justify-center cursor-pointer"
+              <button
+                onClick={() => setIsInquiryModalOpen(true)}
+                className="w-full text-center bg-brand-red hover:bg-brand-dark text-white py-4 rounded-2xl font-black uppercase tracking-wider text-xs shadow-xl shadow-brand-red/10 hover:shadow-brand-red/20 active:scale-95 transition-all text-center flex items-center justify-center cursor-pointer gap-2"
               >
-                Send Enquiry
-              </Link>
+                <ClipboardList size={16} />
+                Order Inquiry
+              </button>
             </div>
           </div>
         </div>
       </section>
+
+      <HarnessInquiryModal
+        isOpen={isInquiryModalOpen}
+        onClose={() => setIsInquiryModalOpen(false)}
+        product={product}
+      />
     </div>
   );
 }

@@ -7,8 +7,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronRight, Search, ArrowRight, ShoppingCart } from 'lucide-react';
-import { useCart } from '@/context/CartContext';
+import { ChevronRight, Search, ArrowRight, ClipboardList } from 'lucide-react';
+import HarnessInquiryModal from '@/components/common/HarnessInquiryModal';
 
 interface HarnessProduct {
   id: string;
@@ -29,30 +29,20 @@ const WireHarnessProductsContent = () => {
   const [categories, setCategories] = useState<{ id: string; name: string; voltageType: string }[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const { addToCart, setCheckoutStep, setIsOpen } = useCart();
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
+  const [inquiryProduct, setInquiryProduct] = useState<HarnessProduct | null>(null);
+
+  const handleOpenInquiry = (e: React.MouseEvent, product: HarnessProduct) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setInquiryProduct(product);
+    setIsInquiryModalOpen(true);
+  };
   
   // Navigation & Category Tab state
   const [selectedVoltageType, setSelectedVoltageType] = useState('Low Voltage Harness');
   const [selectedCategory, setSelectedCategory] = useState('Electronic & Communication Harness');
 
-  const handleAddToCart = (e: React.MouseEvent, product: HarnessProduct) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    addToCart({
-      id: product.id,
-      name: product.title,
-      price: 0,
-      image: product.image,
-      category: product.subcategory || 'Wire Harness',
-      moq: '100 PCS',
-      unit: 'pcs'
-    }, 100);
-
-    setCheckoutStep('cart');
-    setIsOpen(true);
-  };
-  
   const [searchQuery, setSearchQuery] = useState('');
 
 
@@ -333,13 +323,13 @@ const WireHarnessProductsContent = () => {
                         </Link>
                       </div>
 
-                      {/* Add to Cart Button */}
+                      {/* Order Inquiry Button */}
                       <button
-                        onClick={(e) => handleAddToCart(e, product)}
+                        onClick={(e) => handleOpenInquiry(e, product)}
                         className="w-full bg-brand-red hover:bg-brand-dark text-white py-3 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 group/btn"
                       >
-                        <ShoppingCart size={16} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                        Add to Cart
+                        <ClipboardList size={16} />
+                        Order Inquiry
                       </button>
                     </div>
                   </motion.div>
@@ -350,7 +340,11 @@ const WireHarnessProductsContent = () => {
         </div>
       </section>
 
-
+      <HarnessInquiryModal
+        isOpen={isInquiryModalOpen}
+        onClose={() => setIsInquiryModalOpen(false)}
+        product={inquiryProduct}
+      />
     </div>
   );
 };

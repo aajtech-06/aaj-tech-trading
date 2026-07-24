@@ -40,8 +40,10 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
         // Apply filter if filterType is provided
         if (filterType === 'order') {
           data = data.filter((enq: Enquiry) => enq.inquiryType === 'Product Order Inquiry' || enq.inquiryType === 'Cart Inquiry');
+        } else if (filterType === 'harness') {
+          data = data.filter((enq: Enquiry) => enq.inquiryType === 'Harness Inquiry');
         } else if (filterType === 'general') {
-          data = data.filter((enq: Enquiry) => enq.inquiryType !== 'Product Order Inquiry' && enq.inquiryType !== 'Cart Inquiry');
+          data = data.filter((enq: Enquiry) => enq.inquiryType !== 'Product Order Inquiry' && enq.inquiryType !== 'Cart Inquiry' && enq.inquiryType !== 'Harness Inquiry');
         }
 
         setEnquiries(data);
@@ -90,12 +92,16 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
       {/* Header */}
       <div>
         <h1 className="text-3xl font-black text-brand-dark mb-2">
-          {filterType === 'order' ? 'Order Inquiries' : filterType === 'general' ? 'General Enquiries' : 'All Enquiries'}
+          {filterType === 'order' ? 'Order Inquiries' : filterType === 'general' ? 'General Enquiries' : filterType === 'harness' ? 'Harness Inquiries' : 'All Enquiries'}
         </h1>
         <p className="text-gray-400 font-bold">
           {filterType === 'order'
             ? 'Track and respond to product purchase requests and RFQs.'
-            : 'Manage general contact messages and service inquiries.'}
+            : filterType === 'general'
+            ? 'Manage general contact messages and service inquiries.'
+            : filterType === 'harness'
+            ? 'Track and respond to customer wire harness product specifications.'
+            : 'Manage all customer inquiries.'}
         </p>
       </div>
 
@@ -242,7 +248,9 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
                   </div>
                 ) : selectedEnquiry.productName ? (
                   <div className="bg-brand-red/5 rounded-3xl p-6 border border-brand-red/10">
-                    <h3 className="text-xs font-black text-brand-red uppercase tracking-widest mb-6 border-l-2 border-brand-red pl-4">Requested Product</h3>
+                    <h3 className="text-xs font-black text-brand-red uppercase tracking-widest mb-6 border-l-2 border-brand-red pl-4">
+                      {selectedEnquiry.inquiryType === 'Harness Inquiry' ? 'Requested Harness Product' : 'Requested Product'}
+                    </h3>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-bold text-gray-400">Product Name</span>
@@ -252,10 +260,12 @@ export default function EnquiryManagement({ filterType }: { filterType?: string 
                         <span className="text-sm font-bold text-gray-400">Quantity</span>
                         <span className="text-sm font-black text-brand-dark">{selectedEnquiry.quantity} Units</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-gray-400">Estimated Total</span>
-                        <span className="text-sm font-black text-brand-red text-lg">₹{selectedEnquiry.totalPrice?.toLocaleString()}</span>
-                      </div>
+                      {selectedEnquiry.totalPrice ? (
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold text-gray-400">Estimated Total</span>
+                          <span className="text-sm font-black text-brand-red text-lg">₹{selectedEnquiry.totalPrice?.toLocaleString()}</span>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 ) : null}

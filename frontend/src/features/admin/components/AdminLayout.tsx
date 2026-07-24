@@ -19,7 +19,8 @@ import {
   ChevronRight,
   Briefcase,
   Sun,
-  Moon
+  Moon,
+  ClipboardList
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -34,6 +35,7 @@ const menuItems = [
   { icon: Layers, label: 'EV Products', href: '/admin/ev' },
   { icon: Layers, label: 'Categories', href: '/admin/categories' },
   { icon: ShoppingCart, label: 'Order Inquiries', href: '/admin/orders' },
+  { icon: ClipboardList, label: 'Harness Inquiries', href: '/admin/harness-inquiries' },
   { icon: MessageSquare, label: 'General Enquiries', href: '/admin/enquiries' },
   { icon: FileText, label: 'Blogs', href: '/admin/blogs' },
   { icon: Briefcase, label: 'Career', href: '/admin/career' },
@@ -155,15 +157,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         // Process General Enquiries (Filter by status "New")
         const newEnquiries = enqRes
           .filter((e: any) => e.status === 'New')
-          .map((e: any) => ({
-            id: e.id,
-            title: 'New Enquiry',
-            message: `From ${e.fullName} (${e.inquiryType})`,
-            type: 'enquiry',
-            timestamp: e.createdAt,
-            href: '/admin/enquiries',
-            rawDate: new Date(e.createdAt || Date.now())
-          }));
+          .map((e: any) => {
+            const isHarness = e.inquiryType === 'Harness Inquiry';
+            const isOrder = e.inquiryType === 'Product Order Inquiry' || e.inquiryType === 'Cart Inquiry';
+            return {
+              id: e.id,
+              title: isHarness ? 'New Harness Inquiry' : isOrder ? 'New Order Inquiry' : 'New Enquiry',
+              message: `From ${e.fullName} (${e.inquiryType})`,
+              type: 'enquiry',
+              timestamp: e.createdAt,
+              href: isHarness ? '/admin/harness-inquiries' : isOrder ? '/admin/orders' : '/admin/enquiries',
+              rawDate: new Date(e.createdAt || Date.now())
+            };
+          });
 
         // Process Career Applications (Filter by status "Applied")
         const newApplications = appRes

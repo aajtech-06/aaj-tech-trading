@@ -5,7 +5,7 @@ from database import get_db
 from bson import ObjectId
 from pydantic import BaseModel, Field
 import os
-from utils.email import send_enquiry_notification, send_auto_reply
+from utils.email import send_enquiry_notification, send_auto_reply, send_harness_enquiry_notification, send_harness_auto_reply
 from utils.auth import require_admin
 
 router = APIRouter()
@@ -37,8 +37,16 @@ async def create_enquiry(enquiry: EnquiryBase, background_tasks: BackgroundTasks
     
     # Send emails in background to not block the response
     admin_email = os.getenv("EMAIL_USER")
-    background_tasks.add_task(send_enquiry_notification, admin_email, enquiry_dict)
-    background_tasks.add_task(send_auto_reply, enquiry.email, enquiry_dict)
+    
+    # Check if this is a Harness Inquiry
+    if enquiry_dict.get("inquiryType") == "Harness Inquiry":
+        background_tasks.add_task(send_harness_enquiry_notification, admin_email, enquiry_dict)
+        if enquiry.email:
+            background_tasks.add_task(send_harness_auto_reply, enquiry.email, enquiry_dict)
+    else:
+        background_tasks.add_task(send_enquiry_notification, admin_email, enquiry_dict)
+        if enquiry.email:
+            background_tasks.add_task(send_auto_reply, enquiry.email, enquiry_dict)
     
     return {"id": str(result.inserted_id), "message": "Enquiry submitted successfully"}
 
