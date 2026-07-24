@@ -47,6 +47,7 @@ const menuItems = [
     children: [
       { label: 'Upload Catalog', href: '/admin/settings/upload-catalog' },
       { label: 'Upload EV Catalog', href: '/admin/settings/upload-ev-catalog' },
+      { label: 'About Harness', href: '/admin/settings/about-harness' },
       { label: 'Manage Login', href: '/admin/settings/manage-login' },
     ]
   },

@@ -200,4 +200,19 @@ class DepartmentResponse(DepartmentBase):
     model_config = {"from_attributes": True}
 
 
+class HarnessEquipmentBase(BaseModel):
+    name: str
+    image: Optional[str] = None
+    section: Optional[str] = "Testing Equipment"
+
+class HarnessEquipmentCreate(HarnessEquipmentBase):
+    pass
+
+class HarnessEquipmentResponse(HarnessEquipmentBase):
+    id: str
+
+    model_config = {"from_attributes": True}
+
+
+
 

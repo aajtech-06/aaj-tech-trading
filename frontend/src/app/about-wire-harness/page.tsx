@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Activity, Settings2, Factory, ShieldCheck, Headset, Clock, CheckCircle2 } from 'lucide-react';
+import { Activity, Settings2, Factory, ShieldCheck, Headset, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 
 const Hexagon = ({ className, delay = 0 }: { className?: string, delay?: number }) => (
   <motion.div
@@ -38,6 +38,39 @@ const AboutWireHarnessPage = () => {
     transition: { duration: 1, ease: [0.22, 1, 0.36, 1] as any }
   };
 
+  const [testingEquipment, setTestingEquipment] = useState<{ id: string; name: string; image: string; section?: string }[]>([]);
+  const [loadingEquipment, setLoadingEquipment] = useState(true);
+
+  useEffect(() => {
+    const fetchEquipment = async () => {
+      try {
+        const res = await fetch('https://aajtechtrading.in/api/harness/testing-equipment');
+        if (res.ok) {
+          const data = await res.json();
+          setTestingEquipment(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch testing equipment:', error);
+      } finally {
+        setLoadingEquipment(false);
+      }
+    };
+    fetchEquipment();
+  }, []);
+
+  const getImageUrl = (imagePath: string) => {
+    if (!imagePath) return '/placeholder.png';
+    if (imagePath.startsWith('http')) return imagePath;
+    if (imagePath.startsWith('/uploads/')) {
+      return `https://aajtechtrading.in${imagePath}`;
+    }
+    return imagePath;
+  };
+
+  const testingItems = testingEquipment.filter(item => !item.section || item.section === "Testing Equipment");
+  const connectorItems = testingEquipment.filter(item => item.section === "Fully automated connector equipment");
+  const wireCuttingItems = testingEquipment.filter(item => item.section === "Fully automated wire cutting equipment");
+
   return (
     <div ref={containerRef} className="bg-white dark:bg-brand-dark text-brand-dark dark:text-gray-100 selection:bg-brand-red/20 overflow-x-hidden transition-colors duration-300">
       {/* Immersive Hero Section */}
@@ -59,7 +92,7 @@ const AboutWireHarnessPage = () => {
         <Hexagon className="top-40 right-[10%]" delay={1} />
         <Hexagon className="bottom-20 right-[20%] hidden lg:block" delay={1.5} />
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="w-full px-6 md:px-12 lg:px-24 relative z-10">
           <div className="flex flex-col items-center text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -110,7 +143,7 @@ const AboutWireHarnessPage = () => {
 
       {/* Who We Are Section */}
       <section className="relative py-24 bg-gray-50 dark:bg-brand-dark transition-colors duration-300 z-20 border-b border-gray-100 dark:border-neutral-800">
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="w-full px-6 md:px-12 lg:px-24">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
             {/* Video Side */}
             <motion.div
@@ -118,7 +151,7 @@ const AboutWireHarnessPage = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="w-full lg:w-7/12 flex justify-center"
+              className="w-full lg:w-1/2 flex justify-center"
             >
               <div className="relative w-full aspect-video rounded-[2rem] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.2)] bg-black border-4 border-white dark:border-neutral-800 mx-auto">
                 <iframe
@@ -138,7 +171,7 @@ const AboutWireHarnessPage = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="w-full lg:w-5/12 lg:pl-12"
+              className="w-full lg:w-1/2 lg:pl-12"
             >
               <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white mb-8 tracking-tight">
                 Who We Are
@@ -162,7 +195,7 @@ const AboutWireHarnessPage = () => {
 
       {/* Content Section */}
       <section className="relative py-24 bg-white dark:bg-brand-dark transition-colors duration-300 z-20">
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="w-full px-6 md:px-12 lg:px-24">
           <div className="flex items-center justify-center gap-6 mb-16">
             <div className="h-[2px] w-12 md:w-24 bg-brand-dark dark:bg-white" />
             <h2 className="text-4xl md:text-5xl font-black text-brand-red tracking-wide">Cable Harness</h2>
@@ -227,9 +260,114 @@ const AboutWireHarnessPage = () => {
         </div>
       </section>
 
+      {/* Equipment Sections */}
+      {loadingEquipment ? (
+        <div className="flex justify-center items-center py-24 bg-gray-50 dark:bg-brand-dark border-b border-gray-100 dark:border-neutral-800">
+          <Loader2 className="animate-spin text-brand-red" size={48} />
+        </div>
+      ) : (
+        <>
+          {/* 1. Testing Equipment Section */}
+          {testingItems.length > 0 && (
+            <section className="relative py-24 bg-gray-50 dark:bg-brand-dark transition-colors duration-300 z-20 border-b border-gray-100 dark:border-neutral-800">
+              <div className="w-full px-6 md:px-12 lg:px-24">
+                <motion.div {...fadeInUp}>
+                  <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white text-center mb-16 tracking-tight">
+                    Testing Equipment
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {testingItems.map((item) => (
+                      <div key={item.id} className="bg-white dark:bg-neutral-900 rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                        <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-neutral-800">
+                          <Image
+                            src={getImageUrl(item.image)}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="p-6 text-center">
+                          <h3 className="text-lg font-black text-brand-dark dark:text-white tracking-wide">
+                            {item.name}
+                          </h3>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            </section>
+          )}
+
+          {/* 2. Fully Automated Connector Equipment Section */}
+          {connectorItems.length > 0 && (
+            <section className="relative py-24 bg-white dark:bg-brand-dark transition-colors duration-300 z-20 border-b border-gray-100 dark:border-neutral-800">
+              <div className="w-full px-6 md:px-12 lg:px-24">
+                <motion.div {...fadeInUp}>
+                  <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white text-center mb-16 tracking-tight">
+                    Fully Automated Connector Equipment
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {connectorItems.map((item) => (
+                      <div key={item.id} className="bg-gray-50 dark:bg-neutral-900 rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                        <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-neutral-800">
+                          <Image
+                            src={getImageUrl(item.image)}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="p-6 text-center">
+                          <h3 className="text-lg font-black text-brand-dark dark:text-white tracking-wide">
+                            {item.name}
+                          </h3>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            </section>
+          )}
+
+          {/* 3. Fully Automated Wire Cutting Equipment Section */}
+          {wireCuttingItems.length > 0 && (
+            <section className="relative py-24 bg-gray-50 dark:bg-brand-dark transition-colors duration-300 z-20 border-b border-gray-100 dark:border-neutral-800">
+              <div className="w-full px-6 md:px-12 lg:px-24">
+                <motion.div {...fadeInUp}>
+                  <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white text-center mb-16 tracking-tight">
+                    Fully Automated Wire Cutting Equipment
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {wireCuttingItems.map((item) => (
+                      <div key={item.id} className="bg-white dark:bg-neutral-900 rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                        <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-neutral-800">
+                          <Image
+                            src={getImageUrl(item.image)}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="p-6 text-center">
+                          <h3 className="text-lg font-black text-brand-dark dark:text-white tracking-wide">
+                            {item.name}
+                          </h3>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            </section>
+          )}
+        </>
+      )}
+
       {/* Aaj Tech Advantage Section */}
       <section className="relative py-24 bg-white dark:bg-brand-dark transition-colors duration-300 z-20 border-y border-gray-100 dark:border-neutral-800">
-        <div className="container mx-auto px-4">
+        <div className="w-full px-6 md:px-12 lg:px-24">
           <motion.div {...fadeInUp}>
             <h2 className="text-4xl md:text-5xl font-black text-brand-dark dark:text-white text-center mb-16 tracking-tight">
               Aaj Tech Advantage
@@ -285,7 +423,7 @@ const AboutWireHarnessPage = () => {
 
       {/* How It Works Section */}
       <section className="relative py-20 bg-white dark:bg-brand-dark transition-colors duration-300 z-20 mb-10">
-        <div className="container mx-auto px-4 max-w-5xl">
+        <div className="w-full px-6 md:px-12 lg:px-24">
           <motion.div {...fadeInUp}>
             <h2 className="text-3xl md:text-4xl font-black text-brand-dark dark:text-white text-center mb-12 tracking-tight">
               How It Works

@@ -1,9 +1,18 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from database import get_db
-from models import HarnessProductResponse, HarnessProductCreate, HarnessCategoryResponse, HarnessCategoryCreate
+from models import HarnessProductResponse, HarnessProductCreate, HarnessCategoryResponse, HarnessCategoryCreate, HarnessEquipmentResponse, HarnessEquipmentCreate
 from bson import ObjectId
 from utils.auth import require_admin
+
+def equipment_helper(item) -> dict:
+    """Convert MongoDB harness equipment document to a clean dict with string id."""
+    return {
+        "id": str(item["_id"]),
+        "name": item["name"],
+        "image": item.get("image", ""),
+        "section": item.get("section", "Testing Equipment"),
+    }
 
 router = APIRouter()
 
@@ -96,6 +105,69 @@ def delete_harness_category(id: str, admin: dict = Depends(require_admin)):
         raise HTTPException(status_code=404, detail="Harness Category not found")
     return {"message": "Harness Category deleted successfully"}
 
+
+# Testing Equipment CRUD Endpoints
+@router.get("/testing-equipment", response_model=List[HarnessEquipmentResponse])
+def get_harness_equipments():
+    db = get_db()
+    # Seed default equipment if none exist to prevent blank page initially
+    if db.harness_equipment.count_documents({}) == 0:
+        default_equipment = [
+            {
+                "name": "Testing Equipment #1 (Pending)",
+                "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop",
+                "section": "Testing Equipment"
+            },
+            {
+                "name": "Testing Equipment #2 (Pending)",
+                "image": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800&auto=format&fit=crop",
+                "section": "Testing Equipment"
+            },
+            {
+                "name": "Testing Equipment #3 (Pending)",
+                "image": "https://images.unsplash.com/photo-1581091870622-045c6b88593b?q=80&w=800&auto=format&fit=crop",
+                "section": "Testing Equipment"
+            }
+        ]
+        db.harness_equipment.insert_many(default_equipment)
+
+    items = list(db.harness_equipment.find({}))
+    return [equipment_helper(item) for item in items]
+
+@router.post("/testing-equipment", response_model=HarnessEquipmentResponse)
+def create_harness_equipment(item: HarnessEquipmentCreate, admin: dict = Depends(require_admin)):
+    db = get_db()
+    item_dict = item.model_dump()
+    result = db.harness_equipment.insert_one(item_dict)
+    item_dict["_id"] = result.inserted_id
+    return equipment_helper(item_dict)
+
+@router.put("/testing-equipment/{id}", response_model=HarnessEquipmentResponse)
+def update_harness_equipment(id: str, item: HarnessEquipmentCreate, admin: dict = Depends(require_admin)):
+    db = get_db()
+    if not ObjectId.is_valid(id):
+        raise HTTPException(status_code=400, detail="Invalid ID")
+    item_dict = item.model_dump()
+    result = db.harness_equipment.update_one(
+        {"_id": ObjectId(id)},
+        {"$set": item_dict}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Harness Equipment not found")
+    updated_item = db.harness_equipment.find_one({"_id": ObjectId(id)})
+    return equipment_helper(updated_item)
+
+@router.delete("/testing-equipment/{id}")
+def delete_harness_equipment(id: str, admin: dict = Depends(require_admin)):
+    db = get_db()
+    if not ObjectId.is_valid(id):
+        raise HTTPException(status_code=400, detail="Invalid ID")
+    result = db.harness_equipment.delete_one({"_id": ObjectId(id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Harness Equipment not found")
+    return {"message": "Harness Equipment deleted successfully"}
+
+
 @router.get("/", response_model=List[HarnessProductResponse])
 def get_harness_products(voltageType: Optional[str] = None, subcategory: Optional[str] = None):
     db = get_db()
@@ -163,3 +235,7 @@ def update_harness_product(id: str, item: HarnessProductCreate, admin: dict = De
 
     updated_item = db.harness_products.find_one({"_id": ObjectId(id)})
     return harness_helper(updated_item)
+
+
+
+
