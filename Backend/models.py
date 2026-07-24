@@ -39,6 +39,7 @@ class ProductBase(BaseModel):
     specifications: Optional[Dict[str, Any]] = {}
     moq: Optional[str] = "200 PCS"
     unit: Optional[str] = "pcs"
+    isUlApproved: Optional[bool] = False
 
 class ProductCreate(ProductBase):
     pass

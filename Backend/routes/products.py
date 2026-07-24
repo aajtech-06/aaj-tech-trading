@@ -23,6 +23,7 @@ def product_helper(prod) -> dict:
         "image": prod.get("image", None),
         "moq": prod.get("moq", "200 PCS"),
         "unit": prod.get("unit", "pcs"),
+        "isUlApproved": prod.get("isUlApproved", False),
     }
 
 @router.get("/", response_model=List[ProductResponse])

@@ -8,7 +8,11 @@ import ProductSpecifications from '@/features/products/components/ProductSpecifi
 
 import { Product } from '@/types';
 
-const API_BASE = 'https://aajtechtrading.in/api';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://aajtechtrading.in';
+const API_BASE = `${BACKEND_URL}/api`;
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const isValidImageUrl = (url: string) => {
   if (!url) return false;
@@ -75,6 +79,22 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
           {/* Product Image Section */}
           <div className="space-y-6">
             <div className="relative h-[400px] md:h-[600px] rounded-[48px] overflow-hidden shadow-2xl shadow-gray-200/50 border border-white dark:border-neutral-800 flex items-center justify-center bg-white dark:bg-neutral-900 p-8">
+              {product.isUlApproved && (
+                <span
+                  className="absolute bg-[#16A34A] text-white shadow-sm"
+                  style={{
+                    top: '24px',
+                    left: '24px',
+                    zIndex: 10,
+                    borderRadius: '999px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    padding: '6px 12px',
+                  }}
+                >
+                  UL APPROVED
+                </span>
+              )}
               {isValidImageUrl(product.image) ? (
                 <>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -107,13 +127,18 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
 
           {/* Product Info Section */}
           <div className="flex flex-col">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex flex-wrap items-center gap-3 mb-6">
               <span className="bg-brand-red/10 text-brand-red text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-xl">
                 {categoryName}
               </span>
               {product.sku && (
                 <span className="bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-xl">
                   SKU: {product.sku}
+                </span>
+              )}
+              {product.isUlApproved && (
+                <span className="bg-[#16A34A] text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-xl shadow-sm">
+                  UL Approved
                 </span>
               )}
             </div>
@@ -132,6 +157,16 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                 MOQ: {product.moq || '10 PCS'}
               </div>
             </div>
+
+            {/* Certification Details */}
+            {product.isUlApproved && (
+              <div className="mb-6 flex flex-col gap-1">
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Certification</span>
+                <span className="text-sm font-black text-brand-dark dark:text-white flex items-center gap-1.5">
+                  <span className="text-emerald-500 font-bold">✅</span> UL Approved
+                </span>
+              </div>
+            )}
 
             {/* Price Box */}
             <div className="w-full max-w-md bg-[#F4FBF7] dark:bg-emerald-950/20 border border-[#E6F4EA] dark:border-emerald-900/40 rounded-3xl p-6 mb-10 shadow-sm">

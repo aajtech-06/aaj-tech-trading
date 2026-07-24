@@ -43,6 +43,7 @@ interface Product {
   specifications: Record<string, string>;
   moq?: string;
   unit?: string;
+  isUlApproved?: boolean;
 }
 
 interface Category {
@@ -78,6 +79,7 @@ export default function ProductManagement() {
     features: '',
     moq: '200 PCS',
     unit: 'pcs',
+    isUlApproved: false,
     // Technical Specs
     spec_pins: '',
     spec_pitch: '',
@@ -183,6 +185,7 @@ export default function ProductManagement() {
           image: newProduct.image,
           moq: newProduct.moq || '200 PCS',
           unit: newProduct.unit || 'pcs',
+          isUlApproved: newProduct.isUlApproved,
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
           specifications: {
             Pins: newProduct.spec_pins,
@@ -229,6 +232,7 @@ export default function ProductManagement() {
           features: '',
           moq: '200 PCS',
           unit: 'pcs',
+          isUlApproved: false,
           spec_pins: '',
           spec_pitch: '',
           spec_current: '',
@@ -283,6 +287,7 @@ export default function ProductManagement() {
           image: newProduct.image,
           moq: newProduct.moq || '200 PCS',
           unit: newProduct.unit || 'pcs',
+          isUlApproved: newProduct.isUlApproved,
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
           specifications: {
             Pins: newProduct.spec_pins,
@@ -330,6 +335,7 @@ export default function ProductManagement() {
           features: '',
           moq: '200 PCS',
           unit: 'pcs',
+          isUlApproved: false,
           spec_pins: '',
           spec_pitch: '',
           spec_current: '',
@@ -378,6 +384,7 @@ export default function ProductManagement() {
       features: product.features?.join('\n') || '',
       moq: product.moq || '200 PCS',
       unit: product.unit || 'pcs',
+      isUlApproved: !!product.isUlApproved,
       spec_pins: product.specifications?.Pins || '',
       spec_pitch: product.specifications?.Pitch || '',
       spec_current: product.specifications?.Current || '',
@@ -489,6 +496,7 @@ export default function ProductManagement() {
               features: '',
               moq: '200 PCS',
               unit: 'pcs',
+              isUlApproved: false,
               spec_pins: '',
               spec_pitch: '',
               spec_current: '',
@@ -724,6 +732,14 @@ export default function ProductManagement() {
                   </div>
 
                   <div className="w-full h-48 rounded-2xl overflow-hidden mb-6 relative bg-gray-50 flex items-center justify-center p-4">
+                    {product.isUlApproved && (
+                      <span
+                        className="absolute top-3 left-3 bg-[#16A34A] text-white text-[11px] font-semibold rounded-full px-2.5 py-1 z-10 shadow-md"
+                        style={{ borderRadius: '999px', fontSize: '11px', fontWeight: 600, padding: '5px 10px' }}
+                      >
+                        UL APPROVED
+                      </span>
+                    )}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={product.image || 'https://images.unsplash.com/photo-1558467523-46113f1fef72?q=80&w=600&h=400&auto=format&fit=crop'} alt={product.name} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" />
                     <span className="absolute bottom-4 left-4 text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full bg-white/90 text-brand-red backdrop-blur-md shadow-sm">
@@ -1112,6 +1128,33 @@ export default function ProductManagement() {
                       className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red transition-all outline-none resize-none"
                       placeholder="Provide technical specifications and usage details..."
                     />
+                  </div>
+
+                  {/* Certification Radio Buttons */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Certification *</label>
+                    <div className="flex items-center gap-8 bg-gray-50 p-5 rounded-2xl">
+                      <label className="flex items-center gap-3 font-bold text-brand-dark cursor-pointer text-sm">
+                        <input
+                          type="radio"
+                          name="isUlApproved"
+                          checked={!newProduct.isUlApproved}
+                          onChange={() => setNewProduct(prev => ({ ...prev, isUlApproved: false }))}
+                          className="w-5 h-5 text-brand-red focus:ring-brand-red border-gray-300 cursor-pointer"
+                        />
+                        Non UL Approved
+                      </label>
+                      <label className="flex items-center gap-3 font-bold text-brand-dark cursor-pointer text-sm">
+                        <input
+                          type="radio"
+                          name="isUlApproved"
+                          checked={newProduct.isUlApproved}
+                          onChange={() => setNewProduct(prev => ({ ...prev, isUlApproved: true }))}
+                          className="w-5 h-5 text-brand-red focus:ring-brand-red border-gray-300 cursor-pointer"
+                        />
+                        UL Approved
+                      </label>
+                    </div>
                   </div>
 
                   {/* Image Upload */}

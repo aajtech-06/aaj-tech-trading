@@ -31,6 +31,7 @@ interface Product {
   specifications?: Record<string, any>;
   moq?: string;
   unit?: string;
+  isUlApproved?: boolean;
 }
 
 interface Category {
@@ -73,6 +74,22 @@ const ProductCard = ({
     <div className="bg-white dark:bg-neutral-900 rounded-[24px] overflow-hidden border border-gray-100 dark:border-neutral-800 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col h-full relative">
       {/* Image Container with White/Light Gray background */}
       <div className="relative h-56 overflow-hidden bg-gray-50/50 dark:bg-neutral-800/40 flex items-center justify-center border-b border-gray-100/60 dark:border-neutral-800">
+        {product.isUlApproved && (
+          <span
+            className="absolute bg-[#16A34A] text-white shadow-sm animate-fade-in"
+            style={{
+              top: '12px',
+              left: '12px',
+              zIndex: 10,
+              borderRadius: '999px',
+              fontSize: '11px',
+              fontWeight: 600,
+              padding: '5px 10px',
+            }}
+          >
+            UL APPROVED
+          </span>
+        )}
         {isValidImageUrl(product.image) ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img

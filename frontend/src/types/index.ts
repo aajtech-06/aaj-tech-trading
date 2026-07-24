@@ -38,6 +38,7 @@ export interface Product {
   specifications: Record<string, string>;
   moq?: string;
   unit?: string;
+  isUlApproved?: boolean;
 }
 
 export interface Industry {
