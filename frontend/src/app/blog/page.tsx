@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-
+import React, { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar } from 'lucide-react';
 import Link from 'next/link';
@@ -22,9 +22,13 @@ interface BlogPost {
   [key: string]: unknown;
 }
 
-export default function BlogPage() {
+function BlogContent() {
+  const searchParams = useSearchParams();
+  const catParam = searchParams.get('category');
+
   const [blogs, setBlogs] = React.useState<BlogPost[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const selectedCategory = catParam || 'All Blogs';
 
   React.useEffect(() => {
     let isMounted = true;
@@ -46,6 +50,12 @@ export default function BlogPage() {
     return () => { isMounted = false; };
   }, []);
 
+  const blogsToRender = React.useMemo(() => {
+    const list = Array.isArray(blogs) ? blogs : [];
+    if (selectedCategory === 'All Blogs') return list;
+    return list.filter(b => b.category?.toLowerCase() === selectedCategory.toLowerCase());
+  }, [blogs, selectedCategory]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#fafafa] dark:bg-brand-dark transition-colors duration-300">
@@ -53,8 +63,6 @@ export default function BlogPage() {
       </div>
     );
   }
-
-  const blogsToRender = Array.isArray(blogs) ? blogs : [];
 
   return (
     <div className="min-h-screen bg-[#fafafa] dark:bg-brand-dark transition-colors duration-300">
@@ -73,7 +81,7 @@ export default function BlogPage() {
             transition={{ duration: 0.6 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-white max-w-5xl leading-tight drop-shadow-md"
           >
-            Connector Guides, Product Information & Usage Support
+            {selectedCategory === 'All Blogs' ? 'Connector Guides, Product Information & Usage Support' : `${selectedCategory} Insights & Guides`}
           </motion.h1>
         </div>
       </div>
@@ -127,6 +135,8 @@ export default function BlogPage() {
                       <div className="flex items-center gap-6 text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-8">
                         <span className="flex items-center gap-2"><Calendar size={14} className="text-brand-red" /> {post.date}</span>
                         <span className="text-gray-200">|</span>
+                        <span className="text-gray-200">{post.category}</span>
+                        <span className="text-gray-200">|</span>
                         <span className="text-brand-red">{post.read_time || '5 MIN READ'}</span>
                       </div>
 
@@ -150,5 +160,17 @@ export default function BlogPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#fafafa] dark:bg-brand-dark transition-colors duration-300">
+        <div className="w-12 h-12 border-4 border-brand-red border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <BlogContent />
+    </Suspense>
   );
 }

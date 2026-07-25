@@ -37,7 +37,16 @@ export const navItems: NavItem[] = [
       { title: 'Career', href: '/career' },
     ],
   },
-  { title: 'Blog', href: '/blog' },
+  {
+    title: 'Blog',
+    href: '/blog',
+    items: [
+      { title: 'All Blogs', href: '/blog' },
+      { title: 'Technical', href: '/blog?category=Technical' },
+      { title: 'Industry', href: '/blog?category=Industry' },
+      { title: 'Company & Culture', href: '/blog?category=Company %26 Culture' },
+    ],
+  },
   { title: 'Contact Us', href: '/contact' },
 ];
 

@@ -50,7 +50,7 @@ export default function BlogManagement() {
     title: '',
     excerpt: '',
     content: '',
-    category: 'Innovation',
+    category: 'Technical',
     date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
     image: '',
     author: 'Admin',
@@ -436,10 +436,9 @@ export default function BlogManagement() {
                         onChange={(e) => setNewBlog(prev => ({ ...prev, category: e.target.value }))}
                         className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all appearance-none"
                       >
-                        <option value="Innovation">Innovation</option>
-                        <option value="Engineering">Engineering</option>
-                        <option value="Company News">Company News</option>
-                        <option value="Product Guide">Product Guide</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Industry">Industry</option>
+                        <option value="Company & Culture">Company & Culture</option>
                       </select>
                     </div>
                     {/* Author */}

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import React from 'react';
 
 import Link from 'next/link';
@@ -43,6 +44,63 @@ const isValidImageUrl = (url: string) => {
 
 interface ProductPageProps {
   params: Promise<{ id: string[] }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const { id: idParam } = await params;
+  let fetchUrl = '';
+  if (idParam && idParam.length > 0) {
+    if (idParam.length === 1) {
+      fetchUrl = `${API_BASE}/products/${idParam[0]}`;
+    } else if (idParam.length === 2) {
+      fetchUrl = `${API_BASE}/products/slug/${idParam[1]}`;
+    }
+  }
+
+  if (!fetchUrl) {
+    return {};
+  }
+
+  try {
+    const res = await fetch(fetchUrl, { cache: 'no-store' });
+    if (!res.ok) return {};
+    const product: Product = await res.json();
+
+    const title = `${product.name} | AAJ TECH TRADING`;
+    const description = product.description || `Buy premium industrial components like ${product.name} at AAJ TECH TRADING.`;
+    const imageUrl = product.image || "https://aajtechtrading.in/logo.png";
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        type: 'website',
+        url: `https://aajtechtrading.in/products/${idParam.join('/')}`,
+        siteName: 'AAJ TECH TRADING CORPORATION',
+        images: [
+          {
+            url: imageUrl,
+            width: 800,
+            height: 600,
+            alt: product.name,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [imageUrl],
+      },
+    };
+  } catch (err) {
+    console.error("Failed to generate product metadata", err);
+    return {};
+  }
 }
 
 export default async function ProductDetailsPage({ params }: ProductPageProps) {
