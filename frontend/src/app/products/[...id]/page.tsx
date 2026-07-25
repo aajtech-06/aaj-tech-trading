@@ -298,12 +298,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                   ₹{finalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {(product.unit || 'pcs').toUpperCase()}
                 </span>
               </div>
-            </div>
-
-            <p className="text-gray-600 dark:text-gray-300 text-lg mb-12 leading-relaxed font-medium">
-              {product.description}
-            </p>
-
+              </div>
             {/* Features List */}
             <div className="mb-12">
               <h3 className="font-black text-brand-dark dark:text-white text-sm uppercase tracking-widest mb-6 flex items-center gap-2">
