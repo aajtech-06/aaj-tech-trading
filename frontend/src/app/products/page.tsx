@@ -34,6 +34,18 @@ interface Product {
   isUlApproved?: boolean;
 }
 
+const slugify = (text: string): string => {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+};
+
 interface Category {
   id: string;
   name: string;
@@ -48,6 +60,19 @@ const ProductCard = ({
 }) => {
   const [liked, setLiked] = useState(false);
   const { addToCart, setIsOpen, setCheckoutStep } = useCart();
+
+  const categoryName = category ? category.name : 'uncategorized';
+  const categorySlug = slugify(categoryName);
+  const productSlug = slugify(product.name);
+  let suffix = '';
+  try {
+    suffix = (BigInt('0x' + product.id) % BigInt(10000000)).toString().padStart(7, '0');
+  } catch (err) {
+    console.error('Error generating product URL suffix:', err);
+  }
+  const productUrl = suffix 
+    ? `/products/${categorySlug}/${productSlug}-${suffix}`
+    : `/products/${product.id}`;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -158,7 +183,7 @@ const ProductCard = ({
           </div>
 
           <Link
-            href={`/products/${product.id}`}
+            href={productUrl}
             className="flex items-center gap-1 text-xs font-bold text-brand-red hover:text-brand-dark dark:hover:text-white transition-colors group/link pb-1"
           >
             View Details

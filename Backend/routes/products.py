@@ -1,3 +1,4 @@
+import re
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List
 from database import get_db
@@ -31,6 +32,41 @@ def get_products():
     db = get_db()
     products = list(db.products.find())
     return [product_helper(prod) for prod in products]
+
+@router.get("/slug/{product_slug}", response_model=ProductResponse)
+def get_product_by_slug(product_slug: str):
+    db = get_db()
+    
+    def slugify_name(text: str) -> str:
+        text = text.lower().strip()
+        text = re.sub(r'\s+', '-', text)
+        text = re.sub(r'[^\w\-]', '', text)
+        text = re.sub(r'\-+', '-', text)
+        return text.strip('-')
+
+    products = list(db.products.find())
+    
+    # Phase 1: Try exact match (including suffix)
+    for prod in products:
+        prod_id_str = str(prod["_id"])
+        try:
+            suffix = str(int(prod_id_str, 16) % 10000000).rjust(7, '0')
+        except Exception:
+            continue
+        
+        name_slug = slugify_name(prod["name"])
+        if f"{name_slug}-{suffix}" == product_slug:
+            return product_helper(prod)
+            
+    # Phase 2: Fallback - Match by name slug (ignoring the suffix)
+    match = re.match(r"^(.*)-(\d+)$", product_slug)
+    if match:
+        name_part = match.group(1)
+        for prod in products:
+            if slugify_name(prod["name"]) == name_part:
+                return product_helper(prod)
+            
+    raise HTTPException(status_code=404, detail="Product not found")
 
 @router.get("/{product_id}", response_model=ProductResponse)
 def get_product(product_id: str):

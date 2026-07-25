@@ -26,17 +26,30 @@ const isValidImageUrl = (url: string) => {
 };
 
 interface ProductPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string[] }>;
 }
 
 export default async function ProductDetailsPage({ params }: ProductPageProps) {
-  const { id } = await params;
+  const { id: idParam } = await params;
 
   let product: Product | null = null;
   let categoryName = 'Uncategorized';
 
   try {
-    const res = await fetch(`${API_BASE}/products/${id}`, { cache: 'no-store' });
+    let fetchUrl = '';
+    if (idParam && idParam.length > 0) {
+      if (idParam.length === 1) {
+        fetchUrl = `${API_BASE}/products/${idParam[0]}`;
+      } else if (idParam.length === 2) {
+        fetchUrl = `${API_BASE}/products/slug/${idParam[1]}`;
+      }
+    }
+
+    if (!fetchUrl) {
+      notFound();
+    }
+
+    const res = await fetch(fetchUrl, { cache: 'no-store' });
     if (!res.ok) {
       notFound();
     }
