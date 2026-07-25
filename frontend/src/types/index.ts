@@ -39,6 +39,7 @@ export interface Product {
   moq?: string;
   unit?: string;
   isUlApproved?: boolean;
+  datasheet?: string;
 }
 
 export interface Industry {

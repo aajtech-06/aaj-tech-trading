@@ -22,3 +22,18 @@ async def upload_image(request: Request, file: UploadFile = File(...), admin: di
         return {"url": result.get("secure_url")}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save image to Cloudinary: {str(e)}")
+
+@router.post("/pdf")
+async def upload_pdf(request: Request, file: UploadFile = File(...), admin: dict = Depends(require_admin)):
+    if file.content_type != "application/pdf":
+        raise HTTPException(status_code=400, detail=f"Invalid file type ({file.content_type}). Please upload a PDF datasheet.")
+
+    try:
+        result = cloudinary.uploader.upload(
+            file.file,
+            folder="aaj_tech/datasheets",
+            resource_type="auto"
+        )
+        return {"url": result.get("secure_url")}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save document to Cloudinary: {str(e)}")

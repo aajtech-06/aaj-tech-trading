@@ -40,6 +40,7 @@ class ProductBase(BaseModel):
     moq: Optional[str] = "200 PCS"
     unit: Optional[str] = "pcs"
     isUlApproved: Optional[bool] = False
+    datasheet: Optional[str] = None
 
 class ProductCreate(ProductBase):
     pass

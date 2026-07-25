@@ -246,7 +246,7 @@ const Navbar = () => {
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red/50 text-brand-dark dark:text-white rounded-full transition-all w-48 lg:w-64"
+              className="pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red/50 text-brand-dark dark:text-white rounded-full transition-all w-36 lg:w-48"
             />
             <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-red transition-colors">
               <Search size={18} />
@@ -256,21 +256,21 @@ const Navbar = () => {
           {/* Theme Switcher Button */}
           <button
             onClick={toggleTheme}
-            className="p-2.5 text-gray-600 dark:text-gray-300 hover:text-brand-red transition-colors cursor-pointer"
+            className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800/80 text-gray-600 dark:text-gray-300 hover:text-brand-red transition-all cursor-pointer shrink-0"
             aria-label="Toggle Theme"
           >
-            {theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           </button>
 
           {/* Cart Icon Button */}
           <button
             onClick={() => setIsOpenCart(true)}
-            className="relative p-2.5 text-gray-600 dark:text-gray-300 hover:text-brand-red transition-colors cursor-pointer"
+            className="relative flex items-center justify-center h-10 w-10 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800/80 text-gray-600 dark:text-gray-300 hover:text-brand-red transition-all cursor-pointer shrink-0"
             aria-label="Open Cart"
           >
-            <ShoppingCart size={22} />
+            <ShoppingCart size={20} />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-pulse shadow-sm">
+              <span className="absolute top-0 right-0 bg-brand-red text-white text-[9px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center animate-pulse shadow-sm">
                 {cartCount}
               </span>
             )}
@@ -278,7 +278,7 @@ const Navbar = () => {
 
           <Link
             href="/login"
-            className="group relative bg-brand-red hover:bg-brand-red-hover text-white px-10 py-4 rounded-full text-sm font-black transition-all shadow-[0_15px_30px_-5px_rgba(210,35,42,0.4)] active:scale-95 uppercase tracking-widest overflow-hidden"
+            className="group relative bg-brand-red hover:bg-brand-red-hover text-white px-10 py-4 rounded-full text-sm font-black transition-all shadow-[0_15px_30px_-5px_rgba(210,35,42,0.4)] active:scale-95 uppercase tracking-widest overflow-hidden shrink-0"
           >
             <span className="relative z-10">Sign In</span>
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>

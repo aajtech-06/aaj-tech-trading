@@ -44,6 +44,7 @@ interface Product {
   moq?: string;
   unit?: string;
   isUlApproved?: boolean;
+  datasheet?: string;
 }
 
 interface Category {
@@ -60,7 +61,9 @@ export default function ProductManagement() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const datasheetInputRef = React.useRef<HTMLInputElement>(null);
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [filterCategory, setFilterCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
@@ -74,6 +77,7 @@ export default function ProductManagement() {
     category_id: '',
     description: '',
     image: '',
+    datasheet: '',
     stock: '',
     status: 'active',
     features: '',
@@ -160,6 +164,39 @@ export default function ProductManagement() {
     }
   };
 
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("File is too large. Max size is 10MB.");
+      return;
+    }
+
+    setUploadingPdf(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch(`${API_BASE}/upload/pdf`, {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNewProduct(prev => ({ ...prev, datasheet: data.url }));
+      } else {
+        const errData = await res.json();
+        alert(errData.detail || 'PDF Upload failed');
+      }
+    } catch (error) {
+      console.error('Error uploading PDF:', error);
+      alert('Error uploading PDF');
+    } finally {
+      setUploadingPdf(false);
+    }
+  };
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
@@ -183,6 +220,7 @@ export default function ProductManagement() {
           category_id: newProduct.category_id,
           description: newProduct.description,
           image: newProduct.image,
+          datasheet: newProduct.datasheet,
           moq: newProduct.moq || '200 PCS',
           unit: newProduct.unit || 'pcs',
           isUlApproved: newProduct.isUlApproved,
@@ -227,6 +265,7 @@ export default function ProductManagement() {
           category_id: categories.length > 0 ? categories[0].id : '',
           description: '',
           image: '',
+          datasheet: '',
           stock: '',
           status: 'active',
           features: '',
@@ -285,6 +324,7 @@ export default function ProductManagement() {
           category_id: newProduct.category_id,
           description: newProduct.description,
           image: newProduct.image,
+          datasheet: newProduct.datasheet,
           moq: newProduct.moq || '200 PCS',
           unit: newProduct.unit || 'pcs',
           isUlApproved: newProduct.isUlApproved,
@@ -330,6 +370,7 @@ export default function ProductManagement() {
           category_id: categories.length > 0 ? categories[0].id : '',
           description: '',
           image: '',
+          datasheet: '',
           stock: '',
           status: 'active',
           features: '',
@@ -379,6 +420,7 @@ export default function ProductManagement() {
       category_id: product.category_id,
       description: product.description || '',
       image: product.image || '',
+      datasheet: product.datasheet || '',
       stock: product.stock?.toString() || '',
       status: product.status || 'active',
       features: product.features?.join('\n') || '',
@@ -491,6 +533,7 @@ export default function ProductManagement() {
               category_id: categories.length > 0 ? categories[0].id : '',
               description: '',
               image: '',
+              datasheet: '',
               stock: '',
               status: 'active',
               features: '',
@@ -1229,6 +1272,92 @@ export default function ProductManagement() {
                         onChange={(e) => setNewProduct(prev => ({ ...prev, image: e.target.value }))}
                         className="w-full bg-gray-50 border-none rounded-2xl py-4 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all text-xs"
                         placeholder="https://example.com/image.jpg"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Datasheet PDF Upload */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                      <FileText size={12} className="text-brand-red" /> Product Datasheet (PDF)
+                    </label>
+
+                    <div className="flex flex-col md:flex-row gap-6">
+                      {/* Upload Area */}
+                      <div
+                        onClick={() => datasheetInputRef.current?.click()}
+                        className={`flex-1 border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center gap-4 transition-all cursor-pointer group ${newProduct.datasheet ? 'border-green-100 bg-green-50/10' : 'border-gray-100 hover:border-brand-red/30 hover:bg-brand-red/5 bg-gray-50/30'
+                          }`}
+                      >
+                        <input
+                          type="file"
+                          ref={datasheetInputRef}
+                          onChange={handlePdfUpload}
+                          className="hidden"
+                          accept="application/pdf"
+                        />
+
+                        {uploadingPdf ? (
+                          <div className="flex flex-col items-center gap-3">
+                            <Loader2 className="w-10 h-10 text-brand-red animate-spin" />
+                            <p className="text-[10px] font-black text-brand-red uppercase tracking-widest">Uploading...</p>
+                          </div>
+                        ) : (
+                          <>
+                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${newProduct.datasheet ? 'bg-green-100 text-green-600' : 'bg-white text-gray-400 group-hover:text-brand-red group-hover:scale-110 shadow-sm'
+                              }`}>
+                              {newProduct.datasheet ? <Check size={28} /> : <Upload size={28} />}
+                            </div>
+                            <div className="text-center">
+                              <p className="font-black text-brand-dark text-sm mb-1">
+                                {newProduct.datasheet ? 'PDF Datasheet Selected' : 'Drop PDF here or click to upload'}
+                              </p>
+                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                PDF up to 10MB
+                              </p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Preview / Clear Area */}
+                      {newProduct.datasheet && (
+                        <div className="w-full md:w-48 h-48 rounded-3xl border border-gray-100 bg-gray-50 flex flex-col items-center justify-center relative p-4 group/preview text-center">
+                          <FileText className="text-brand-red mb-2" size={48} />
+                          <p className="text-[11px] font-black text-brand-dark truncate max-w-full px-2" title={newProduct.datasheet.split('/').pop()}>
+                            {newProduct.datasheet.split('/').pop() || 'datasheet.pdf'}
+                          </p>
+                          <a 
+                            href={newProduct.datasheet} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-[9px] text-blue-600 hover:underline font-bold uppercase tracking-wider mt-1"
+                          >
+                            View PDF
+                          </a>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setNewProduct(prev => ({ ...prev, datasheet: '' }));
+                            }}
+                            className="absolute top-2 right-2 w-8 h-8 bg-brand-red text-white rounded-full flex items-center justify-center opacity-0 group-hover/preview:opacity-100 transition-opacity shadow-lg shadow-brand-red/20"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Manual URL Input (Fallback) */}
+                    <div className="pt-2">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-2">Or paste PDF URL</p>
+                      <input
+                        type="text"
+                        value={newProduct.datasheet}
+                        onChange={(e) => setNewProduct(prev => ({ ...prev, datasheet: e.target.value }))}
+                        className="w-full bg-gray-50 border-none rounded-2xl py-4 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all text-xs"
+                        placeholder="https://example.com/datasheet.pdf"
                       />
                     </div>
                   </div>

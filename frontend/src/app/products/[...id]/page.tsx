@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { ArrowLeft, CheckCircle2, Package, Truck, ShieldCheck } from 'lucide-react';
 import ProductActions from '@/features/products/ProductActions';
-import ProductSpecifications from '@/features/products/components/ProductSpecifications';
+import ProductAccordion from '@/features/products/components/ProductAccordion';
 
 import { Product } from '@/types';
 
@@ -283,9 +283,13 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
           </div>
         </div>
 
-        {/* Specifications Section */}
+        {/* Collapsible Accordion Sections */}
         <div className="mb-24">
-          <ProductSpecifications specifications={product.specifications} />
+          <ProductAccordion 
+            specifications={product.specifications} 
+            description={product.description}
+            datasheet={product.datasheet}
+          />
         </div>
 
         {/* Value Proposition */}
