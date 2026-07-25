@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { ArrowLeft, CheckCircle2, Package, Truck, ShieldCheck } from 'lucide-react';
 import ProductActions from '@/features/products/ProductActions';
 import ProductSpecifications from '@/features/products/components/ProductSpecifications';
@@ -13,6 +13,22 @@ const API_BASE = `${BACKEND_URL}/api`;
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
+const slugify = (text: string): string => {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+};
+
+const isObjectId = (str: string): boolean => {
+  return /^[0-9a-fA-F]{24}$/.test(str);
+};
 
 const isValidImageUrl = (url: string) => {
   if (!url) return false;
@@ -31,6 +47,28 @@ interface ProductPageProps {
 
 export default async function ProductDetailsPage({ params }: ProductPageProps) {
   const { id: idParam } = await params;
+
+  if (idParam && idParam.length === 1 && !isObjectId(idParam[0])) {
+    const idVal = idParam[0];
+    let catId = '';
+    try {
+      const catRes = await fetch(`${API_BASE}/categories/`, { cache: 'no-store' });
+      if (catRes.ok) {
+        const categories = await catRes.json();
+        const cat = categories.find((c: { id: string; name: string }) => slugify(c.name) === idVal);
+        if (cat) {
+          catId = cat.id;
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch categories during redirect", err);
+    }
+    if (catId) {
+      redirect(`/products?category=${catId}`);
+    } else {
+      notFound();
+    }
+  }
 
   let product: Product | null = null;
   let categoryName = 'Uncategorized';
