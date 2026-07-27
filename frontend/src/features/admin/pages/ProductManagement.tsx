@@ -84,6 +84,7 @@ export default function ProductManagement() {
   const [filterCategory, setFilterCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
+  const [showStandardSpecs, setShowStandardSpecs] = useState(false);
 
   // Form State
   const [newProduct, setNewProduct] = useState({
@@ -282,7 +283,7 @@ export default function ProductManagement() {
           unit: newProduct.unit || 'pcs',
           isUlApproved: newProduct.isUlApproved,
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
-          specifications: newProduct.hasVariantPricing ? {} : {
+          specifications: (newProduct.hasVariantPricing && !showStandardSpecs) ? {} : {
             Pins: newProduct.spec_pins,
             Pitch: newProduct.spec_pitch,
             Current: newProduct.spec_current,
@@ -339,6 +340,7 @@ export default function ProductManagement() {
         const addedProduct = await res.json();
         setProducts(prev => [...prev, addedProduct]);
         setIsAddModalOpen(false);
+        setShowStandardSpecs(false);
         setNewProduct({
           name: '',
           sku: '',
@@ -418,7 +420,7 @@ export default function ProductManagement() {
           unit: newProduct.unit || 'pcs',
           isUlApproved: newProduct.isUlApproved,
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
-          specifications: newProduct.hasVariantPricing ? {} : {
+          specifications: (newProduct.hasVariantPricing && !showStandardSpecs) ? {} : {
             Pins: newProduct.spec_pins,
             Pitch: newProduct.spec_pitch,
             Current: newProduct.spec_current,
@@ -476,6 +478,7 @@ export default function ProductManagement() {
         setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
         setIsAddModalOpen(false);
         setEditingProduct(null);
+        setShowStandardSpecs(false);
         setNewProduct({
           name: '',
           sku: '',
@@ -590,6 +593,12 @@ export default function ProductManagement() {
         ? Object.entries(product.customSpecifications).map(([key, value]) => ({ key, value }))
         : [],
     });
+    if (product.hasVariantPricing) {
+      const hasAnyStaticSpec = product.specifications && Object.values(product.specifications).some(val => val !== '');
+      setShowStandardSpecs(!!hasAnyStaticSpec);
+    } else {
+      setShowStandardSpecs(false);
+    }
     setIsAddModalOpen(true);
   };
 
@@ -707,6 +716,7 @@ export default function ProductManagement() {
               variants: [],
               customSpecs: []
             });
+            setShowStandardSpecs(false);
             setIsAddModalOpen(true);
           }}
           className="bg-brand-red hover:bg-brand-dark text-white font-black px-8 py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-brand-red/20 transition-all active:scale-95"
@@ -1177,7 +1187,7 @@ export default function ProductManagement() {
                   </div>
 
                   {/* Variant Pricing & Specifications Section */}
-                  {newProduct.hasVariantPricing ? (
+                  {newProduct.hasVariantPricing && (
                     <div className="space-y-8">
                       {/* Variant Table */}
                       <div className="bg-gray-50/50 p-6 rounded-[32px] border border-gray-100 space-y-4">
@@ -1369,6 +1379,15 @@ export default function ProductManagement() {
                             <p className="text-xs text-gray-400 font-bold">Define technical specs and certifications for this product.</p>
                           </div>
                           <div className="flex gap-2">
+                            {newProduct.hasVariantPricing && (
+                              <button
+                                type="button"
+                                onClick={() => setShowStandardSpecs(prev => !prev)}
+                                className="bg-brand-dark hover:bg-brand-red text-white font-bold text-xs px-4 py-2 rounded-xl transition-all"
+                              >
+                                {showStandardSpecs ? 'Hide Standard Specs' : 'Show Standard Specs'}
+                              </button>
+                            )}
                             <button
                               type="button"
                               onClick={() => {
@@ -1432,8 +1451,10 @@ export default function ProductManagement() {
                         )}
                       </div>
                     </div>
-                  ) : (
-                    <div className="space-y-8">
+                  )}
+
+                  {(!newProduct.hasVariantPricing || showStandardSpecs) && (
+                    <div className={`space-y-8 ${newProduct.hasVariantPricing ? 'border-t border-gray-100 pt-8 mt-8' : ''}`}>
                       {/* Section 1: Electrical & Primary Specs */}
                       <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
                         <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] flex items-center gap-2">
