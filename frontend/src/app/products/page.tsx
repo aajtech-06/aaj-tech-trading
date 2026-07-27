@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useMemo } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -269,16 +269,37 @@ const ProductsContent = () => {
     setCurrentPage(1);
   }, [searchQuery]);
 
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory = selectedCategory === 'all' || product.category_id === selectedCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const filteredProducts = useMemo(() => {
+    const list = products.filter((product) => {
+      const matchesCategory = selectedCategory === 'all' || product.category_id === selectedCategory;
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+
+    if (selectedCategory === 'all') {
+      const categoryOrder = categories.reduce((acc, cat, idx) => {
+        acc[cat.id] = idx;
+        return acc;
+      }, {} as Record<string, number>);
+
+      return [...list].sort((a, b) => {
+        const orderA = categoryOrder[a.category_id] ?? 999;
+        const orderB = categoryOrder[b.category_id] ?? 999;
+        if (orderA !== orderB) return orderA - orderB;
+        return a.name.localeCompare(b.name);
+      });
+    }
+
+    return list;
+  }, [products, selectedCategory, searchQuery, categories]);
 
   // Pagination Logic
-  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentProducts = filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const isAllProducts = selectedCategory === 'all';
+  const totalPages = isAllProducts ? 1 : Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const startIndex = isAllProducts ? 0 : (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentProducts = isAllProducts 
+    ? filteredProducts 
+    : filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <div className="pt-32 pb-24 min-h-screen bg-brand-light dark:bg-brand-dark transition-colors duration-300">
