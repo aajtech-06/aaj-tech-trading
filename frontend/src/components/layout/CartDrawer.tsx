@@ -32,9 +32,9 @@ export default function CartDrawer() {
   const gstAmount = totalAmount * 0.18;
   const grandTotal = totalAmount + gstAmount;
 
-  const handleQtyChange = (itemId: string, currentQty: number, change: number) => {
+  const handleQtyChange = (cartId: string, currentQty: number, change: number) => {
     const newQty = Math.max(1, currentQty + change);
-    updateQuantity(itemId, newQty);
+    updateQuantity(cartId, newQty);
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -278,7 +278,7 @@ export default function CartDrawer() {
               <div className="space-y-4">
                 {cartItems.map((item) => (
                   <motion.div
-                    key={item.id}
+                    key={item.cartId}
                     layout
                     exit={{ opacity: 0, y: -25 }}
                     className="bg-white dark:bg-neutral-900 rounded-2xl p-4 border border-gray-100 dark:border-neutral-800 shadow-sm flex items-center gap-4 relative group"
@@ -309,9 +309,16 @@ export default function CartDrawer() {
                         ₹{item.price.toLocaleString('en-IN')}.00 / {item.unit || 'pcs'}
                       </p>
                       
+                      {/* Option/Size tag */}
+                      {item.size && (
+                        <span className="inline-block bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 text-[10px] font-bold px-2 py-0.5 rounded-md mt-1">
+                          Option: {item.size}
+                        </span>
+                      )}
+
                       {/* MOQ reminder */}
                       {item.moq && (
-                        <p className="text-[9px] font-semibold text-gray-400 italic">
+                        <p className="text-[9px] font-semibold text-gray-400 italic mt-1">
                           MOQ: {item.moq}
                         </p>
                       )}
@@ -322,7 +329,7 @@ export default function CartDrawer() {
                       <div className="flex items-center bg-gray-50 dark:bg-neutral-800 border border-gray-100 dark:border-neutral-700 rounded-lg p-0.5 shadow-sm">
                         <button
                           type="button"
-                          onClick={() => handleQtyChange(item.id, item.quantity, -1)}
+                          onClick={() => handleQtyChange(item.cartId, item.quantity, -1)}
                           className="w-7 h-7 flex items-center justify-center rounded hover:bg-white dark:hover:bg-neutral-700 hover:text-brand-red text-gray-400 transition-all cursor-pointer"
                         >
                           <Minus size={12} />
@@ -334,16 +341,16 @@ export default function CartDrawer() {
                           onChange={(e) => {
                             const val = parseInt(e.target.value);
                             if (isNaN(val) || val < 1) {
-                              updateQuantity(item.id, 1);
+                              updateQuantity(item.cartId, 1);
                             } else {
-                              updateQuantity(item.id, val);
+                              updateQuantity(item.cartId, val);
                             }
                           }}
                           className="w-12 text-center font-black text-brand-dark dark:text-white text-xs bg-transparent outline-none border-b border-transparent focus:border-brand-red [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
                         <button
                           type="button"
-                          onClick={() => handleQtyChange(item.id, item.quantity, 1)}
+                          onClick={() => handleQtyChange(item.cartId, item.quantity, 1)}
                           className="w-7 h-7 flex items-center justify-center rounded hover:bg-white dark:hover:bg-neutral-700 hover:text-brand-red text-gray-400 transition-all cursor-pointer"
                         >
                           <Plus size={12} />
@@ -354,7 +361,7 @@ export default function CartDrawer() {
                           ₹{(item.price * item.quantity).toLocaleString('en-IN')}.00
                         </span>
                         <button
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => removeFromCart(item.cartId)}
                           className="text-gray-300 hover:text-brand-red transition-colors cursor-pointer"
                           aria-label="Remove item"
                         >

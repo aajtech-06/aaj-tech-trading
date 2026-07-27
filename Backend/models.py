@@ -42,6 +42,12 @@ class ProductBase(BaseModel):
     isUlApproved: Optional[bool] = False
     datasheet: Optional[str] = None
 
+    # Generic Variant Pricing & Dynamic Specifications
+    hasVariantPricing: Optional[bool] = False
+    variantType: Optional[str] = "Size"
+    variants: Optional[List[Dict[str, Any]]] = []
+    customSpecifications: Optional[Dict[str, Any]] = {}
+
 class ProductCreate(ProductBase):
     pass
 

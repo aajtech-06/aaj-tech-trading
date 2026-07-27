@@ -23,6 +23,18 @@ export interface Category {
   icon: string;
 }
 
+export interface Variant {
+  id: string;
+  label: string;
+  value: string;
+  unit: string;
+  price: number;
+  sku: string;
+  stock: number;
+  isDefault: boolean;
+  status: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -40,6 +52,10 @@ export interface Product {
   unit?: string;
   isUlApproved?: boolean;
   datasheet?: string;
+  hasVariantPricing?: boolean;
+  variantType?: string;
+  variants?: Variant[];
+  customSpecifications?: Record<string, string>;
 }
 
 export interface Industry {

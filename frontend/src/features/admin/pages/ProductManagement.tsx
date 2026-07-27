@@ -29,6 +29,18 @@ import {
 
 const API_BASE = 'https://aajtechtrading.in/api';
 
+interface Variant {
+  id: string;
+  label: string;
+  value: string;
+  unit: string;
+  price: number;
+  sku: string;
+  stock: number;
+  isDefault: boolean;
+  status: string;
+}
+
 interface Product {
   id: string;
   name: string;
@@ -45,6 +57,10 @@ interface Product {
   unit?: string;
   isUlApproved?: boolean;
   datasheet?: string;
+  hasVariantPricing?: boolean;
+  variantType?: string;
+  variants?: Variant[];
+  customSpecifications?: Record<string, string>;
 }
 
 interface Category {
@@ -109,7 +125,12 @@ export default function ProductManagement() {
     spec_color: '',
     spec_weight: '',
     spec_size: '',
-    spec_custom: '' // For any custom specs as key-value pairs
+    spec_custom: '', // For any custom specs as key-value pairs
+    // Generic Variant Pricing
+    hasVariantPricing: false,
+    variantType: 'Size',
+    variants: [] as { id: string; label: string; value: string; unit: string; price: string; sku: string; stock: string; isDefault: boolean; status: string }[],
+    customSpecs: [] as { key: string; value: string }[]
   });
 
   const fetchData = async () => {
@@ -202,9 +223,45 @@ export default function ProductManagement() {
     fetchData();
   }, []);
 
+  const validateVariants = () => {
+    if (!newProduct.hasVariantPricing) return true;
+    
+    if (newProduct.variants.length === 0) {
+      alert("At least one variant is mandatory when Variant Pricing is enabled.");
+      return false;
+    }
+
+    const labels = newProduct.variants.map(v => v.label.trim());
+    if (labels.some(l => l === "")) {
+      alert("Variant label cannot be empty.");
+      return false;
+    }
+
+    const units = newProduct.variants.map(v => v.unit.trim());
+    if (units.some(u => u === "")) {
+      alert("Variant unit cannot be empty.");
+      return false;
+    }
+
+    const prices = newProduct.variants.map(v => parseFloat(v.price));
+    if (prices.some(p => isNaN(p) || p <= 0)) {
+      alert("Variant price must be greater than zero.");
+      return false;
+    }
+
+    const uniqueLabels = new Set(labels);
+    if (uniqueLabels.size !== labels.length) {
+      alert("Duplicate variants are not allowed (each variant must have a unique label).");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.category_id) return;
+    if (!validateVariants()) return;
 
     setSubmitting(true);
     try {
@@ -214,8 +271,8 @@ export default function ProductManagement() {
         body: JSON.stringify({
           name: newProduct.name,
           sku: newProduct.sku,
-          price: parseFloat(newProduct.price) || 0,
-          stock: parseInt(newProduct.stock) || 0,
+          price: newProduct.hasVariantPricing ? 0 : (parseFloat(newProduct.price) || 0),
+          stock: newProduct.hasVariantPricing ? 0 : (parseInt(newProduct.stock) || 0),
           status: newProduct.status,
           category_id: newProduct.category_id,
           description: newProduct.description,
@@ -225,7 +282,7 @@ export default function ProductManagement() {
           unit: newProduct.unit || 'pcs',
           isUlApproved: newProduct.isUlApproved,
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
-          specifications: {
+          specifications: newProduct.hasVariantPricing ? {} : {
             Pins: newProduct.spec_pins,
             Pitch: newProduct.spec_pitch,
             Current: newProduct.spec_current,
@@ -251,7 +308,31 @@ export default function ProductManagement() {
             Weight: newProduct.spec_weight,
             Size: newProduct.spec_size,
             Custom: newProduct.spec_custom
-          }
+          },
+          hasVariantPricing: newProduct.hasVariantPricing,
+          variantType: newProduct.hasVariantPricing ? newProduct.variantType : 'Size',
+          variants: newProduct.hasVariantPricing ? newProduct.variants.map(v => ({
+            id: v.id,
+            label: v.label.trim(),
+            value: v.value.trim(),
+            unit: v.unit.trim(),
+            price: parseFloat(v.price) || 0,
+            sku: '',
+            stock: parseInt(v.stock) || 0,
+            isDefault: !!v.isDefault,
+            status: v.status
+          })) : [],
+          customSpecifications: newProduct.hasVariantPricing 
+            ? (() => {
+                const specs: Record<string, string> = {};
+                newProduct.customSpecs.forEach(s => {
+                  if (s.key.trim()) {
+                    specs[s.key.trim()] = s.value;
+                  }
+                });
+                return specs;
+              })()
+            : {}
         })
       });
       if (res.ok) {
@@ -296,8 +377,15 @@ export default function ProductManagement() {
           spec_color: '',
           spec_weight: '',
           spec_size: '',
-          spec_custom: ''
+          spec_custom: '',
+          hasVariantPricing: false,
+          variantType: 'Size',
+          variants: [],
+          customSpecs: []
         });
+      } else {
+        const errData = await res.json();
+        alert(errData.detail || "Failed to add product.");
       }
     } catch (error) {
       console.error('Failed to add product:', error);
@@ -309,6 +397,7 @@ export default function ProductManagement() {
   const handleUpdateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.category_id || !editingProduct) return;
+    if (!validateVariants()) return;
 
     setSubmitting(true);
     try {
@@ -318,8 +407,8 @@ export default function ProductManagement() {
         body: JSON.stringify({
           name: newProduct.name,
           sku: newProduct.sku,
-          price: parseFloat(newProduct.price) || 0,
-          stock: parseInt(newProduct.stock) || 0,
+          price: newProduct.hasVariantPricing ? 0 : (parseFloat(newProduct.price) || 0),
+          stock: newProduct.hasVariantPricing ? 0 : (parseInt(newProduct.stock) || 0),
           status: newProduct.status,
           category_id: newProduct.category_id,
           description: newProduct.description,
@@ -329,7 +418,7 @@ export default function ProductManagement() {
           unit: newProduct.unit || 'pcs',
           isUlApproved: newProduct.isUlApproved,
           features: newProduct.features.split('\n').filter(f => f.trim() !== ''),
-          specifications: {
+          specifications: newProduct.hasVariantPricing ? {} : {
             Pins: newProduct.spec_pins,
             Pitch: newProduct.spec_pitch,
             Current: newProduct.spec_current,
@@ -355,7 +444,31 @@ export default function ProductManagement() {
             Weight: newProduct.spec_weight,
             Size: newProduct.spec_size,
             Custom: newProduct.spec_custom
-          }
+          },
+          hasVariantPricing: newProduct.hasVariantPricing,
+          variantType: newProduct.hasVariantPricing ? newProduct.variantType : 'Size',
+          variants: newProduct.hasVariantPricing ? newProduct.variants.map(v => ({
+            id: v.id,
+            label: v.label.trim(),
+            value: v.value.trim(),
+            unit: v.unit.trim(),
+            price: parseFloat(v.price) || 0,
+            sku: '',
+            stock: parseInt(v.stock) || 0,
+            isDefault: !!v.isDefault,
+            status: v.status
+          })) : [],
+          customSpecifications: newProduct.hasVariantPricing 
+            ? (() => {
+                const specs: Record<string, string> = {};
+                newProduct.customSpecs.forEach(s => {
+                  if (s.key.trim()) {
+                    specs[s.key.trim()] = s.value;
+                  }
+                });
+                return specs;
+              })()
+            : {}
         })
       });
       if (res.ok) {
@@ -401,8 +514,15 @@ export default function ProductManagement() {
           spec_color: '',
           spec_weight: '',
           spec_size: '',
-          spec_custom: ''
+          spec_custom: '',
+          hasVariantPricing: false,
+          variantType: 'Size',
+          variants: [],
+          customSpecs: []
         });
+      } else {
+        const errData = await res.json();
+        alert(errData.detail || "Failed to update product.");
       }
     } catch (error) {
       console.error('Failed to update product:', error);
@@ -451,7 +571,24 @@ export default function ProductManagement() {
       spec_color: product.specifications?.Color || '',
       spec_weight: product.specifications?.Weight || '',
       spec_size: product.specifications?.Size || '',
-      spec_custom: product.specifications?.Custom || ''
+      spec_custom: product.specifications?.Custom || '',
+      // Generic Variant Pricing
+      hasVariantPricing: !!product.hasVariantPricing,
+      variantType: product.variantType || 'Size',
+      variants: product.variants ? product.variants.map(v => ({
+        id: v.id || Math.random().toString(36).substring(2, 9),
+        label: v.label || '',
+        value: v.value || '',
+        unit: v.unit || 'pcs',
+        price: v.price?.toString() || '',
+        sku: v.sku || '',
+        stock: v.stock?.toString() || '0',
+        isDefault: !!v.isDefault,
+        status: v.status || 'active'
+      })) : [],
+      customSpecs: product.customSpecifications 
+        ? Object.entries(product.customSpecifications).map(([key, value]) => ({ key, value }))
+        : [],
     });
     setIsAddModalOpen(true);
   };
@@ -564,7 +701,11 @@ export default function ProductManagement() {
               spec_color: '',
               spec_weight: '',
               spec_size: '',
-              spec_custom: ''
+              spec_custom: '',
+              hasVariantPricing: false,
+              variantType: 'Size',
+              variants: [],
+              customSpecs: []
             });
             setIsAddModalOpen(true);
           }}
@@ -945,27 +1086,31 @@ export default function ProductManagement() {
                       />
                     </div>
                     {/* Price */}
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Base Price (INR)</label>
-                      <input
-                        type="number"
-                        value={newProduct.price}
-                        onChange={(e) => setNewProduct(prev => ({ ...prev, price: e.target.value }))}
-                        className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
-                        placeholder="450"
-                      />
-                    </div>
+                    {!newProduct.hasVariantPricing && (
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Base Price (INR)</label>
+                        <input
+                          type="number"
+                          value={newProduct.price}
+                          onChange={(e) => setNewProduct(prev => ({ ...prev, price: e.target.value }))}
+                          className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
+                          placeholder="450"
+                        />
+                      </div>
+                    )}
                     {/* Stock */}
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Stock</label>
-                      <input
-                        type="number"
-                        value={newProduct.stock}
-                        onChange={(e) => setNewProduct(prev => ({ ...prev, stock: e.target.value }))}
-                        className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
-                        placeholder="100"
-                      />
-                    </div>
+                    {!newProduct.hasVariantPricing && (
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Stock</label>
+                        <input
+                          type="number"
+                          value={newProduct.stock}
+                          onChange={(e) => setNewProduct(prev => ({ ...prev, stock: e.target.value }))}
+                          className="w-full bg-gray-50 border-none rounded-2xl py-5 px-6 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all"
+                          placeholder="100"
+                        />
+                      </div>
+                    )}
                     {/* MOQ */}
                     <div className="space-y-3">
                       <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Minimum Order Quantity (MOQ)</label>
@@ -999,151 +1144,438 @@ export default function ProductManagement() {
                         <Settings className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" size={18} />
                       </div>
                     </div>
-                  </div>
 
-                  {/* Technical Specifications Section */}
-                  <div className="space-y-8">
-                    {/* Section 1: Electrical & Primary Specs */}
-                    <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
-                      <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] flex items-center gap-2">
-                        <Zap size={16} className="text-brand-red" /> Electrical & Performance
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Current</label>
-                          <input type="text" value={newProduct.spec_current} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_current: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 5A" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Voltage</label>
-                          <input type="text" value={newProduct.spec_voltage} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_voltage: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 250V" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Rated Current</label>
-                          <input type="text" value={newProduct.spec_rated_current} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_rated_current: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 10A" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Rated Voltage</label>
-                          <input type="text" value={newProduct.spec_rated_voltage} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_rated_voltage: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 600V" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Contact Resistance</label>
-                          <input type="text" value={newProduct.spec_contact_resistance} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_contact_resistance: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. <20mΩ" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Insulation Resistance</label>
-                          <input type="text" value={newProduct.spec_insulation_resistance} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_insulation_resistance: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. >1000MΩ" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Section 2: Mechanical & Material */}
-                    <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
-                      <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] flex items-center gap-2">
-                        <Settings size={16} className="text-brand-red" /> Mechanical & Material
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pins / Contacts</label>
-                          <input type="text" value={newProduct.spec_pins} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_pins: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 9" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Positions</label>
-                          <input type="text" value={newProduct.spec_positions} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_positions: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 2x5" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Gender</label>
-                          <select value={newProduct.spec_gender} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_gender: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all appearance-none">
-                            <option value="">Not Applicable</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Universal">Universal</option>
-                          </select>
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Material</label>
-                          <input type="text" value={newProduct.spec_material} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_material: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. PBT/Brass" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Mount Type</label>
-                          <input type="text" value={newProduct.spec_mount_type} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_mount_type: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. PCB/Panel" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Orientation</label>
-                          <input type="text" value={newProduct.spec_orientation} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_orientation: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. Right Angle" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Type (Screw/Spring)</label>
-                          <input type="text" value={newProduct.spec_type} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_type: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. Screw" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Wire Size</label>
-                          <input type="text" value={newProduct.spec_wire_size} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_wire_size: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 22-14 AWG" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Section 3: Dimensions & Physical */}
-                    <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
-                      <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] flex items-center gap-2">
-                        <Maximize2 size={16} className="text-brand-red" /> Dimensions & Physical
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pitch</label>
-                          <input type="text" value={newProduct.spec_pitch} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_pitch: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 2.54mm" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Length</label>
-                          <input type="text" value={newProduct.spec_length} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_length: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 50mm" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Inner Diameter</label>
-                          <input type="text" value={newProduct.spec_inner_diameter} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_inner_diameter: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 3.2mm" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Shrink Ratio</label>
-                          <input type="text" value={newProduct.spec_shrink_ratio} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_shrink_ratio: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 2:1" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Stack Height</label>
-                          <input type="text" value={newProduct.spec_stack_height} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_stack_height: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 5mm" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Size</label>
-                          <input type="text" value={newProduct.spec_size} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_size: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. Large" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Color</label>
-                          <input type="text" value={newProduct.spec_color} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_color: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. Black" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Weight</label>
-                          <input type="text" value={newProduct.spec_weight} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_weight: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 50g" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Section 4: Environmental & Other */}
-                    <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
-                      <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] flex items-center gap-2">
-                        <Thermometer size={16} className="text-brand-red" /> Environmental & Additional
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Temperature Range</label>
-                          <input type="text" value={newProduct.spec_temp_range} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_temp_range: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. -40°C to +105°C" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Temperature Rating</label>
-                          <input type="text" value={newProduct.spec_temp_rating} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_temp_rating: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 125°C" />
-                        </div>
-                        <div className="col-span-2 space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Custom Specification (Key-Value)</label>
-                          <input type="text" value={newProduct.spec_custom} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_custom: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. RoHS: Compliant; Flammability: UL94V-0" />
-                        </div>
-                      </div>
+                    {/* Enable Variant Pricing Checkbox */}
+                    <div className="space-y-3 flex items-center pt-8">
+                      <label className="flex items-center gap-3 font-bold text-brand-dark cursor-pointer text-sm">
+                        <input
+                          type="checkbox"
+                          checked={newProduct.hasVariantPricing}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setNewProduct(prev => ({ 
+                              ...prev, 
+                              hasVariantPricing: checked,
+                              variants: checked && prev.variants.length === 0 ? [{
+                                id: Math.random().toString(36).substring(2, 9),
+                                label: '',
+                                value: '',
+                                unit: prev.unit || 'pcs',
+                                price: '',
+                                sku: '',
+                                stock: '100',
+                                isDefault: true,
+                                status: 'active'
+                              }] : prev.variants
+                            }));
+                          }}
+                          className="w-5 h-5 text-brand-red focus:ring-brand-red border-gray-300 rounded cursor-pointer"
+                        />
+                        Enable Variant Pricing
+                      </label>
                     </div>
                   </div>
+
+                  {/* Variant Pricing & Specifications Section */}
+                  {newProduct.hasVariantPricing ? (
+                    <div className="space-y-8">
+                      {/* Variant Table */}
+                      <div className="bg-gray-50/50 p-6 rounded-[32px] border border-gray-100 space-y-4">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em]">Variant Pricing Table</h3>
+                            <p className="text-xs text-gray-400 font-bold">Define variants with their own prices, SKU, stock, and default flags.</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newId = Math.random().toString(36).substring(2, 9);
+                              const hasDefault = newProduct.variants.some(v => v.isDefault);
+                              setNewProduct(prev => ({
+                                ...prev,
+                                variants: [...prev.variants, {
+                                  id: newId,
+                                  label: '',
+                                  value: '',
+                                  unit: prev.unit || 'pcs',
+                                  price: '',
+                                  sku: '',
+                                  stock: '100',
+                                  isDefault: !hasDefault,
+                                  status: 'active'
+                                }]
+                              }));
+                            }}
+                            className="bg-brand-red hover:bg-brand-dark text-white font-bold text-xs px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+                          >
+                            <Plus size={14} /> Add Row
+                          </button>
+                        </div>
+                        {newProduct.variants.length === 0 ? (
+                          <p className="text-xs text-gray-400 font-bold italic">No variants added yet. Click &apos;Add Row&apos; to define variants.</p>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse min-w-[700px]">
+                              <thead>
+                                <tr className="border-b border-gray-200">
+                                  <th className="py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest w-[22%]">{newProduct.variantType} Label</th>
+                                  <th className="py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest w-[15%]">Value</th>
+                                  <th className="py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest w-[15%]">Unit</th>
+                                  <th className="py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest w-[15%]">Price (₹)</th>
+                                  <th className="py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest w-[12%]">Stock</th>
+                                  <th className="py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest w-[10%] text-center">Default</th>
+                                  <th className="py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest w-[11%]">Status</th>
+                                  <th className="py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Delete</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-gray-100">
+                                {newProduct.variants.map((row, index) => (
+                                  <tr key={row.id || index} className="align-middle">
+                                    <td className="py-3 pr-2">
+                                      <input
+                                        type="text"
+                                        value={row.label}
+                                        onChange={(e) => {
+                                          const updated = [...newProduct.variants];
+                                          updated[index].label = e.target.value;
+                                          if (!updated[index].value) {
+                                            updated[index].value = e.target.value.toLowerCase().replace(/\s+/g, '-');
+                                          }
+                                          setNewProduct(prev => ({ ...prev, variants: updated }));
+                                        }}
+                                        placeholder="e.g. 2 mm"
+                                        className="w-full bg-white border border-gray-200 rounded-lg py-2 px-2 text-sm font-bold text-brand-dark focus:ring-1 focus:ring-brand-red outline-none"
+                                        required
+                                      />
+                                    </td>
+                                    <td className="py-3 pr-2">
+                                      <input
+                                        type="text"
+                                        value={row.value}
+                                        onChange={(e) => {
+                                          const updated = [...newProduct.variants];
+                                          updated[index].value = e.target.value;
+                                          setNewProduct(prev => ({ ...prev, variants: updated }));
+                                        }}
+                                        placeholder="e.g. 2"
+                                        className="w-full bg-white border border-gray-200 rounded-lg py-2 px-2 text-sm font-bold text-brand-dark focus:ring-1 focus:ring-brand-red outline-none"
+                                        required
+                                      />
+                                    </td>
+                                    <td className="py-3 pr-2">
+                                      <input
+                                        type="text"
+                                        value={row.unit}
+                                        onChange={(e) => {
+                                          const updated = [...newProduct.variants];
+                                          updated[index].unit = e.target.value;
+                                          setNewProduct(prev => ({ ...prev, variants: updated }));
+                                        }}
+                                        placeholder="e.g. Meter"
+                                        className="w-full bg-white border border-gray-200 rounded-lg py-2 px-2 text-sm font-bold text-brand-dark focus:ring-1 focus:ring-brand-red outline-none"
+                                        required
+                                      />
+                                    </td>
+                                    <td className="py-3 pr-2">
+                                      <input
+                                        type="number"
+                                        value={row.price}
+                                        onChange={(e) => {
+                                          const updated = [...newProduct.variants];
+                                          updated[index].price = e.target.value;
+                                          setNewProduct(prev => ({ ...prev, variants: updated }));
+                                        }}
+                                        placeholder="e.g. 10"
+                                        className="w-full bg-white border border-gray-200 rounded-lg py-2 px-2 text-sm font-bold text-brand-dark focus:ring-1 focus:ring-brand-red outline-none"
+                                        required
+                                      />
+                                    </td>
+
+                                    <td className="py-3 pr-2">
+                                      <input
+                                        type="number"
+                                        value={row.stock}
+                                        onChange={(e) => {
+                                          const updated = [...newProduct.variants];
+                                          updated[index].stock = e.target.value;
+                                          setNewProduct(prev => ({ ...prev, variants: updated }));
+                                        }}
+                                        placeholder="100"
+                                        className="w-full bg-white border border-gray-200 rounded-lg py-2 px-2 text-sm font-bold text-brand-dark focus:ring-1 focus:ring-brand-red outline-none"
+                                        required
+                                      />
+                                    </td>
+                                    <td className="py-3 text-center">
+                                      <input
+                                        type="radio"
+                                        name="isDefaultVariant"
+                                        checked={row.isDefault}
+                                        onChange={() => {
+                                          const updated = newProduct.variants.map((v, i) => ({
+                                            ...v,
+                                            isDefault: i === index
+                                          }));
+                                          setNewProduct(prev => ({ ...prev, variants: updated }));
+                                        }}
+                                        className="w-4 h-4 text-brand-red focus:ring-brand-red border-gray-300 cursor-pointer"
+                                      />
+                                    </td>
+                                    <td className="py-3 pr-2">
+                                      <select
+                                        value={row.status}
+                                        onChange={(e) => {
+                                          const updated = [...newProduct.variants];
+                                          updated[index].status = e.target.value;
+                                          setNewProduct(prev => ({ ...prev, variants: updated }));
+                                        }}
+                                        className="w-full bg-white border border-gray-200 rounded-lg py-2 px-1 text-xs font-bold text-brand-dark focus:ring-1 focus:ring-brand-red outline-none cursor-pointer"
+                                      >
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                      </select>
+                                    </td>
+                                    <td className="py-3 text-right">
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const isDeletedDefault = row.isDefault;
+                                          const updated = newProduct.variants.filter((_, i) => i !== index);
+                                          if (isDeletedDefault && updated.length > 0) {
+                                            updated[0].isDefault = true;
+                                          }
+                                          setNewProduct(prev => ({
+                                            ...prev,
+                                            variants: updated
+                                          }));
+                                        }}
+                                        className="text-gray-300 hover:text-brand-red p-1 transition-colors"
+                                      >
+                                        <Trash2 size={16} />
+                                      </button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Custom Specifications Dynamic List */}
+                      <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                          <div>
+                            <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em]">Product Specifications</h3>
+                            <p className="text-xs text-gray-400 font-bold">Define technical specs and certifications for this product.</p>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setNewProduct(prev => ({
+                                  ...prev,
+                                  customSpecs: [...prev.customSpecs, { key: '', value: '' }]
+                                }));
+                              }}
+                              className="bg-brand-red hover:bg-brand-dark text-white font-bold text-xs px-4 py-2 rounded-xl flex items-center gap-2 transition-all"
+                            >
+                              <Plus size={14} /> Add Spec Row
+                            </button>
+                          </div>
+                        </div>
+
+                        {newProduct.customSpecs.length === 0 ? (
+                          <p className="text-xs text-gray-400 font-bold italic">No specifications added yet. Click &apos;Add Spec Row&apos;.</p>
+                        ) : (
+                          <div className="flex flex-col gap-4">
+                            {newProduct.customSpecs.map((spec, index) => (
+                              <div key={index} className="flex gap-3 items-center">
+                                <input
+                                  type="text"
+                                  value={spec.key}
+                                  onChange={(e) => {
+                                    const updated = [...newProduct.customSpecs];
+                                    updated[index].key = e.target.value;
+                                    setNewProduct(prev => ({ ...prev, customSpecs: updated }));
+                                  }}
+                                  placeholder="Specification Name (e.g. Material)"
+                                  className="flex-1 bg-white border border-gray-200 rounded-lg py-2 px-3 text-sm font-bold text-brand-dark focus:ring-1 focus:ring-brand-red outline-none"
+                                  required
+                                />
+                                <input
+                                  type="text"
+                                  value={spec.value}
+                                  onChange={(e) => {
+                                    const updated = [...newProduct.customSpecs];
+                                    updated[index].value = e.target.value;
+                                    setNewProduct(prev => ({ ...prev, customSpecs: updated }));
+                                  }}
+                                  placeholder="Value (e.g. Polyolefin)"
+                                  className="flex-1 bg-white border border-gray-200 rounded-lg py-2 px-3 text-sm font-bold text-brand-dark focus:ring-1 focus:ring-brand-red outline-none"
+                                  required
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setNewProduct(prev => ({
+                                      ...prev,
+                                      customSpecs: prev.customSpecs.filter((_, i) => i !== index)
+                                    }));
+                                  }}
+                                  className="text-gray-300 hover:text-brand-red p-1 transition-colors"
+                                >
+                                  <X size={16} />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-8">
+                      {/* Section 1: Electrical & Primary Specs */}
+                      <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
+                        <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] flex items-center gap-2">
+                          <Zap size={16} className="text-brand-red" /> Electrical & Performance
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Current</label>
+                            <input type="text" value={newProduct.spec_current} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_current: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 5A" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Voltage</label>
+                            <input type="text" value={newProduct.spec_voltage} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_voltage: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 250V" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Rated Current</label>
+                            <input type="text" value={newProduct.spec_rated_current} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_rated_current: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 10A" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Rated Voltage</label>
+                            <input type="text" value={newProduct.spec_rated_voltage} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_rated_voltage: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 600V" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Contact Resistance</label>
+                            <input type="text" value={newProduct.spec_contact_resistance} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_contact_resistance: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. <20mΩ" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Insulation Resistance</label>
+                            <input type="text" value={newProduct.spec_insulation_resistance} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_insulation_resistance: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. >1000MΩ" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Section 2: Mechanical & Material */}
+                      <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
+                        <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] flex items-center gap-2">
+                          <Settings size={16} className="text-brand-red" /> Mechanical & Material
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pins / Contacts</label>
+                            <input type="text" value={newProduct.spec_pins} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_pins: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 9" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Positions</label>
+                            <input type="text" value={newProduct.spec_positions} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_positions: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 2x5" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Gender</label>
+                            <select value={newProduct.spec_gender} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_gender: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all appearance-none">
+                              <option value="">Not Applicable</option>
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                              <option value="Universal">Universal</option>
+                            </select>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Material</label>
+                            <input type="text" value={newProduct.spec_material} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_material: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. PBT/Brass" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Mount Type</label>
+                            <input type="text" value={newProduct.spec_mount_type} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_mount_type: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. PCB/Panel" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Orientation</label>
+                            <input type="text" value={newProduct.spec_orientation} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_orientation: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. Right Angle" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Type (Screw/Spring)</label>
+                            <input type="text" value={newProduct.spec_type} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_type: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. Screw" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Wire Size</label>
+                            <input type="text" value={newProduct.spec_wire_size} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_wire_size: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 22-14 AWG" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Section 3: Dimensions & Physical */}
+                      <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
+                        <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] flex items-center gap-2">
+                          <Maximize2 size={16} className="text-brand-red" /> Dimensions & Physical
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pitch</label>
+                            <input type="text" value={newProduct.spec_pitch} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_pitch: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 2.54mm" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Length</label>
+                            <input type="text" value={newProduct.spec_length} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_length: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 50mm" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Inner Diameter</label>
+                            <input type="text" value={newProduct.spec_inner_diameter} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_inner_diameter: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 3.2mm" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Shrink Ratio</label>
+                            <input type="text" value={newProduct.spec_shrink_ratio} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_shrink_ratio: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 2:1" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Stack Height</label>
+                            <input type="text" value={newProduct.spec_stack_height} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_stack_height: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 5mm" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Size</label>
+                            <input type="text" value={newProduct.spec_size} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_size: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. Large" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Color</label>
+                            <input type="text" value={newProduct.spec_color} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_color: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. Black" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Weight</label>
+                            <input type="text" value={newProduct.spec_weight} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_weight: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 50g" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Section 4: Environmental & Other */}
+                      <div className="bg-gray-50/50 p-8 rounded-[32px] border border-gray-100 space-y-6">
+                        <h3 className="text-sm font-black text-brand-dark uppercase tracking-[0.2em] flex items-center gap-2">
+                          <Thermometer size={16} className="text-brand-red" /> Environmental & Additional
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Temperature Range</label>
+                            <input type="text" value={newProduct.spec_temp_range} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_temp_range: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. -40°C to +105°C" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Temperature Rating</label>
+                            <input type="text" value={newProduct.spec_temp_rating} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_temp_rating: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. 125°C" />
+                          </div>
+                          <div className="col-span-2 space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Custom Specification (Key-Value)</label>
+                            <input type="text" value={newProduct.spec_custom} onChange={(e) => setNewProduct(prev => ({ ...prev, spec_custom: e.target.value }))} className="w-full bg-white border border-gray-100 rounded-xl py-4 px-5 font-bold text-brand-dark focus:ring-2 focus:ring-brand-red outline-none transition-all" placeholder="e.g. RoHS: Compliant; Flammability: UL94V-0" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Key Features */}
                   <div className="space-y-3">

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { ShoppingCart, ShoppingBag, Minus, Plus, ArrowRight } from 'lucide-react';
 
 import { useCart } from '@/context/CartContext';
+import { Variant } from '@/types';
 
 interface ProductActionsProps {
   id: string;
@@ -13,11 +14,45 @@ interface ProductActionsProps {
   productCategory?: string;
   moq?: string;
   productUnit?: string;
+  hasVariantPricing?: boolean;
+  variants?: Variant[];
+  variantType?: string;
 }
 
-const ProductActions = ({ id, price, productName, productImage, productCategory, moq, productUnit = 'pcs' }: ProductActionsProps) => {
+const ProductActions = ({
+  id,
+  price,
+  productName,
+  productImage,
+  productCategory,
+  moq,
+  productUnit = 'pcs',
+  hasVariantPricing = false,
+  variants = [],
+  variantType = 'Size'
+}: ProductActionsProps) => {
   const { addToCart, setIsOpen, setCheckoutStep } = useCart();
   
+  // Find default active variant index
+  const defaultIndex = variants && variants.length > 0 
+    ? Math.max(0, variants.findIndex(v => v.isDefault && v.status === 'active'))
+    : 0;
+
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(defaultIndex);
+  const [prevId, setPrevId] = useState(id);
+
+  if (id !== prevId) {
+    setPrevId(id);
+    setSelectedVariantIndex(defaultIndex);
+  }
+
+  const hasVariant = !!hasVariantPricing && variants && variants.length > 0;
+  const activeVariant = hasVariant ? variants[selectedVariantIndex] : null;
+
+  const currentPrice = activeVariant ? activeVariant.price : price;
+  const currentUnit = activeVariant ? activeVariant.unit : productUnit;
+  const currentStock = activeVariant ? activeVariant.stock : undefined;
+
   // Parse minimum quantity from MOQ string e.g. "200 PCS" -> 200
   const getInitialQuantity = () => {
     if (!moq) return 1;
@@ -27,7 +62,7 @@ const ProductActions = ({ id, price, productName, productImage, productCategory,
 
   const [quantity, setQuantity] = useState(getInitialQuantity());
 
-  const total = price * quantity;
+  const total = currentPrice * quantity;
   const gst = total * 0.18;
   const grandTotal = total + gst;
 
@@ -39,12 +74,14 @@ const ProductActions = ({ id, price, productName, productImage, productCategory,
   const handleAddToCart = () => {
     addToCart({
       id,
-      name: productName,
-      price,
+      name: activeVariant ? `${productName} (${activeVariant.label})` : productName,
+      price: currentPrice,
       image: productImage || '',
       category: productCategory || 'Connector',
       moq: moq || '200 PCS',
-      unit: productUnit
+      unit: currentUnit,
+      size: activeVariant ? activeVariant.label : undefined,
+      cartId: activeVariant ? `${id}-${activeVariant.id}` : id
     }, quantity);
     setCheckoutStep('cart');
     setIsOpen(true);
@@ -53,12 +90,14 @@ const ProductActions = ({ id, price, productName, productImage, productCategory,
   const handleBuyNow = () => {
     addToCart({
       id,
-      name: productName,
-      price,
+      name: activeVariant ? `${productName} (${activeVariant.label})` : productName,
+      price: currentPrice,
       image: productImage || '',
       category: productCategory || 'Connector',
       moq: moq || '200 PCS',
-      unit: productUnit
+      unit: currentUnit,
+      size: activeVariant ? activeVariant.label : undefined,
+      cartId: activeVariant ? `${id}-${activeVariant.id}` : id
     }, quantity);
     setCheckoutStep('form');
     setIsOpen(true);
@@ -66,6 +105,69 @@ const ProductActions = ({ id, price, productName, productImage, productCategory,
 
   return (
     <div className="mt-8 space-y-6">
+      {/* Variant Selector & Details (Conditional) */}
+      {hasVariantPricing && variants && variants.length > 0 && (
+        <div className="space-y-4 mb-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              Select {variantType || 'Option'}
+            </label>
+            <div className="relative">
+              <select
+                value={selectedVariantIndex}
+                onChange={(e) => setSelectedVariantIndex(parseInt(e.target.value))}
+                className="w-full bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-2xl py-4 px-6 font-bold text-brand-dark dark:text-white focus:ring-2 focus:ring-brand-red outline-none appearance-none cursor-pointer text-sm shadow-sm transition-all"
+              >
+                {variants.map((v, idx) => (
+                  <option key={v.id || idx} value={idx} disabled={v.status === 'inactive'}>
+                    {v.label} - ₹{v.price} / {v.unit} {v.sku ? `(${v.sku})` : ''} {v.stock <= 0 ? ' [OUT OF STOCK]' : ''}
+                  </option>
+                ))}
+              </select>
+              <span className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">▼</span>
+            </div>
+          </div>
+
+          {/* Dynamic Variant Details */}
+          <div className="flex flex-wrap gap-3 items-center">
+
+            {currentStock !== undefined && (
+              <div className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border flex items-center gap-2 ${
+                currentStock > 0 
+                  ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40' 
+                  : 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 border-red-100 dark:border-red-900/40'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${currentStock > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
+                {currentStock > 0 ? `In Stock (${currentStock} units)` : 'Out of Stock'}
+              </div>
+            )}
+          </div>
+
+          {/* Dynamic Price Box */}
+          <div className="w-full bg-[#F4FBF7] dark:bg-emerald-950/20 border border-[#E6F4EA] dark:border-emerald-900/40 rounded-3xl p-6 shadow-sm">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-gray-900 dark:text-gray-100 font-extrabold text-base">Base Price:</span>
+              <span className="text-3xl font-black text-[#007A53] dark:text-emerald-400">
+                ₹{currentPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </div>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-gray-500 dark:text-gray-400 font-bold text-sm">GST 18%:</span>
+              <span className="text-base font-bold text-gray-700 dark:text-gray-300">
+                ₹{(currentPrice * 0.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </div>
+            <div className="border-t border-[#D0F0DB] dark:border-emerald-900/40 my-4" />
+            <div className="flex justify-between items-center flex-wrap gap-2">
+              <span className="text-gray-700 dark:text-gray-300 font-bold text-sm">Final Price (Inclusive of all taxes):</span>
+              <span className="text-xl font-black text-gray-900 dark:text-white">
+                ₹{(currentPrice * 1.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {(currentUnit || 'pcs').toUpperCase()}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Price Summary & Quantity Adjuster Grid */}
       <div className="bg-white dark:bg-neutral-900 rounded-[30px] p-6 border border-gray-100 dark:border-neutral-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
         {/* Quantity Controller */}

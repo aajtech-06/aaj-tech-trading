@@ -32,6 +32,9 @@ interface Product {
   moq?: string;
   unit?: string;
   isUlApproved?: boolean;
+  hasVariantPricing?: boolean;
+  variants?: any[];
+  variantType?: string;
 }
 
 const slugify = (text: string): string => {
@@ -74,6 +77,19 @@ const ProductCard = ({
     ? `/products/${categorySlug}/${productSlug}-${suffix}`
     : `/products/${product.id}`;
 
+  const defaultVariantIdx = product.hasVariantPricing && product.variants && product.variants.length > 0
+    ? Math.max(0, product.variants.findIndex(v => v.isDefault && v.status === 'active'))
+    : 0;
+
+  const [selectedVarIdx, setSelectedVarIdx] = useState(defaultVariantIdx);
+
+  const activeVariant = product.hasVariantPricing && product.variants && product.variants.length > 0
+    ? product.variants[selectedVarIdx]
+    : null;
+
+  const displayPrice = activeVariant ? activeVariant.price : (product.price || 450);
+  const displayUnit = activeVariant ? activeVariant.unit : (product.unit || 'pcs');
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -81,15 +97,29 @@ const ProductCard = ({
     const moqText = product.moq || product.specifications?.moq || product.specifications?.MOQ || '200 PCS';
     const moqNumber = parseInt(moqText.replace(/\D/g, '')) || 1;
 
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price || 450,
-      image: product.image,
-      category: category?.name || 'Connector',
-      moq: moqText,
-      unit: product.unit || 'pcs'
-    }, moqNumber);
+    if (product.hasVariantPricing && activeVariant) {
+      addToCart({
+        id: product.id,
+        name: `${product.name} (${activeVariant.label})`,
+        price: activeVariant.price,
+        image: product.image,
+        category: category?.name || 'Connector',
+        moq: moqText,
+        unit: activeVariant.unit,
+        size: activeVariant.label,
+        cartId: `${product.id}-${activeVariant.id}`
+      }, moqNumber);
+    } else {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price || 450,
+        image: product.image,
+        category: category?.name || 'Connector',
+        moq: moqText,
+        unit: product.unit || 'pcs'
+      }, moqNumber);
+    }
 
     setCheckoutStep('cart');
     setIsOpen(true);
@@ -170,15 +200,38 @@ const ProductCard = ({
         {/* Spacer */}
         <div className="flex-grow" />
 
+        {/* Variant Dropdown Selector (Conditional) */}
+        {product.hasVariantPricing && product.variants && product.variants.length > 0 && (
+          <div className="mt-2 mb-3">
+            <label className="text-[9px] font-black text-gray-400 dark:text-neutral-500 uppercase tracking-widest block mb-1">
+              Select {product.variantType || 'Option'}
+            </label>
+            <div className="relative">
+              <select
+                value={selectedVarIdx}
+                onChange={(e) => setSelectedVarIdx(parseInt(e.target.value))}
+                className="w-full bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-xl py-2 px-3 font-bold text-brand-dark dark:text-white focus:ring-1 focus:ring-brand-red outline-none appearance-none cursor-pointer text-xs transition-all pr-8"
+              >
+                {product.variants.map((v, idx) => (
+                  <option key={v.id || idx} value={idx} disabled={v.status === 'inactive'}>
+                    {v.label} - ₹{v.price} / {v.unit} {v.stock <= 0 ? ' [OUT OF STOCK]' : ''}
+                  </option>
+                ))}
+              </select>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none">▼</span>
+            </div>
+          </div>
+        )}
+
         {/* Divider */}
         <div className="border-t border-gray-100 dark:border-neutral-800 my-3" />
 
         {/* Bottom Section: Price & View Details */}
         <div className="flex items-end justify-between">
           <div className="flex flex-col">
-            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Starting From</span>
+            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Price</span>
             <span className="text-lg font-black text-brand-dark dark:text-white">
-              ₹{(product.price || 450).toLocaleString('en-IN')}.00 <span className="text-gray-400 text-[10px] font-normal">/ {product.unit || 'pcs'}</span>
+              ₹{displayPrice.toLocaleString('en-IN')}.00 <span className="text-gray-400 text-[10px] font-normal">/ {displayUnit || 'pcs'}</span>
             </span>
           </div>
 

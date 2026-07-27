@@ -258,10 +258,12 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
 
             {/* Availability & MOQ Badges */}
             <div className="flex flex-wrap gap-3 mb-6">
-              <div className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-100 dark:border-emerald-900/40 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                In Stock
-              </div>
+              {!product.hasVariantPricing && (
+                <div className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-100 dark:border-emerald-900/40 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  In Stock
+                </div>
+              )}
               <div className="bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-gray-200/50 dark:border-neutral-700">
                 MOQ: {product.moq || '10 PCS'}
               </div>
@@ -278,27 +280,29 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
             )}
 
             {/* Price Box */}
-            <div className="w-full max-w-md bg-[#F4FBF7] dark:bg-emerald-950/20 border border-[#E6F4EA] dark:border-emerald-900/40 rounded-3xl p-6 mb-10 shadow-sm">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-gray-900 dark:text-gray-100 font-extrabold text-base">Base Price:</span>
-                <span className="text-3xl font-black text-[#007A53] dark:text-emerald-400">
-                  ₹{basePrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
+            {!product.hasVariantPricing && (
+              <div className="w-full max-w-md bg-[#F4FBF7] dark:bg-emerald-950/20 border border-[#E6F4EA] dark:border-emerald-900/40 rounded-3xl p-6 mb-10 shadow-sm">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-gray-900 dark:text-gray-100 font-extrabold text-base">Base Price:</span>
+                  <span className="text-3xl font-black text-[#007A53] dark:text-emerald-400">
+                    ₹{basePrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-gray-500 dark:text-gray-400 font-bold text-sm">GST 18%:</span>
+                  <span className="text-base font-bold text-gray-700 dark:text-gray-300">
+                    ₹{gstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                </div>
+                <div className="border-t border-[#D0F0DB] dark:border-emerald-900/40 my-4" />
+                <div className="flex justify-between items-center flex-wrap gap-2">
+                  <span className="text-gray-700 dark:text-gray-300 font-bold text-sm">Final Price (Inclusive of all taxes):</span>
+                  <span className="text-xl font-black text-gray-900 dark:text-white">
+                    ₹{finalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {(product.unit || 'pcs').toUpperCase()}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-gray-500 dark:text-gray-400 font-bold text-sm">GST 18%:</span>
-                <span className="text-base font-bold text-gray-700 dark:text-gray-300">
-                  ₹{gstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
-              </div>
-              <div className="border-t border-[#D0F0DB] dark:border-emerald-900/40 my-4" />
-              <div className="flex justify-between items-center flex-wrap gap-2">
-                <span className="text-gray-700 dark:text-gray-300 font-bold text-sm">Final Price (Inclusive of all taxes):</span>
-                <span className="text-xl font-black text-gray-900 dark:text-white">
-                  ₹{finalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {(product.unit || 'pcs').toUpperCase()}
-                </span>
-              </div>
-              </div>
+            )}
             {/* Features List */}
             <div className="mb-12">
               <h3 className="font-black text-brand-dark dark:text-white text-sm uppercase tracking-widest mb-6 flex items-center gap-2">
@@ -331,6 +335,9 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                 productCategory={categoryName}
                 moq={product.moq}
                 productUnit={product.unit}
+                hasVariantPricing={product.hasVariantPricing}
+                variants={product.variants}
+                variantType={product.variantType}
               />
             </div>
           </div>
@@ -339,7 +346,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
         {/* Collapsible Accordion Sections */}
         <div className="mb-24">
           <ProductAccordion 
-            specifications={product.specifications} 
+            specifications={product.hasVariantPricing ? product.customSpecifications : product.specifications} 
             description={product.description}
             datasheet={product.datasheet}
           />
