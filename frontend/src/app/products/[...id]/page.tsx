@@ -168,9 +168,9 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const basePrice = product.price || 450;
-  const gstAmount = basePrice * 0.18;
-  const finalPrice = basePrice + gstAmount;
+  const basePrice = (product.price !== undefined && product.price !== null) ? product.price : null;
+  const gstAmount = basePrice !== null ? basePrice * 0.18 : 0;
+  const finalPrice = basePrice !== null ? basePrice + gstAmount : 0;
 
   return (
     <div className="pt-32 pb-24 bg-[#FAFAFA] dark:bg-brand-dark transition-colors duration-300">
@@ -280,7 +280,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
             )}
 
             {/* Price Box */}
-            {!product.hasVariantPricing && (
+            {!product.hasVariantPricing && basePrice !== null && (
               <div className="w-full max-w-md bg-[#F4FBF7] dark:bg-emerald-950/20 border border-[#E6F4EA] dark:border-emerald-900/40 rounded-3xl p-6 mb-10 shadow-sm">
                 <div className="flex justify-between items-center mb-3">
                   <span className="text-gray-900 dark:text-gray-100 font-extrabold text-base">Base Price:</span>

@@ -226,7 +226,7 @@ export default function ProductManagement() {
 
   const validateVariants = () => {
     if (!newProduct.hasVariantPricing) return true;
-    
+
     if (newProduct.variants.length === 0) {
       alert("At least one variant is mandatory when Variant Pricing is enabled.");
       return false;
@@ -272,7 +272,7 @@ export default function ProductManagement() {
         body: JSON.stringify({
           name: newProduct.name,
           sku: newProduct.sku,
-          price: newProduct.hasVariantPricing ? 0 : (parseFloat(newProduct.price) || 0),
+          price: newProduct.hasVariantPricing ? 0 : (newProduct.price === '' ? null : (isNaN(parseFloat(newProduct.price)) ? null : parseFloat(newProduct.price))),
           stock: newProduct.hasVariantPricing ? 0 : (parseInt(newProduct.stock) || 0),
           status: newProduct.status,
           category_id: newProduct.category_id,
@@ -323,16 +323,16 @@ export default function ProductManagement() {
             isDefault: !!v.isDefault,
             status: v.status
           })) : [],
-          customSpecifications: newProduct.hasVariantPricing 
+          customSpecifications: newProduct.hasVariantPricing
             ? (() => {
-                const specs: Record<string, string> = {};
-                newProduct.customSpecs.forEach(s => {
-                  if (s.key.trim()) {
-                    specs[s.key.trim()] = s.value;
-                  }
-                });
-                return specs;
-              })()
+              const specs: Record<string, string> = {};
+              newProduct.customSpecs.forEach(s => {
+                if (s.key.trim()) {
+                  specs[s.key.trim()] = s.value;
+                }
+              });
+              return specs;
+            })()
             : {}
         })
       });
@@ -409,7 +409,7 @@ export default function ProductManagement() {
         body: JSON.stringify({
           name: newProduct.name,
           sku: newProduct.sku,
-          price: newProduct.hasVariantPricing ? 0 : (parseFloat(newProduct.price) || 0),
+          price: newProduct.hasVariantPricing ? 0 : (newProduct.price === '' ? null : (isNaN(parseFloat(newProduct.price)) ? null : parseFloat(newProduct.price))),
           stock: newProduct.hasVariantPricing ? 0 : (parseInt(newProduct.stock) || 0),
           status: newProduct.status,
           category_id: newProduct.category_id,
@@ -460,16 +460,16 @@ export default function ProductManagement() {
             isDefault: !!v.isDefault,
             status: v.status
           })) : [],
-          customSpecifications: newProduct.hasVariantPricing 
+          customSpecifications: newProduct.hasVariantPricing
             ? (() => {
-                const specs: Record<string, string> = {};
-                newProduct.customSpecs.forEach(s => {
-                  if (s.key.trim()) {
-                    specs[s.key.trim()] = s.value;
-                  }
-                });
-                return specs;
-              })()
+              const specs: Record<string, string> = {};
+              newProduct.customSpecs.forEach(s => {
+                if (s.key.trim()) {
+                  specs[s.key.trim()] = s.value;
+                }
+              });
+              return specs;
+            })()
             : {}
         })
       });
@@ -589,7 +589,7 @@ export default function ProductManagement() {
         isDefault: !!v.isDefault,
         status: v.status || 'active'
       })) : [],
-      customSpecs: product.customSpecifications 
+      customSpecs: product.customSpecifications
         ? Object.entries(product.customSpecifications).map(([key, value]) => ({ key, value }))
         : [],
     });
@@ -1163,8 +1163,8 @@ export default function ProductManagement() {
                           checked={newProduct.hasVariantPricing}
                           onChange={(e) => {
                             const checked = e.target.checked;
-                            setNewProduct(prev => ({ 
-                              ...prev, 
+                            setNewProduct(prev => ({
+                              ...prev,
                               hasVariantPricing: checked,
                               variants: checked && prev.variants.length === 0 ? [{
                                 id: Math.random().toString(36).substring(2, 9),
@@ -1780,9 +1780,9 @@ export default function ProductManagement() {
                           <p className="text-[11px] font-black text-brand-dark truncate max-w-full px-2" title={newProduct.datasheet.split('/').pop()}>
                             {newProduct.datasheet.split('/').pop() || 'datasheet.pdf'}
                           </p>
-                          <a 
-                            href={newProduct.datasheet} 
-                            target="_blank" 
+                          <a
+                            href={newProduct.datasheet}
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="text-[9px] text-blue-600 hover:underline font-bold uppercase tracking-wider mt-1"
                           >

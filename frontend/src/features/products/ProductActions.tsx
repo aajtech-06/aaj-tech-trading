@@ -8,7 +8,7 @@ import { Variant } from '@/types';
 
 interface ProductActionsProps {
   id: string;
-  price: number;
+  price: number | null;
   productName: string;
   productImage?: string;
   productCategory?: string;
@@ -52,6 +52,7 @@ const ProductActions = ({
   const currentPrice = activeVariant ? activeVariant.price : price;
   const currentUnit = activeVariant ? activeVariant.unit : productUnit;
   const currentStock = activeVariant ? activeVariant.stock : undefined;
+  const safePrice = currentPrice !== null ? currentPrice : 0;
 
   // Parse minimum quantity from MOQ string e.g. "200 PCS" -> 200
   const getInitialQuantity = () => {
@@ -62,7 +63,7 @@ const ProductActions = ({
 
   const [quantity, setQuantity] = useState(getInitialQuantity());
 
-  const total = currentPrice * quantity;
+  const total = safePrice * quantity;
   const gst = total * 0.18;
   const grandTotal = total + gst;
 
@@ -75,7 +76,7 @@ const ProductActions = ({
     addToCart({
       id,
       name: activeVariant ? `${productName} (${activeVariant.label})` : productName,
-      price: currentPrice,
+      price: safePrice,
       image: productImage || '',
       category: productCategory || 'Connector',
       moq: moq || '200 PCS',
@@ -91,7 +92,7 @@ const ProductActions = ({
     addToCart({
       id,
       name: activeVariant ? `${productName} (${activeVariant.label})` : productName,
-      price: currentPrice,
+      price: safePrice,
       image: productImage || '',
       category: productCategory || 'Connector',
       moq: moq || '200 PCS',
@@ -148,20 +149,20 @@ const ProductActions = ({
             <div className="flex justify-between items-center mb-3">
               <span className="text-gray-900 dark:text-gray-100 font-extrabold text-base">Base Price:</span>
               <span className="text-3xl font-black text-[#007A53] dark:text-emerald-400">
-                ₹{currentPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ₹{safePrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between items-center mb-4">
               <span className="text-gray-500 dark:text-gray-400 font-bold text-sm">GST 18%:</span>
               <span className="text-base font-bold text-gray-700 dark:text-gray-300">
-                ₹{(currentPrice * 0.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ₹{(safePrice * 0.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="border-t border-[#D0F0DB] dark:border-emerald-900/40 my-4" />
             <div className="flex justify-between items-center flex-wrap gap-2">
               <span className="text-gray-700 dark:text-gray-300 font-bold text-sm">Final Price (Inclusive of all taxes):</span>
               <span className="text-xl font-black text-gray-900 dark:text-white">
-                ₹{(currentPrice * 1.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {(currentUnit || 'pcs').toUpperCase()}
+                ₹{(safePrice * 1.18).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {(currentUnit || 'pcs').toUpperCase()}
               </span>
             </div>
           </div>
@@ -211,20 +212,22 @@ const ProductActions = ({
         </div>
 
         {/* Live Calculation Display */}
-        <div className="text-center sm:text-right flex flex-col items-center sm:items-end gap-1 w-full sm:w-auto">
-          <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
-            Base Price: <span className="font-extrabold text-gray-700">₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        {currentPrice !== null && (
+          <div className="text-center sm:text-right flex flex-col items-center sm:items-end gap-1 w-full sm:w-auto">
+            <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+              Base Price: <span className="font-extrabold text-gray-700">₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            </div>
+            <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+              GST (18%): <span className="font-extrabold text-gray-700">₹{gst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            </div>
+            <div className="w-24 border-t border-gray-200 my-1" />
+            <div>
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5 font-bold">Estimated Subtotal</p>
+              <p className="text-3xl font-black text-brand-red">₹{grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <p className="text-[9px] font-extrabold text-emerald-600 uppercase mt-0.5 tracking-wider">Inclusive of GST</p>
+            </div>
           </div>
-          <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
-            GST (18%): <span className="font-extrabold text-gray-700">₹{gst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          </div>
-          <div className="w-24 border-t border-gray-200 my-1" />
-          <div>
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5 font-bold">Estimated Subtotal</p>
-            <p className="text-3xl font-black text-brand-red">₹{grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            <p className="text-[9px] font-extrabold text-emerald-600 uppercase mt-0.5 tracking-wider">Inclusive of GST</p>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Buttons */}

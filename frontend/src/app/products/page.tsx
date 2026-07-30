@@ -87,7 +87,7 @@ const ProductCard = ({
     ? product.variants[selectedVarIdx]
     : null;
 
-  const displayPrice = activeVariant ? activeVariant.price : (product.price || 450);
+  const displayPrice = activeVariant ? activeVariant.price : (product.price !== undefined && product.price !== null) ? product.price : null;
   const displayUnit = activeVariant ? activeVariant.unit : (product.unit || 'pcs');
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -113,7 +113,7 @@ const ProductCard = ({
       addToCart({
         id: product.id,
         name: product.name,
-        price: product.price || 450,
+        price: (product.price !== undefined && product.price !== null) ? product.price : 0,
         image: product.image,
         category: category?.name || 'Connector',
         moq: moqText,
@@ -228,12 +228,16 @@ const ProductCard = ({
 
         {/* Bottom Section: Price & View Details */}
         <div className="flex items-end justify-between">
-          <div className="flex flex-col">
-            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Price</span>
-            <span className="text-lg font-black text-brand-dark dark:text-white">
-              ₹{displayPrice.toLocaleString('en-IN')}.00 <span className="text-gray-400 text-[10px] font-normal">/ {displayUnit || 'pcs'}</span>
-            </span>
-          </div>
+          {displayPrice !== null ? (
+            <div className="flex flex-col">
+              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Price</span>
+              <span className="text-lg font-black text-brand-dark dark:text-white">
+                ₹{displayPrice.toLocaleString('en-IN')}.00 <span className="text-gray-400 text-[10px] font-normal">/ {displayUnit || 'pcs'}</span>
+              </span>
+            </div>
+          ) : (
+            <div className="flex-grow" />
+          )}
 
           <Link
             href={productUrl}
