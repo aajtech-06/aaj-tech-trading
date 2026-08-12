@@ -73,7 +73,7 @@ const ProductCard = ({
   } catch (err) {
     console.error('Error generating product URL suffix:', err);
   }
-  const productUrl = suffix 
+  const productUrl = suffix
     ? `/products/${categorySlug}/${productSlug}-${suffix}`
     : `/products/${product.id}`;
 
@@ -354,8 +354,8 @@ const ProductsContent = () => {
   const isAllProducts = selectedCategory === 'all';
   const totalPages = isAllProducts ? 1 : Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
   const startIndex = isAllProducts ? 0 : (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentProducts = isAllProducts 
-    ? filteredProducts 
+  const currentProducts = isAllProducts
+    ? filteredProducts
     : filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (

@@ -6,6 +6,7 @@ import { notFound, redirect } from 'next/navigation';
 import { ArrowLeft, CheckCircle2, Package, Truck, ShieldCheck } from 'lucide-react';
 import ProductActions from '@/features/products/ProductActions';
 import ProductAccordion from '@/features/products/components/ProductAccordion';
+import RecentlyViewed from '@/features/products/components/RecentlyViewed';
 
 import { Product } from '@/types';
 
@@ -338,6 +339,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                 hasVariantPricing={product.hasVariantPricing}
                 variants={product.variants}
                 variantType={product.variantType}
+                sku={product.sku}
               />
             </div>
           </div>
@@ -368,6 +370,9 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
             </div>
           ))}
         </div>
+
+        {/* Recently Viewed Products */}
+        <RecentlyViewed currentProductId={product.id} />
       </div>
     </div>
   );
