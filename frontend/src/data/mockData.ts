@@ -146,24 +146,43 @@ export const products: Product[] = [
 
 export const industries: Industry[] = [
   {
-    id: 'aerospace',
-    title: 'Aerospace & Defense',
-    description: 'High-reliability components for mission-critical applications.',
-    image: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=2072&auto=format&fit=crop',
-  },
-  {
-    id: 'medical',
-    title: 'Medical Devices',
-    description: 'Precision connectors for life-saving medical equipment.',
-    image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop',
-  },
-  {
-    id: 'automation',
+    id: 'industrial-automation',
     title: 'Industrial Automation',
-    description: 'Robust solutions for modern smart manufacturing.',
+    description: 'Reliable connectors, terminals and cable solutions for automated machinery and industrial control systems.',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop',
   },
+  {
+    id: 'solar-renewable-energy',
+    title: 'Solar & Renewable Energy',
+    description: 'Solar connectors and electrical connectivity solutions for renewable energy and solar applications.',
+    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2070&auto=format&fit=crop',
+  },
+  {
+    id: 'battery-energy-storage',
+    title: 'Battery & Energy Storage',
+    description: 'High-current connectors and power connectivity solutions for batteries and energy storage systems.',
+    image: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?q=80&w=2071&auto=format&fit=crop',
+  },
+  {
+    id: 'electrical-power-systems',
+    title: 'Electrical & Power Systems',
+    description: 'Reliable electrical connectivity solutions for power distribution, electrical equipment and industrial applications.',
+    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop',
+  },
+  {
+    id: 'wire-harness-cable-assemblies',
+    title: 'Wire Harness & Cable Assemblies',
+    description: 'Custom wire harnesses and cable assembly solutions for OEM and industrial applications.',
+    image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop',
+  },
+  {
+    id: 'ev-automotive',
+    title: 'EV & Automotive',
+    description: 'High-performance connectivity solutions for electric vehicles, batteries and automotive systems.',
+    image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80&w=2070&auto=format&fit=crop',
+  },
 ];
+
 
 export const counters: Counter[] = [
   { id: 1, label: 'Quality Certs', value: 8, suffix: '+' },
