@@ -54,6 +54,33 @@ const IndustryGrid = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
   return (
     <section id="industries" className="py-32 bg-brand-light dark:bg-brand-dark/95 relative overflow-hidden transition-colors duration-300">
       {/* Background Decorative Lines */}
@@ -89,7 +116,12 @@ const IndustryGrid = () => {
         </div>
 
         {/* Carousel Slider */}
-        <div className="relative w-full overflow-hidden py-4">
+        <div 
+          className="relative w-full overflow-hidden py-4 touch-pan-y"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
           <div className="w-full flex justify-start">
             <motion.div
               className="flex"
@@ -140,15 +172,15 @@ const IndustryGrid = () => {
             <>
               <button
                 onClick={prevSlide}
-                className="absolute left-4 md:left-12 lg:left-24 top-1/2 -translate-y-1/2 z-20 w-16 h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                className="absolute left-2 md:left-12 lg:left-24 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-16 md:h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
               >
-                <ChevronLeft size={32} />
+                <ChevronLeft size={24} className="md:w-8 md:h-8" />
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute right-4 md:right-12 lg:right-24 top-1/2 -translate-y-1/2 z-20 w-16 h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                className="absolute right-2 md:right-12 lg:right-24 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-16 md:h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
               >
-                <ChevronRight size={32} />
+                <ChevronRight size={24} className="md:w-8 md:h-8" />
               </button>
             </>
           )}

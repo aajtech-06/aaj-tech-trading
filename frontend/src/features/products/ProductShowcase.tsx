@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -94,6 +94,43 @@ const ProductShowcase = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const touchStartRef = useRef<number | null>(null);
+  const wasSwipedRef = useRef(false);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+    touchStartRef.current = e.targetTouches[0].clientX;
+    wasSwipedRef.current = false;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+    if (touchStartRef.current !== null) {
+      const distance = Math.abs(e.targetTouches[0].clientX - touchStartRef.current);
+      if (distance > 10) {
+        wasSwipedRef.current = true;
+      }
+    }
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
   return (
     <section className="py-20 md:py-24 bg-brand-light dark:bg-brand-dark/95 relative overflow-hidden transition-colors duration-300">
       {/* Decorative Text */}
@@ -119,7 +156,12 @@ const ProductShowcase = () => {
             <Loader2 className="animate-spin text-brand-red w-12 h-12" />
           </div>
         ) : categories.length > 0 ? (
-          <div className="relative w-full overflow-hidden py-4">
+          <div 
+            className="relative w-full overflow-hidden py-4 touch-pan-y"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             {/* Slider Container with Left Alignment matching Page Content */}
             <div className="w-full flex justify-start">
               <motion.div
@@ -140,6 +182,12 @@ const ProductShowcase = () => {
                       href={`/products?category=${category.id}`}
                       style={{ width: cardWidth, height: cardHeight }}
                       className="shrink-0 bg-gradient-to-br from-white via-white to-gray-50/50 dark:from-neutral-900/90 dark:via-neutral-900/95 dark:to-neutral-950/90 rounded-[40px] overflow-hidden shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_25px_60px_-20px_rgba(0,0,0,0.4)] border border-gray-100 dark:border-neutral-800/80 hover:border-brand-red/20 dark:hover:border-brand-red/30 relative group cursor-pointer block transition-all duration-500 hover:shadow-[0_30px_70px_-15px_rgba(210,35,42,0.15)] hover:-translate-y-2"
+                      onClick={(e) => {
+                        if (wasSwipedRef.current) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }
+                      }}
                     >
                       {/* Premium Background Glows */}
                       <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-brand-red/[0.02] dark:bg-brand-red/[0.04] rounded-full blur-[100px] group-hover:bg-brand-red/[0.06] group-hover:scale-125 transition-all duration-700 ease-out" />
@@ -198,15 +246,15 @@ const ProductShowcase = () => {
               <>
                 <button
                   onClick={prevSlide}
-                  className="absolute left-4 md:left-12 lg:left-24 top-1/2 -translate-y-1/2 z-20 w-16 h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                  className="absolute left-2 md:left-12 lg:left-24 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-16 md:h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
                 >
-                  <ChevronLeft size={32} />
+                  <ChevronLeft size={24} className="md:w-8 md:h-8" />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className="absolute right-4 md:right-12 lg:right-24 top-1/2 -translate-y-1/2 z-20 w-16 h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                  className="absolute right-2 md:right-12 lg:right-24 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-16 md:h-16 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm rounded-full shadow-xl border border-gray-200/50 dark:border-neutral-700 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red dark:hover:bg-brand-red hover:text-white hover:border-brand-red transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
                 >
-                  <ChevronRight size={32} />
+                  <ChevronRight size={24} className="md:w-8 md:h-8" />
                 </button>
               </>
             )}
