@@ -396,7 +396,7 @@ const Navbar = () => {
                                 transition={{ duration: 0.25, ease: "easeInOut" }}
                                 className="overflow-hidden pl-4 flex flex-col gap-1.5 border-l-2 border-brand-red/20 my-1 bg-brand-light/50 dark:bg-gray-800/40 rounded-r-xl py-1"
                               >
-                                {item.href && (
+                                {item.href && !item.items!.some((subItem) => subItem.href === item.href) && (
                                   <Link
                                     href={item.href}
                                     className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-brand-red transition-colors uppercase tracking-wider py-1"
