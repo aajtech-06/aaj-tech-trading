@@ -139,38 +139,47 @@ const ProductShowcase = () => {
                       key={category.id}
                       href={`/products?category=${category.id}`}
                       style={{ width: cardWidth, height: cardHeight }}
-                      className="shrink-0 bg-[#F5F5F7] dark:bg-neutral-900 rounded-[48px] overflow-hidden shadow-md border border-gray-200/50 dark:border-neutral-800 relative group cursor-pointer block transition-all duration-500 hover:shadow-2xl hover:-translate-y-1.5"
+                      className="shrink-0 bg-gradient-to-br from-white via-white to-gray-50/50 dark:from-neutral-900/90 dark:via-neutral-900/95 dark:to-neutral-950/90 rounded-[40px] overflow-hidden shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_25px_60px_-20px_rgba(0,0,0,0.4)] border border-gray-100 dark:border-neutral-800/80 hover:border-brand-red/20 dark:hover:border-brand-red/30 relative group cursor-pointer block transition-all duration-500 hover:shadow-[0_30px_70px_-15px_rgba(210,35,42,0.15)] hover:-translate-y-2"
                     >
-                      {/* Category Name in top-left */}
-                      <div className="absolute top-10 left-10 z-10">
-                        <span className="text-2xl md:text-3xl font-black text-brand-red uppercase tracking-tight">
+                      {/* Premium Background Glows */}
+                      <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-brand-red/[0.02] dark:bg-brand-red/[0.04] rounded-full blur-[100px] group-hover:bg-brand-red/[0.06] group-hover:scale-125 transition-all duration-700 ease-out" />
+                      <div className="absolute -left-20 -top-20 w-80 h-80 bg-brand-red/[0.01] dark:bg-brand-red/[0.02] rounded-full blur-[100px] group-hover:bg-brand-red/[0.03] transition-all duration-700 ease-out" />
+
+                      {/* Sleek details */}
+                      <div className="absolute top-10 left-10 right-10 z-10 flex flex-col gap-2">
+                        <h3 className="text-2xl md:text-3xl font-black text-brand-dark dark:text-white uppercase tracking-tight group-hover:text-brand-red transition-colors duration-300">
                           {category.name}
-                        </span>
+                        </h3>
+                        {category.description && (
+                          <p className="text-xs font-semibold text-gray-500 dark:text-neutral-400 line-clamp-2 max-w-[85%] mt-1 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+                            {category.description}
+                          </p>
+                        )}
                       </div>
 
                       {/* Tech Circuit Pattern in card background */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-[0.12] pointer-events-none select-none">
-                        <div className="w-64 h-64 border-2 border-dashed border-brand-red rounded-full animate-[spin_120s_linear_infinite]" />
-                        <div className="absolute w-80 h-80 border border-brand-red rounded-full opacity-50" />
-                        <div className="absolute w-48 h-48 border border-brand-red rounded-full opacity-70" />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-[0.06] group-hover:opacity-[0.14] transition-all duration-500 pointer-events-none select-none">
+                        <div className="w-64 h-64 border-2 border-dashed border-brand-red rounded-full animate-[spin_120s_linear_infinite] group-hover:scale-110 transition-transform duration-700" />
+                        <div className="absolute w-80 h-80 border border-brand-red rounded-full opacity-50 group-hover:scale-105 transition-transform duration-700" />
+                        <div className="absolute w-48 h-48 border border-brand-red rounded-full opacity-70 group-hover:scale-95 transition-transform duration-700" />
                         <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-brand-red to-transparent" />
                         <div className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-brand-red to-transparent" />
 
                         {/* Corner tech lines */}
-                        <div className="absolute top-8 left-8 w-4 h-4 border-t-2 border-l-2 border-brand-red/60" />
-                        <div className="absolute top-8 right-8 w-4 h-4 border-t-2 border-r-2 border-brand-red/60" />
-                        <div className="absolute bottom-8 left-8 w-4 h-4 border-b-2 border-l-2 border-brand-red/60" />
-                        <div className="absolute bottom-8 right-8 w-4 h-4 border-b-2 border-r-2 border-brand-red/60" />
+                        <div className="absolute top-8 left-8 w-4 h-4 border-t-2 border-l-2 border-brand-red/60 group-hover:top-6 group-hover:left-6 transition-all duration-500" />
+                        <div className="absolute top-8 right-8 w-4 h-4 border-t-2 border-r-2 border-brand-red/60 group-hover:top-6 group-hover:right-6 transition-all duration-500" />
+                        <div className="absolute bottom-8 left-8 w-4 h-4 border-b-2 border-l-2 border-brand-red/60 group-hover:bottom-6 group-hover:left-6 transition-all duration-500" />
+                        <div className="absolute bottom-8 right-8 w-4 h-4 border-b-2 border-r-2 border-brand-red/60 group-hover:bottom-6 group-hover:right-6 transition-all duration-500" />
                       </div>
 
                       {/* Product Image Centered */}
-                      <div className="w-full h-full flex items-center justify-center p-12 relative z-0">
+                      <div className="w-full h-full flex items-center justify-center px-8 pt-20 pb-8 relative z-0">
                         {isValidImageUrl(category.image) ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={category.image}
                             alt={category.name}
-                            className="max-h-[75%] max-w-[75%] object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.06)] select-none transition-all duration-700 ease-out group-hover:scale-105 group-hover:drop-shadow-[0_25px_50px_rgba(237,28,36,0.15)]"
+                            className="max-h-[90%] max-w-[90%] object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.06)] dark:drop-shadow-[0_25px_50px_rgba(0,0,0,0.3)] select-none transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-2 group-hover:drop-shadow-[0_30px_60px_rgba(210,35,42,0.2)]"
                           />
                         ) : (
                           <div className="text-gray-400 font-bold uppercase tracking-widest text-xs">

@@ -97,6 +97,7 @@ const AboutEVPage = () => {
                 src={heroImages[currentHeroImage]}
                 alt="Electric Vehicle Technology Background"
                 fill
+                sizes="100vw"
                 priority
                 className="object-cover brightness-[0.42] contrast-105"
               />
@@ -264,6 +265,7 @@ const AboutEVPage = () => {
                   src="https://images.unsplash.com/photo-1616401784845-180882ba9ba8?q=80&w=600"
                   alt="Quality Testing EV"
                   fill
+                  sizes="(max-width: 1023px) 100vw, 352px"
                   className="object-cover group-hover:scale-105 transition-transform duration-[1500ms]"
                 />
                 <div className="absolute inset-0 bg-brand-red/5 mix-blend-multiply" />
@@ -282,6 +284,7 @@ const AboutEVPage = () => {
                   src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80&w=600"
                   alt="EV Charging Station Panel"
                   fill
+                  sizes="(max-width: 1023px) 100vw, 352px"
                   className="object-cover group-hover:scale-105 transition-transform duration-[1500ms]"
                 />
                 <div className="absolute inset-0 bg-brand-red/5 mix-blend-multiply" />
@@ -300,6 +303,7 @@ const AboutEVPage = () => {
                   src="https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=1200"
                   alt="Charging port close up"
                   fill
+                  sizes="(max-width: 1023px) 100vw, 704px"
                   className="object-cover group-hover:scale-105 transition-transform duration-[1500ms]"
                 />
                 <div className="absolute inset-0 bg-brand-red/5 mix-blend-multiply" />
@@ -422,6 +426,7 @@ const AboutEVPage = () => {
                   src="/ev_charger_pedestal.png"
                   alt="EV Charger pedestal standing"
                   fill
+                  sizes="280px"
                   className="object-cover group-hover:scale-110 transition-transform duration-[2000ms]"
                 />
               </motion.div>

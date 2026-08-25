@@ -66,6 +66,7 @@ const EVProductsContent = () => {
             src="https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=2070&auto=format&fit=crop"
             alt="EV Solutions Background"
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-brand-red via-brand-red/80 to-transparent" />
@@ -154,7 +155,7 @@ const EVProductsContent = () => {
                         fill
                         unoptimized
                         className="object-contain p-8 mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-700"
-                        sizes="(max-width: 768px) 100vw, 50vw"
+                        sizes="(max-width: 1023px) 100vw, 624px"
                       />
 
                       {/* Hover Overlay */}

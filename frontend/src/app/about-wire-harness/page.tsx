@@ -80,6 +80,7 @@ const AboutWireHarnessPage = () => {
             src="/wire_harness_collage_v2.png"
             alt="Wire Harness Background"
             fill
+            sizes="100vw"
             className="object-cover brightness-[0.4]"
             priority
           />
@@ -247,6 +248,7 @@ const AboutWireHarnessPage = () => {
                   src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop"
                   alt="Custom Wire Harness Manufacturing"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-brand-dark/10 group-hover:bg-transparent transition-colors duration-500" />
@@ -283,6 +285,7 @@ const AboutWireHarnessPage = () => {
                             src={getImageUrl(item.image)}
                             alt={item.name}
                             fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
                             className="object-cover"
                           />
                         </div>
@@ -315,6 +318,7 @@ const AboutWireHarnessPage = () => {
                             src={getImageUrl(item.image)}
                             alt={item.name}
                             fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
                             className="object-cover"
                           />
                         </div>
@@ -347,6 +351,7 @@ const AboutWireHarnessPage = () => {
                             src={getImageUrl(item.image)}
                             alt={item.name}
                             fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
                             className="object-cover"
                           />
                         </div>

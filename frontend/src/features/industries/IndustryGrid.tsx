@@ -112,6 +112,7 @@ const IndustryGrid = () => {
                     src={industry.image}
                     alt={industry.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover transition-transform duration-[1.5s] group-hover:scale-125"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/20 to-transparent group-hover:from-brand-red group-hover:via-brand-red/40 transition-all duration-700"></div>

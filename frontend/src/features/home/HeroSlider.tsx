@@ -46,6 +46,7 @@ const HeroSlider = () => {
                   src={slide.image}
                   alt={slide.title}
                   fill
+                  sizes="100vw"
                   quality={100}
                   priority={index === 0}
                   unoptimized
@@ -110,6 +111,7 @@ const HeroSlider = () => {
                         src={slide.image}
                         alt={slide.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-scale-down drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
                         priority={index === 0}
                         unoptimized

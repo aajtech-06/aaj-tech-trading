@@ -60,6 +60,7 @@ const AboutPage = () => {
             src="/about_hero.png"
             alt="Premium Industrial Background"
             fill
+            sizes="100vw"
             className="object-cover brightness-[0.4]"
             priority
           />
@@ -169,6 +170,7 @@ const AboutPage = () => {
                   src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop"
                   alt="Tech Innovation"
                   fill
+                  sizes="(max-width: 1023px) 100vw, 752px"
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-brand-red/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -347,6 +349,7 @@ const AboutPage = () => {
                   src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop"
                   alt="Industrial Tech"
                   fill
+                  sizes="(max-width: 1023px) 100vw, 704px"
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-red to-transparent opacity-60" />

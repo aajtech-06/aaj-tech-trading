@@ -97,6 +97,7 @@ export default function WireHarnessProductDetailPage() {
             src={product.image?.startsWith('http') ? product.image : (product.image?.startsWith('/uploads/') ? `https://aajtechtrading.in${product.image}` : (product.image || "/Wire to board Assemblies.webp"))}
             alt={product.title}
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover mix-blend-overlay"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-brand-red via-brand-red/90 to-transparent" />
@@ -138,6 +139,7 @@ export default function WireHarnessProductDetailPage() {
                 src={activeImage?.startsWith('http') ? activeImage : (activeImage?.startsWith('/uploads/') ? `https://aajtechtrading.in${activeImage}` : (activeImage || "/Wire to board Assemblies.webp"))}
                 alt={product.title}
                 fill
+                sizes="(max-width: 1023px) 100vw, 624px"
                 unoptimized
                 className="object-contain p-6 mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-700"
               />
