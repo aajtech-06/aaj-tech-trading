@@ -109,13 +109,13 @@ const BlogSection = () => {
             <>
               <button
                 onClick={prevSlide}
-                className="absolute -left-4 md:-left-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
+                className="absolute left-2 md:-left-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all md:opacity-0 md:group-hover:opacity-100 md:-translate-x-4 md:group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
               >
                 <ChevronLeft size={24} />
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute -right-4 md:-right-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
+                className="absolute right-2 md:-right-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all md:opacity-0 md:group-hover:opacity-100 md:translate-x-4 md:group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
               >
                 <ChevronRight size={24} />
               </button>
