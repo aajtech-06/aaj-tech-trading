@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -20,14 +20,30 @@ interface BlogPost {
 
 const BlogSection = () => {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
-  const [visibleCards, setVisibleCards] = useState(3);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [cardWidth, setCardWidth] = useState(420);
+  const [gap, setGap] = useState(32);
+  const [padding, setPadding] = useState(128);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) setVisibleCards(1);
-      else if (window.innerWidth < 1024) setVisibleCards(2);
-      else setVisibleCards(3);
+      if (window.innerWidth < 768) {
+        setCardWidth(window.innerWidth * 0.85);
+        setGap(16);
+        setPadding(16);
+      } else if (window.innerWidth < 1024) {
+        setCardWidth(340);
+        setGap(24);
+        setPadding(48);
+      } else if (window.innerWidth < 1280) {
+        setCardWidth(380);
+        setGap(32);
+        setPadding(96);
+      } else {
+        setCardWidth(420);
+        setGap(32);
+        setPadding(128);
+      }
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -35,19 +51,13 @@ const BlogSection = () => {
   }, []);
 
   const nextSlide = () => {
-    if (currentIndex < blogs.length - visibleCards) {
-      setCurrentIndex(prev => prev + 1);
-    } else {
-      setCurrentIndex(0);
-    }
+    if (blogs.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % blogs.length);
   };
 
   const prevSlide = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
-    } else {
-      setCurrentIndex(Math.max(0, blogs.length - visibleCards));
-    }
+    if (blogs.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + blogs.length) % blogs.length);
   };
 
   useEffect(() => {
@@ -74,16 +84,26 @@ const BlogSection = () => {
 
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const touchStartRef = useRef<number | null>(null);
+  const wasSwipedRef = useRef(false);
 
   const minSwipeDistance = 50;
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
+    touchStartRef.current = e.targetTouches[0].clientX;
+    wasSwipedRef.current = false;
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX);
+    if (touchStartRef.current !== null) {
+      const distance = Math.abs(e.targetTouches[0].clientX - touchStartRef.current);
+      if (distance > 10) {
+        wasSwipedRef.current = true;
+      }
+    }
   };
 
   const onTouchEnd = () => {
@@ -132,17 +152,17 @@ const BlogSection = () => {
 
         <div className="relative group">
           {/* Slider Controls */}
-          {blogs.length > visibleCards && (
+          {blogs.length > 1 && (
             <>
               <button
                 onClick={prevSlide}
-                className="absolute left-2 md:-left-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all md:opacity-0 md:group-hover:opacity-100 md:-translate-x-4 md:group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
+                className="hidden md:flex absolute left-2 md:-left-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all md:opacity-0 md:group-hover:opacity-100 md:-translate-x-4 md:group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
               >
                 <ChevronLeft size={24} />
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute right-2 md:-right-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all md:opacity-0 md:group-hover:opacity-100 md:translate-x-4 md:group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
+                className="hidden md:flex absolute right-2 md:-right-12 top-1/2 -translate-y-1/2 z-20 w-14 h-14 bg-white dark:bg-neutral-800 rounded-full shadow-2xl items-center justify-center text-brand-dark dark:text-white hover:bg-brand-red hover:text-white transition-all md:opacity-0 md:group-hover:opacity-100 md:translate-x-4 md:group-hover:translate-x-0 border border-gray-100 dark:border-neutral-700 cursor-pointer"
               >
                 <ChevronRight size={24} />
               </button>
@@ -156,18 +176,31 @@ const BlogSection = () => {
             onTouchEnd={onTouchEnd}
           >
             <motion.div
-              className="flex gap-8"
-              animate={{ x: `calc(-${currentIndex * (100 / visibleCards)}% - ${currentIndex * (32 / visibleCards)}px)` }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              style={{ width: blogs.length > visibleCards ? `${(blogs.length / visibleCards) * 100}%` : '100%' }}
+              className="flex"
+              style={{
+                width: `${blogs.length * (cardWidth + gap) - gap}px`,
+                gap: `${gap}px`
+              }}
+              animate={{
+                x: padding - currentIndex * (cardWidth + gap)
+              }}
+              transition={{ type: "spring", damping: 30, stiffness: 200 }}
             >
               {blogs.map((post) => (
                 <div
                   key={post.id}
-                  className="w-full"
-                  style={{ flex: `0 0 calc(${100 / (blogs.length > visibleCards ? blogs.length : visibleCards)}% - ${blogs.length > visibleCards ? (32 * (blogs.length - 1)) / blogs.length : 0}px)` }}
+                  style={{ width: cardWidth }}
+                  className="shrink-0 flex flex-col"
                 >
-                  <Link href={`/blog/${post.id}`}>
+                  <Link 
+                    href={`/blog/${post.id}`}
+                    onClick={(e) => {
+                      if (wasSwipedRef.current) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
                     <motion.div
                       whileHover={{ y: -15 }}
                       className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 overflow-hidden group/card shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] transition-all duration-700 h-full flex flex-col"
