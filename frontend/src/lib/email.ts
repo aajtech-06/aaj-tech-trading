@@ -27,7 +27,7 @@ export async function sendAdminWelcomeEmail(toEmail: string, name: string, tempP
                   <p style="margin: 10px 0 0 0;"><strong>Email:</strong> ${toEmail}</p>
                   ${tempPassword ? `<p style="margin: 10px 0 0 0;"><strong>Password:</strong> ${tempPassword}</p>` : ''}
                 </div>
-                <p>Please log in at <a href="${process.env.NEXT_PUBLIC_API_URL}/login" style="color: #D2232A;">${process.env.NEXT_PUBLIC_API_URL}/login</a>.</p>
+                <p>Please log in at <a href="${process.env.NEXT_PUBLIC_API_URL}/attc-manage/" style="color: #D2232A;">${process.env.NEXT_PUBLIC_API_URL}/attc-manage/</a>.</p>
                 <p>If you have any issues, please contact the Super Admin.</p>
                 <p>Best Regards,<br>Team Aaj Tech Trading</p>
             </div>

@@ -51,7 +51,7 @@ async def create_enquiry(enquiry: EnquiryBase, background_tasks: BackgroundTasks
     return {"id": str(result.inserted_id), "message": "Enquiry submitted successfully"}
 
 @router.get("/", response_model=List[dict])
-def get_enquiries():
+def get_enquiries(admin: dict = Depends(require_admin)):
     enquiries = []
     for enq in db.enquiries.find().sort("createdAt", -1):
         enq["id"] = str(enq["_id"])

@@ -65,7 +65,7 @@ export default function SignupPage() {
             Please follow the instructions to set your password and activate your account.
           </p>
           <Link
-            href="/login"
+            href="/attc-manage/"
             className="inline-block w-full bg-brand-dark hover:bg-brand-red text-white font-black py-4 rounded-2xl transition-all"
           >
             Back to Login
@@ -87,7 +87,7 @@ export default function SignupPage() {
         className="max-w-md w-full bg-white border border-gray-100 rounded-[32px] p-8 md:p-10 shadow-[0_40px_80px_rgba(0,0,0,0.06)] relative z-10"
       >
         <Link
-          href="/login"
+          href="/attc-manage/"
           className="flex items-center gap-2 text-gray-400 hover:text-brand-red font-bold text-xs mb-8 transition-colors"
         >
           <ChevronLeft size={16} /> Back to Login

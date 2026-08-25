@@ -66,7 +66,7 @@ export function useAdminAuth() {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       setUser(null);
-      router.push('/login');
+      router.push('/attc-manage/');
     } catch (error) {
       console.error('Logout failed:', error);
     }

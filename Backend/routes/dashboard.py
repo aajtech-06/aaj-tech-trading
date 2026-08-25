@@ -1,12 +1,13 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from database import get_db
 from datetime import datetime
+from utils.auth import require_admin
 
 router = APIRouter()
 db = get_db()
 
 @router.get("/")
-def get_dashboard_data():
+def get_dashboard_data(admin: dict = Depends(require_admin)):
     total_products = db.products.count_documents({})
     total_enquiries = db.enquiries.count_documents({})
     total_clients = len(db.enquiries.distinct("email"))

@@ -275,14 +275,6 @@ const Navbar = () => {
               </span>
             )}
           </button>
-
-          <Link
-            href="/login"
-            className="group relative bg-brand-red hover:bg-brand-red-hover text-white px-10 py-4 rounded-full text-sm font-black transition-all shadow-[0_15px_30px_-5px_rgba(210,35,42,0.4)] active:scale-95 uppercase tracking-widest overflow-hidden shrink-0"
-          >
-            <span className="relative z-10">Sign In</span>
-            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-          </Link>
         </motion.div>
 
         {/* Mobile Actions */}
@@ -444,16 +436,6 @@ const Navbar = () => {
                 })}
               </div>
 
-              {/* Sign In CTA */}
-              <div className="mt-auto pt-6 shrink-0">
-                <Link
-                  href="/login"
-                  className="bg-brand-red hover:bg-brand-red-hover text-white text-center py-4 rounded-full font-black text-base shadow-xl shadow-brand-red/25 block uppercase tracking-widest transition-all active:scale-95"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Sign In
-                </Link>
-              </div>
             </div>
           </motion.div>
         )}

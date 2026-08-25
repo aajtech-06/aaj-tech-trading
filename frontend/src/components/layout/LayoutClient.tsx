@@ -52,7 +52,7 @@ if (typeof window !== 'undefined' && !(window as any).__fetchWrapped) {
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
-  const isLogin = pathname === '/login';
+  const isLogin = pathname === '/login' || pathname?.startsWith('/attc-manage');
   const isAuthPage = isAdmin || isLogin;
 
   return (

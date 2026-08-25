@@ -9,13 +9,20 @@ const JWT_SECRET = new TextEncoder().encode(
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Redirect /login to /attc-manage/
+  if (pathname === '/login' || pathname === '/login/') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/attc-manage/';
+    return NextResponse.redirect(url);
+  }
+
   // Paths that require authentication
   if (pathname.startsWith('/admin')) {
     const token = request.cookies.get('admin_token')?.value;
 
     if (!token) {
       const url = request.nextUrl.clone();
-      url.pathname = '/login';
+      url.pathname = '/attc-manage/';
       return NextResponse.redirect(url);
     }
 
@@ -24,13 +31,13 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     } catch {
       const url = request.nextUrl.clone();
-      url.pathname = '/login';
+      url.pathname = '/attc-manage/';
       return NextResponse.redirect(url);
     }
   }
 
   // If already logged in, redirect away from login page
-  if (pathname === '/login') {
+  if (pathname === '/attc-manage/' || pathname === '/attc-manage') {
     const token = request.cookies.get('admin_token')?.value;
     if (token) {
       try {
@@ -49,5 +56,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/login'],
+  matcher: ['/admin/:path*', '/login/:path*', '/attc-manage/:path*'],
 };

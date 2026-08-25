@@ -193,7 +193,7 @@ def apply_career(application: CareerApplicationCreate):
     return {"message": "Application submitted successfully", "id": str(result.inserted_id)}
 
 @router.get("/applications", response_model=List[CareerApplicationResponse])
-def get_applications():
+def get_applications(admin: dict = Depends(require_admin)):
     db = get_db()
     apps = list(db.careerApplications.find().sort("_id", -1))
     return [application_helper(app) for app in apps]
